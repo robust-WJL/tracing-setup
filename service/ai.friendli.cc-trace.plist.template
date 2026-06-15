@@ -20,6 +20,9 @@
     <dict>
         <key>CC_TRACE_HOME</key>
         <string>@CC_TRACE_HOME@</string>
+        <!-- which profiles this always-on service serves (default: claude only) -->
+        <key>CC_TRACE_ONLY</key>
+        <string>@ONLY@</string>
     </dict>
 
     <key>RunAtLoad</key>

@@ -9,6 +9,8 @@ After=network.target
 [Service]
 Type=simple
 Environment=CC_TRACE_HOME=@CC_TRACE_HOME@
+# which profiles this always-on service serves (default: claude only)
+Environment=CC_TRACE_ONLY=@ONLY@
 ExecStart=@PYTHON@ @PROXY@
 Restart=always
 RestartSec=2

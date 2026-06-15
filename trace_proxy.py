@@ -66,6 +66,18 @@ REDACT_KEYS = os.environ.get("CC_TRACE_REDACT", "1") == "1"
 TRACE_MAX_AGE_DAYS = int(os.environ.get("CC_TRACE_MAX_AGE_DAYS", "0"))   # 0 = disabled
 TRACE_MAX_FILES = int(os.environ.get("CC_TRACE_MAX_FILES", "0"))        # 0 = disabled, per profile
 
+# On-demand: serve only these profiles (comma-separated names). Empty = all.
+# Set by the per-agent launcher so e.g. `codex` only spins up the codex proxy.
+ONLY_PROFILES = [s.strip() for s in os.environ.get("CC_TRACE_ONLY", "").split(",") if s.strip()]
+
+# Idle auto-shutdown: exit after this many seconds with no traced request and
+# nothing in flight. 0 = never (used for the always-on Claude service). The
+# per-agent launcher passes a value so lazily-started proxies don't linger.
+IDLE_TIMEOUT = float(os.environ.get("CC_TRACE_IDLE_TIMEOUT", "0"))
+
+# Liveness tracking for idle shutdown.
+ACTIVITY = {"last": 0.0, "inflight": 0}
+
 # Headers we must NOT forward upstream (hop-by-hop / host-specific).
 SKIP_REQUEST_HEADERS = {"host", "content-length", "accept-encoding", "connection"}
 SKIP_RESPONSE_HEADERS = {"content-length", "content-encoding", "transfer-encoding", "connection"}
@@ -81,19 +93,19 @@ DEFAULT_PROFILES = {
     "claude": {
         "port": 8788,
         "upstream": "https://api.anthropic.com",
-        "trace_dir": "~/claude-traces",
+        "trace_dir": "~/fai-traces/claude-traces",
         "format": "anthropic",
     },
     "codex": {
         "port": 8789,
         "upstream": "https://api.openai.com",
-        "trace_dir": "~/codex-traces",
+        "trace_dir": "~/fai-traces/codex-traces",
         "format": "openai",
     },
     "opencode": {
         "port": 8790,
         "upstream": "https://api.anthropic.com",
-        "trace_dir": "~/opencode-traces",
+        "trace_dir": "~/fai-traces/opencode-traces",
         "format": "anthropic",
     },
 }
@@ -124,6 +136,8 @@ def load_profiles() -> dict:
 
     profiles = {}
     for name, p in raw.items():
+        if ONLY_PROFILES and name not in ONLY_PROFILES:
+            continue
         if not isinstance(p, dict) or "port" not in p:
             sys.stderr.write(f"[trace] skipping invalid profile '{name}'\n")
             continue
@@ -139,6 +153,10 @@ def load_profiles() -> dict:
                 "upstream": str(p.get("upstream", "https://api.anthropic.com")).rstrip("/"),
                 "strip_thinking_display": bool(p.get("strip_thinking_display", False)),
                 "inject_fields": _parse_inject(json.dumps(p.get("inject_fields", {}))),
+                # When set, the proxy rewrites the upstream Authorization header to
+                # `Bearer <auth_token>` (used for e.g. Friendli, so agents don't
+                # need the real key configured). Empty = forward the agent's auth.
+                "auth_token": str(p.get("auth_token", "")),
             },
         }
     return profiles
@@ -440,6 +458,13 @@ def _save_response(profile: dict, rid: str, raw: bytes, ctype: str, path: str) -
 
 # ── Endpoint handlers (per profile, bound via closures) ─────────────────────────
 
+def _redacted_config(cfg: dict) -> dict:
+    """Config for display — never expose the raw auth token."""
+    out = dict(cfg)
+    out["auth_token"] = "[set]" if cfg.get("auth_token") else ""
+    return out
+
+
 def make_health(profile: dict):
     async def health(request: Request) -> Response:
         """Local health endpoint: answered by the proxy itself, never forwarded
@@ -449,7 +474,7 @@ def make_health(profile: dict):
             "profile": profile["name"],
             "format": profile["format"],
             "trace_dir": profile["trace_dir"],
-            **profile["config"],
+            **_redacted_config(profile["config"]),
         })
     return health
 
@@ -470,8 +495,11 @@ def make_set_config(profile: dict):
             cfg["strip_thinking_display"] = data["strip_thinking_display"] in (True, 1, "1", "true")
         if "inject_fields" in data:
             cfg["inject_fields"] = data["inject_fields"] if isinstance(data["inject_fields"], dict) else {}
-        sys.stderr.write(f"[trace:{profile['name']}] config updated: {cfg}\n")
-        return JSONResponse(cfg)
+        if "auth_token" in data:
+            cfg["auth_token"] = str(data["auth_token"])
+        sys.stderr.write(f"[trace:{profile['name']}] config updated "
+                         f"(upstream={cfg['upstream']}, auth_token={'set' if cfg['auth_token'] else 'none'})\n")
+        return JSONResponse(_redacted_config(cfg))
     return set_config
 
 
@@ -522,6 +550,14 @@ def make_handler(profile: dict):
         fwd_headers = {k: v for k, v in request.headers.items()
                        if k.lower() not in SKIP_REQUEST_HEADERS}
 
+        # Optionally override the upstream auth (e.g. Friendli): replace whatever
+        # the agent sent with our configured bearer token.
+        token = cfg.get("auth_token")
+        if token:
+            fwd_headers = {k: v for k, v in fwd_headers.items()
+                           if k.lower() not in ("authorization", "x-api-key")}
+            fwd_headers["authorization"] = f"Bearer {token}"
+
         started = time.time()
         upstream_req = CLIENT.build_request(
             request.method, f"{upstream_base}{path}{query}",
@@ -542,12 +578,15 @@ def make_handler(profile: dict):
         async def relay():
             """Yield chunks to the client as they arrive; save trace at the end."""
             chunks = []
+            ACTIVITY["inflight"] += 1
             try:
                 async for chunk in upstream.aiter_bytes():
                     chunks.append(chunk)
                     yield chunk
             finally:
                 await upstream.aclose()
+                ACTIVITY["inflight"] -= 1
+                ACTIVITY["last"] = time.time()
                 if trace:
                     _save_response(profile, rid, b"".join(chunks), ctype, path)
                     _rotate_traces(trace_dir)
@@ -573,34 +612,61 @@ def build_app(profile: dict) -> Starlette:
 
 # ── Multi-profile serving ───────────────────────────────────────────────────────
 
-async def _serve_one(profile: dict) -> None:
-    """Serve a single profile. A bind failure (e.g. port already in use) is
-    logged and swallowed so the other profiles keep serving. uvicorn raises
-    SystemExit on a failed bind, so we catch BaseException (minus cancellation)."""
-    config = uvicorn.Config(
-        build_app(profile), host="127.0.0.1", port=profile["port"],
-        log_level="warning",
-    )
-    try:
-        await uvicorn.Server(config).serve()
-    except asyncio.CancelledError:
-        raise
-    except BaseException as e:
-        sys.stderr.write(
-            f"[trace:{profile['name']}] could not serve on 127.0.0.1:{profile['port']} "
-            f"({type(e).__name__}: {e}); is the port already in use? "
-            f"This profile is disabled; others continue.\n"
-        )
+def _parse_cli_only(argv: list) -> None:
+    """Allow `trace_proxy.py --only claude,codex` in addition to CC_TRACE_ONLY."""
+    global ONLY_PROFILES
+    for i, a in enumerate(argv):
+        if a == "--only" and i + 1 < len(argv):
+            ONLY_PROFILES = [s.strip() for s in argv[i + 1].split(",") if s.strip()]
+        elif a.startswith("--only="):
+            ONLY_PROFILES = [s.strip() for s in a.split("=", 1)[1].split(",") if s.strip()]
+
+
+async def _idle_watchdog(servers: list) -> None:
+    """Exit the process once it has been idle (no traced request, nothing in
+    flight) for IDLE_TIMEOUT seconds. No-op when IDLE_TIMEOUT == 0."""
+    if IDLE_TIMEOUT <= 0:
+        return
+    ACTIVITY["last"] = time.time()
+    while True:
+        await asyncio.sleep(min(15.0, IDLE_TIMEOUT))
+        if ACTIVITY["inflight"] == 0 and (time.time() - ACTIVITY["last"]) > IDLE_TIMEOUT:
+            sys.stderr.write(f"[trace] idle for {IDLE_TIMEOUT:.0f}s; shutting down.\n")
+            for s in servers:
+                s.should_exit = True
+            return
 
 
 async def serve_all(profiles: dict) -> None:
-    await asyncio.gather(*(_serve_one(p) for p in profiles.values()))
+    servers = [
+        uvicorn.Server(uvicorn.Config(build_app(p), host="127.0.0.1",
+                                      port=p["port"], log_level="warning"))
+        for p in profiles.values()
+    ]
+
+    async def run(server, profile):
+        try:
+            await server.serve()
+        except asyncio.CancelledError:
+            raise
+        except BaseException as e:
+            sys.stderr.write(
+                f"[trace:{profile['name']}] could not serve on 127.0.0.1:{profile['port']} "
+                f"({type(e).__name__}: {e}); is the port already in use? "
+                f"This profile is disabled; others continue.\n"
+            )
+
+    tasks = [run(s, p) for s, p in zip(servers, profiles.values())]
+    tasks.append(_idle_watchdog(servers))
+    await asyncio.gather(*tasks)
 
 
 def main() -> None:
+    _parse_cli_only(sys.argv[1:])
     profiles = load_profiles()
     if not profiles:
-        sys.stderr.write("[trace] no valid profiles to serve; exiting\n")
+        sys.stderr.write(
+            f"[trace] no profiles to serve (only={ONLY_PROFILES or 'all'}); exiting\n")
         sys.exit(1)
     sys.stderr.write(f"[trace] home={CC_TRACE_HOME} profiles={PROFILES_PATH}\n")
     for p in profiles.values():
@@ -610,7 +676,7 @@ def main() -> None:
         )
     sys.stderr.write(
         f"[trace] redact={REDACT_KEYS} rotate_age={TRACE_MAX_AGE_DAYS}d "
-        f"rotate_max={TRACE_MAX_FILES}\n"
+        f"rotate_max={TRACE_MAX_FILES} idle_timeout={IDLE_TIMEOUT:.0f}s\n"
     )
     try:
         asyncio.run(serve_all(profiles))

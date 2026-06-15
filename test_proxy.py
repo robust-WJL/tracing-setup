@@ -92,6 +92,9 @@ def _chunks_for(path: str):
 
 
 async def mock_upstream(request: Request) -> Response:
+    # Echo the received Authorization header (used to test auth_token override).
+    if "echo-auth" in request.url.path:
+        return JSONResponse({"authorization": request.headers.get("authorization", "")})
     # Echo that we saw an auth header (proves headers are forwarded as-is).
     assert request.headers.get("authorization") or request.headers.get("x-api-key"), \
         "auth header was not forwarded upstream"
@@ -310,6 +313,24 @@ def main():
             cnt = len([x for x in files_in(loaded[pname]["trace_dir"])
                        if x.endswith(".request.json")])
             check(f"{pname} dir isolated (1 request)", cnt == 1, f"found {cnt}")
+
+        # ---- auth_token override (Friendli mode): proxy rewrites upstream auth ----
+        # Runs last because it sends an extra traced request to the claude dir.
+        print("\n[auth_token override]")
+        prof = loaded["claude"]; base = f"http://127.0.0.1:{prof['port']}"
+        r = httpx.post(f"{base}/cc-trace/config", json={"auth_token": "FRIENDLI_SENTINEL"})
+        check("config accepts auth_token (redacted in reply)",
+              r.status_code == 200 and r.json().get("auth_token") == "[set]")
+        h = httpx.get(f"{base}/cc-trace/health").json()
+        check("health never leaks the token", h.get("auth_token") == "[set]")
+        echo = httpx.post(f"{base}/v1/echo-auth",
+                          headers={"authorization": "Bearer agent-placeholder-key",
+                                   "content-type": "application/json"},
+                          content=json.dumps({"model": "m", "messages": []})).json()
+        check("upstream received the overridden Bearer token",
+              echo.get("authorization") == "Bearer FRIENDLI_SENTINEL",
+              f"got {echo.get('authorization')!r}")
+        httpx.post(f"{base}/cc-trace/config", json={"auth_token": ""})  # reset
 
     finally:
         cluster.stop()
