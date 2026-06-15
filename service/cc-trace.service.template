@@ -1,0 +1,19 @@
+# systemd user service template for the trace proxy (Linux).
+# setup.sh substitutes the @TOKENS@ and installs this to
+# ~/.config/systemd/user/cc-trace.service, then enables + starts it.
+# Restart=always restarts it if it ever exits.
+[Unit]
+Description=Multi-agent LLM trace proxy (cc-trace)
+After=network.target
+
+[Service]
+Type=simple
+Environment=CC_TRACE_HOME=@CC_TRACE_HOME@
+ExecStart=@PYTHON@ @PROXY@
+Restart=always
+RestartSec=2
+StandardOutput=append:@CC_TRACE_HOME@/proxy.log
+StandardError=append:@CC_TRACE_HOME@/proxy.log
+
+[Install]
+WantedBy=default.target
