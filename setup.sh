@@ -27,8 +27,8 @@ DIR_CLAUDE="$TRACE_ROOT/claude-traces"
 DIR_CODEX="$TRACE_ROOT/codex-traces"
 DIR_OPENCODE="$TRACE_ROOT/opencode-traces"
 UPSTREAM_ANTHROPIC="${CC_TRACE_UPSTREAM_ANTHROPIC:-https://api.anthropic.com}"
-# Codex: ChatGPT-subscription login can't be traced (chatgpt.com is Cloudflare-
-# bot-protected). Tracing uses an OpenAI API key against api.openai.com.
+# Codex routes through your OpenAI API key against api.openai.com (override the
+# endpoint with CC_TRACE_CODEX_API for an OpenAI-compatible gateway).
 CODEX_API="${CC_TRACE_CODEX_API:-https://api.openai.com/v1}"
 CODEX_MODEL="${CC_TRACE_CODEX_MODEL:-}"
 FRIENDLI_BASE="https://api.friendli.ai/serverless"
@@ -63,10 +63,12 @@ if [ ${#AGENTS[@]} -eq 0 ]; then
 fi
 # de-duplicate, preserving order
 AGENTS=($(printf '%s\n' "${AGENTS[@]}" | awk '!seen[$0]++'))
-chosen() { printf '%s\n' "${AGENTS[@]}" | grep -qx "$1"; }
-CC_ONLY=$(IFS=,; echo "${AGENTS[*]}")
+WIRE=("${AGENTS[@]}")   # all chosen agents are wired (AGENTS is always non-empty)
+chosen() { printf '%s\n' "${WIRE[@]}" | grep -qx "$1"; }
+CC_ONLY=$(IFS=,; echo "${WIRE[*]}")
+WIRE_LABEL="${WIRE[*]}"
 
-echo "==> Tracing: ${AGENTS[*]}   (traces -> $TRACE_ROOT)"
+echo "==> Tracing: ${WIRE_LABEL}   (traces -> $TRACE_ROOT)"
 mkdir -p "$INSTALL_DIR" "$DIR_CLAUDE" "$DIR_CODEX" "$DIR_OPENCODE"
 
 # ── Friendli (Claude upstream) ─────────────────────────────────────────────────
@@ -135,8 +137,8 @@ echo "    (restarts the proxy — any active Claude session briefly disconnects)
 if ! install_service; then
   CC_TRACE_HOME="$INSTALL_DIR" CC_TRACE_ONLY="$CC_ONLY" nohup "$PYTHON_BIN" "$PROXY" > "$INSTALL_DIR/proxy.log" 2>&1 &
 fi
-# wait for the first chosen agent's port
-case "${AGENTS[0]}" in
+# wait for the first traced agent's port
+case "${WIRE[0]}" in
   codex) FIRST_PORT=$PORT_CODEX ;; opencode) FIRST_PORT=$PORT_OPENCODE ;; *) FIRST_PORT=$PORT_CLAUDE ;;
 esac
 for _ in $(seq 1 40); do curl -s -o /dev/null --max-time 1 "http://127.0.0.1:${FIRST_PORT}/cc-trace/health" 2>/dev/null && break; sleep 0.2; done
@@ -306,13 +308,12 @@ printf '\n# >>> cc-trace >>>\nexport PATH="%s:$PATH"\n# <<< cc-trace <<<\n' "$IN
 
 # ── done ───────────────────────────────────────────────────────────────────────
 echo ""
-echo "==> Done. Tracing: ${AGENTS[*]}"
+echo "==> Done. Tracing: ${WIRE_LABEL}"
 echo "    Open a new terminal (or: source $RC), then use your agents normally."
 echo "    Traces: $TRACE_ROOT/<agent>-traces   |   Manage: fai-trace status|logs|stop"
 if chosen codex; then
-  echo "    Codex needs an OpenAI API key (ChatGPT-subscription login can't be traced —"
-  echo "    chatgpt.com is Cloudflare-protected). Set in your shell:  export OPENAI_API_KEY=sk-..."
-  echo "    and use an API-accessible model: set 'model' in ~/.codex/config.toml or CC_TRACE_CODEX_MODEL."
+  echo "    Codex: tracing enabled via your OpenAI API key (model must be API-accessible:"
+  echo "    set 'model' in ~/.codex/config.toml or CC_TRACE_CODEX_MODEL)."
 fi
 [ "$FRIENDLI" = "1" ] && echo "    Claude -> Friendli ($FRIENDLI_MODEL_ID)."
 echo "    To change which agents are traced, re-run: ./setup.sh <agents>"

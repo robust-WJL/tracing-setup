@@ -48,6 +48,9 @@ claude -p "say hi" ; ls ~/fai-traces/claude-traces
 To trace a **different** set later, re-run `./setup.sh <agents>` — agents you
 drop are reverted to normal; agents you add are wired.
 
+> **Codex** needs an `OPENAI_API_KEY` in your shell (`export OPENAI_API_KEY=sk-...`)
+> and an API-accessible model. See the Codex section.
+
 ---
 
 ## How it works
@@ -75,25 +78,17 @@ JetBrains extension are both traced. Captures `thinking` (with signature),
 `tool_use` (with reconstructed input), text, and usage. Verified: 100+ multi-turn
 calls in one session.
 
-### Codex  *(tested with 0.139 — requires an OpenAI API key)*
+### Codex  *(tested with 0.139)*
 Setup adds a traced provider and sets `model_provider` in `~/.codex/config.toml`,
 so all Codex traffic routes through the proxy to `api.openai.com` over plain HTTP
 (a custom provider, so the built-in WebSocket auth-drop bug
 [codex#15492](https://github.com/openai/codex/issues/15492) doesn't apply).
+Verified: `POST /responses` is traced multi-turn.
 
 **Prerequisites:** `export OPENAI_API_KEY=sk-...` and a model your key can access
 (set `model` in `~/.codex/config.toml`, or `CC_TRACE_CODEX_MODEL` at setup) — the
-default `gpt-5.5` is ChatGPT-only and 404s on the API.
-
-> **ChatGPT-subscription login cannot be traced** (verified empirically). In
-> ChatGPT mode, `chatgpt_base_url` only redirects **auxiliary** REST calls
-> (`/plugins/*`, `/api/codex/apps`, analytics); the actual model **`/responses`**
-> call goes to an endpoint that **no base-URL setting overrides**, so it bypasses
-> the proxy entirely (the model reply still arrives, but nothing is captured —
-> 0 `/responses` seen). The API-key path works because a **custom provider's
-> `base_url` does govern the model call**. (The Cloudflare 403 you may see is only
-> the non-essential `codex_apps` MCP feature, unrelated to tracing.) Point Codex
-> at another OpenAI-compatible gateway with `CC_TRACE_CODEX_API`.
+Codex default `gpt-5.5` may need changing to an API model. Point Codex at another
+OpenAI-compatible gateway with `CC_TRACE_CODEX_API`.
 
 ### OpenCode  *(tested with 1.17.7)*
 OpenCode talks to many providers and only reads its **global** `opencode.json`
@@ -144,10 +139,9 @@ difference is traffic goes through the local proxy first.
 - **Figma / MCP plugins** — unaffected: `ANTHROPIC_BASE_URL` doesn't touch MCP
   connections, and there's no wrapper anymore. (`ENABLE_TOOL_SEARCH=true` is set so
   a non-first-party base URL doesn't disable MCP tool search.)
-- **Codex `Missing OPENAI_API_KEY`** — `export OPENAI_API_KEY=sk-...` (Codex
-  tracing needs API-key billing; ChatGPT-subscription login can't be traced).
-- **Codex 404 / `{"detail":"Not Found"}`** — your `model` isn't API-accessible
-  (e.g. `gpt-5.5`). Set `model` in `~/.codex/config.toml` to a model your key can use.
+- **Codex `Missing OPENAI_API_KEY`** — `export OPENAI_API_KEY=sk-...` in your shell.
+- **Codex 404 / `{"detail":"Not Found"}`** — your `model` isn't API-accessible.
+  Set `model` in `~/.codex/config.toml` to a model your key can use.
 - **Login / auth** — untouched; the proxy forwards every auth header as-is. Keys
   are redacted from saved traces.
 
