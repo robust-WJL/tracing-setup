@@ -60,31 +60,6 @@ the URL, so **any provider/model is traced with no hardcoded upstream**. Claude
 uses a fixed upstream (Anthropic, or Friendli with `--friendli`). MCP plugins
 (Figma, etc.) are unaffected — only model-API calls go through the proxy.
 
-## IDE extensions & MCP plugins (Figma)
-
-The proxy works the same in IDEs as in the terminal — extensions read the same
-config files, so no extra setup beyond `./setup.sh` (just keep the proxy up; it
-auto-starts at login — check `fai-trace status`).
-
-- **Claude Code (VS Code / JetBrains):** Already traced. The extension shares
-  `~/.claude/settings.json` with the CLI, so the `ANTHROPIC_BASE_URL` setup wrote
-  applies to both. Nothing else to do.
-- **Codex (VS Code extension):** Reads the same `~/.codex/config.toml`, so it's
-  traced too — but a GUI-launched IDE may not see your shell's `OPENAI_API_KEY`.
-  Either launch the IDE from a terminal that has `export OPENAI_API_KEY=...`, or
-  set it for GUI apps once: `launchctl setenv OPENAI_API_KEY sk-...` (macOS) and
-  restart the IDE.
-- **Figma (and any MCP plugin):** Work normally with tracing on. `ANTHROPIC_BASE_URL`
-  only redirects **model-API** calls — it does **not** touch MCP server
-  connections, so the Figma MCP server connects directly as usual. Configure the
-  Figma MCP in Claude Code as you normally would; the model calls that use Figma
-  context are traced, and the plugin itself is unaffected. (Setup sets
-  `ENABLE_TOOL_SEARCH=true` so MCP tool search keeps working behind the proxy.)
-
-> This is the case the old `claude-trace` wrapper broke — it was terminal-only, so
-> it couldn't be combined with the IDE/Figma. Config-based routing fixes that:
-> plain `claude` (terminal or IDE) is traced, and MCP plugins run alongside it.
-
 ## Troubleshooting
 
 - **Agent shows `off` in `fai-trace status`** → `fai-trace restart` (re-running
