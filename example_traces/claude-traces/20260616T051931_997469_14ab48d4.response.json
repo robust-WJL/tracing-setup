@@ -1,0 +1,8 @@
+{
+  "type": "error",
+  "error": {
+    "type": "not_found_error",
+    "message": "model: claude-opus-4-8[1m]"
+  },
+  "request_id": "req_011Cc6NhRmoeo1g4nsnd3grX"
+}

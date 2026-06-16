@@ -1,0 +1,83 @@
+{
+  "id": "chatcmpl-8e56777f6fa34384a45c92f6478a76b8",
+  "object": "chat.completion.chunk",
+  "created": 1781587318,
+  "model": "zai-org/GLM-5.1",
+  "usage": {
+    "completion_tokens": 230,
+    "prompt_tokens": 23683,
+    "prompt_tokens_details": {
+      "cached_tokens": 22400
+    },
+    "total_tokens": 23913
+  },
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "reasoning_content": "NowNow let let me me check check the the CI CI workflow workflow,, the the backend backend C CMakeMakeListsLists,, the the backend backend/S/SWWPPPP directory directory,, and and some some other other important important files files..",
+        "tool_calls": [
+          {
+            "id": "call_OMFKuHbPo8MPblLGRXF1Q7wz",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/.github/workflows/ci.yml\"}"
+            }
+          },
+          {
+            "id": "call_xO1RAUj2IKL7B07Gul71LBF0",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/src/lib/backend/CMakeLists.txt\"}"
+            }
+          },
+          {
+            "id": "call_pOXuws9ggxHNRRQxia8uVnRK",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP\"}"
+            }
+          },
+          {
+            "id": "call_5Xg1QTuVdQOQGI8qEBcffFXQ",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/src/main.cpp\"}"
+            }
+          },
+          {
+            "id": "call_a1kVhBYHCxYPBAu2bIsGyzD9",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/package.json\", \"path\": \"/Users/woojin/swpp/swpp202601-team19\"}"
+            }
+          },
+          {
+            "id": "call_3LyLB2fd7H0OqXHP8pAwkgVc",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/Makefile\", \"path\": \"/Users/woojin/swpp/swpp202601-team19\"}"
+            }
+          },
+          {
+            "id": "call_p5CoC2nSycccJkx3dpTgqYZ0",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/test/run_filecheck.cmake\"}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}

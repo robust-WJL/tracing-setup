@@ -1,0 +1,8 @@
+{
+  "type": "error",
+  "error": {
+    "type": "not_found_error",
+    "message": "model: claude-sonnet-4-20250514"
+  },
+  "request_id": "req_011Cc6NiEVRtxXx6uZWAJZ1M"
+}
