@@ -23,6 +23,7 @@ or:   python3 test_proxy.py               (with httpx/starlette/uvicorn availabl
 """
 
 import asyncio
+import base64
 import json
 import os
 import sys
@@ -202,6 +203,9 @@ def main():
                      "trace_dir": os.path.join(tmp, "codex-traces"),    "format": "openai"},
         "opencode": {"port": 8803, "upstream": f"http://127.0.0.1:{MOCK_PORT}",
                      "trace_dir": os.path.join(tmp, "responses-traces"),"format": "openai"},
+        # forwarding profile: no fixed upstream, format auto-detected per request
+        "forward":  {"port": 8804, "upstream": "",
+                     "trace_dir": os.path.join(tmp, "forward-traces"),  "format": "auto"},
     }
     profiles_path = os.path.join(tmp, "profiles.json")
     with open(profiles_path, "w") as f:
@@ -256,6 +260,9 @@ def main():
             with httpx.stream("POST", f"{base}{path}",
                               headers={"authorization": "Bearer sk-secret-test-key",
                                        "x-api-key": "sk-secret-test-key",
+                                       "x-claude-code-session-id": "sess-abc",
+                                       "x-claude-code-agent-id": "agent-123",
+                                       "x-claude-code-parent-agent-id": "parent-9",
                                        "content-type": "application/json"},
                               content=json.dumps({"model": "m", "messages": [{"role": "user", "content": "hi"}]}),
                               timeout=30) as r:
@@ -307,6 +314,18 @@ def main():
                 check("api key redacted in saved request",
                       "sk-secret-test-key" not in req_saved)
 
+            # (g) request headers saved, with sub-agent ids preserved + auth redacted
+            hdr_files = [x for x in fs if x.endswith(".request.headers.json")]
+            check("request headers saved", len(hdr_files) == 1, str(fs))
+            if hdr_files:
+                hd = json.load(open(os.path.join(tdir, hdr_files[0])))
+                check("subagent headers captured (agent/session/parent)",
+                      hd.get("x-claude-code-agent-id") == "agent-123"
+                      and hd.get("x-claude-code-session-id") == "sess-abc"
+                      and hd.get("x-claude-code-parent-agent-id") == "parent-9")
+                check("auth redacted in headers file",
+                      "sk-secret-test-key" not in json.dumps(hd))
+
         # ---- cross-profile isolation: each dir has exactly one request ----
         print("\n[isolation]")
         for pname in plan:
@@ -331,6 +350,34 @@ def main():
               echo.get("authorization") == "Bearer FRIENDLI_SENTINEL",
               f"got {echo.get('authorization')!r}")
         httpx.post(f"{base}/cc-trace/config", json={"auth_token": ""})  # reset
+
+        # ---- forwarding mode: upstream encoded in the path, format auto-detected ----
+        print("\n[forwarding /__cc__/]")
+        fbase = f"http://127.0.0.1:{loaded['forward']['port']}"
+        enc = base64.urlsafe_b64encode(f"http://127.0.0.1:{MOCK_PORT}".encode()).decode().rstrip("=")
+        # OpenAI-shaped provider path
+        with httpx.stream("POST", f"{fbase}/__cc__/{enc}/v1/chat/completions",
+                          headers={"authorization": "Bearer k", "content-type": "application/json"},
+                          content=json.dumps({"model": "m", "messages": [{"role": "user", "content": "hi"}]}),
+                          timeout=30) as r:
+            body = "".join(c.decode() for c in r.iter_raw() if c)
+        # raw stream carries the deltas separately ("Hello" + " world")
+        check("forwarded OpenAI call streamed through", "Hello" in body and "world" in body)
+        # Anthropic-shaped provider path (same proxy, format auto-detected)
+        with httpx.stream("POST", f"{fbase}/__cc__/{enc}/v1/messages",
+                          headers={"authorization": "Bearer k", "content-type": "application/json"},
+                          content=json.dumps({"model": "m", "messages": [{"role": "user", "content": "hi"}]}),
+                          timeout=30) as r:
+            list(r.iter_raw())
+        time.sleep(0.4)
+        fdir = loaded["forward"]["trace_dir"]
+        fresp = sorted(x for x in files_in(fdir) if x.endswith(".response.json"))
+        check("forwarding traced 2 responses to its dir", len(fresp) == 2, str(files_in(fdir)))
+        blobs = [open(os.path.join(fdir, x)).read() for x in fresp]
+        joined = "\n".join(blobs)
+        check("openai format auto-detected (reasoning captured)", "Thinking hard" in joined)
+        check("anthropic format auto-detected (thinking captured)",
+              "Let me reason about this." in joined)
 
     finally:
         cluster.stop()

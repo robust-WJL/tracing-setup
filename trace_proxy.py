@@ -32,6 +32,7 @@ even if a format is unrecognized.
 """
 
 import asyncio
+import base64
 import json
 import os
 import re
@@ -163,6 +164,40 @@ def load_profiles() -> dict:
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
+# ── Transparent forwarding ──────────────────────────────────────────────────────
+# A profile with format "auto" (or any profile) can receive requests whose path
+# begins with /__cc__/<base64url(real_api_base)>/<rest>. The proxy decodes the
+# real upstream from the path and forwards there. This lets a single proxy port
+# trace an agent that talks to MANY providers (e.g. OpenCode) without pinning any
+# one upstream — each provider's baseURL just encodes its own real endpoint.
+FORWARD_PREFIX = "/__cc__/"
+
+
+def _b64url_decode(s: str) -> str:
+    return base64.urlsafe_b64decode(s + "=" * (-len(s) % 4)).decode("utf-8")
+
+
+def _detect_format(path: str) -> str:
+    """Pick a wire format from the request path (used when profile format=auto)."""
+    return "anthropic" if "/messages" in path else "openai"
+
+
+def _resolve_target(path: str, default_upstream: str, default_fmt: str):
+    """Return (upstream_base, real_path, wire_format) for a request path,
+    honoring the /__cc__/<b64> forwarding prefix when present."""
+    if path.startswith(FORWARD_PREFIX):
+        seg, _, tail = path[len(FORWARD_PREFIX):].partition("/")
+        try:
+            base = _b64url_decode(seg).rstrip("/")
+            real = "/" + tail
+            fmt = default_fmt if default_fmt != "auto" else _detect_format(real)
+            return base, real, fmt
+        except Exception:
+            sys.stderr.write(f"[trace] bad forward prefix in {path}; using profile upstream\n")
+    fmt = default_fmt if default_fmt != "auto" else _detect_format(path)
+    return default_upstream, path, fmt
+
 
 def _ts() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%f")
@@ -435,10 +470,8 @@ def _reconstruct(fmt: str, path: str, raw_text: str):
     return _parse_anthropic_sse(raw_text)
 
 
-def _save_response(profile: dict, rid: str, raw: bytes, ctype: str, path: str) -> None:
+def _save_response(trace_dir: str, fmt: str, rid: str, raw: bytes, ctype: str, path: str) -> None:
     """Write the captured response to disk (reconstructing SSE if streamed)."""
-    trace_dir = profile["trace_dir"]
-    fmt = profile["format"]
     if "text/event-stream" in ctype:
         text = raw.decode("utf-8", errors="replace")
         rebuilt = _reconstruct(fmt, path, text)
@@ -530,10 +563,20 @@ def make_handler(profile: dict):
                        json.dumps(_maybe_redact(req_json), ensure_ascii=False, indent=2))
             else:
                 _write(os.path.join(trace_dir, f"{rid}.request.raw"), body)
+            # Save request headers too (auth values redacted). These carry the
+            # session / sub-agent identifiers that are NOT in the payload, e.g.
+            # X-Claude-Code-Session-Id / -Agent-Id / -Parent-Agent-Id, so a
+            # sub-agent can be distinguished within a single session.
+            hdrs = {k: v for k, v in request.headers.items()}
+            _write(os.path.join(trace_dir, f"{rid}.request.headers.json"),
+                   json.dumps(_maybe_redact(hdrs), ensure_ascii=False, indent=2))
+
+        # --- resolve upstream (honoring the /__cc__/ forwarding prefix) ---
+        cfg = profile["config"]
+        upstream_base, real_path, fwd_fmt = _resolve_target(
+            path, cfg["upstream"], profile["format"])
 
         # --- optionally rewrite the FORWARDED body (live config) ---
-        cfg = profile["config"]
-        upstream_base = cfg["upstream"]
         inject = cfg["inject_fields"]
         fwd_body = body
         if isinstance(req_json, dict):
@@ -560,7 +603,7 @@ def make_handler(profile: dict):
 
         started = time.time()
         upstream_req = CLIENT.build_request(
-            request.method, f"{upstream_base}{path}{query}",
+            request.method, f"{upstream_base}{real_path}{query}",
             headers=fwd_headers, content=fwd_body,
         )
         try:
@@ -588,10 +631,10 @@ def make_handler(profile: dict):
                 ACTIVITY["inflight"] -= 1
                 ACTIVITY["last"] = time.time()
                 if trace:
-                    _save_response(profile, rid, b"".join(chunks), ctype, path)
+                    _save_response(trace_dir, fwd_fmt, rid, b"".join(chunks), ctype, real_path)
                     _rotate_traces(trace_dir)
                 sys.stderr.write(
-                    f"[trace:{name}] {request.method} {path} -> {status} "
+                    f"[trace:{name}] {request.method} {real_path} -> {status} "
                     f"({(time.time()-started)*1000:.0f}ms)"
                     + (f" saved {rid}\n" if trace else "\n")
                 )

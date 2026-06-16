@@ -1,38 +1,26 @@
 # Multi-Agent LLM Trace Capture
 
 Capture the **full request + response** — including extended-thinking / reasoning
-content — of your coding agents, automatically, into per-agent folders on disk.
+and the request **headers** (session / sub-agent ids) — of your coding agents,
+into per-agent folders on disk.
 
-Works with **Claude Code**, **Codex**, and **OpenCode**. A small local
-pass-through proxy sits between the agent and the model API: it streams every
-response back untouched (no latency hit) and writes a copy to disk on the way
-through.
+You **choose which agents to trace** when you run `setup.sh`. Only those are
+wired and kept traced by a single always-on local proxy; the rest are left
+normal. To change the selection, just re-run `setup.sh`. There are **no shell
+wrappers, profiles, or per-launch flags** — each agent is routed purely by its
+own persistent config.
 
 ```
-agent  ──►  127.0.0.1:<port>  ──►  upstream API (Anthropic / OpenAI / Friendli / …)
-(traced)        trace_proxy            (response streamed back byte-for-byte)
-                   │
-                   └─► writes  <ts>_<id>.request.json / .response.json / .response.sse
+agent ──► 127.0.0.1:<port> ──► the provider you actually use ──► response streamed back byte-for-byte
+(traced)     trace_proxy          (upstream encoded per-request; nothing hardcoded)
+                 └─► writes  <ts>_<id>.request.json / .request.headers.json / .response.json / .response.sse
 ```
 
-| Agent        | Port   | Traces land in                 | Wire format           | Proxy runs… |
-|--------------|--------|--------------------------------|-----------------------|-------------|
-| Claude Code  | `8788` | `~/fai-traces/claude-traces`   | Anthropic Messages    | always-on   |
-| Codex        | `8789` | `~/fai-traces/codex-traces`    | OpenAI Chat/Responses | on-demand   |
-| OpenCode     | `8790` | `~/fai-traces/opencode-traces` | Anthropic Messages    | on-demand   |
-
-### Why Claude is always-on but Codex/OpenCode are on-demand
-
-Claude Code **hard-fails with no retry** if its API base URL is unreachable, and
-it reads that base URL from `settings.json` for both the terminal *and* the IDE
-extension. So its proxy must always be up — it runs as a tiny background service
-(one idle async process, ~0% CPU).
-
-Codex and OpenCode are routed **per-launch** by their wrappers, which start the
-proxy on demand and let it **self-stop after 30 min idle**. Launching them
-*without* the wrapper just runs them normally (untraced) — so a stopped proxy
-never breaks them. Net effect: nothing runs unless you actually use it, and only
-the always-critical Claude proxy stays resident.
+| Agent       | Port   | Traces in                      | How it's routed |
+|-------------|--------|--------------------------------|-----------------|
+| Claude Code | `8788` | `~/fai-traces/claude-traces`   | `ANTHROPIC_BASE_URL` in `~/.claude/settings.json` |
+| Codex       | `8789` | `~/fai-traces/codex-traces`    | `model_provider` → traced provider in `~/.codex/config.toml` (OpenAI API key) |
+| OpenCode    | `8790` | `~/fai-traces/opencode-traces` | per-provider `baseURL` in `~/.config/opencode/opencode.json` |
 
 ---
 
@@ -40,373 +28,183 @@ the always-critical Claude proxy stays resident.
 
 ```bash
 cd tracing-setup
-./setup.sh
-# then open a new terminal (or: source ~/.zshrc)
+./setup.sh                  # interactive — pick agents
+# or non-interactive:
+./setup.sh claude codex opencode      # trace these
+./setup.sh all                        # all three
+./setup.sh claude --friendli          # route Claude through the Friendli Model API
 ```
 
-> Installing restarts the Claude proxy, so any **active** Claude session
-> (terminal or IDE) will briefly disconnect. Run `setup.sh` when nothing is
-> mid-task.
+> Installing restarts the proxy, so any **active** Claude session (terminal or
+> IDE) briefly disconnects. Run it when nothing is mid-task.
 
-Use your agents exactly as before — `claude`, `codex`, `opencode`. Verify:
+Then use `claude` / `codex` / `opencode` normally — no special command. Verify:
 
 ```bash
-fai-trace status        # which proxy ports are up
-claude -p "say hi"      # then look in ~/fai-traces/claude-traces
+fai-trace status
+claude -p "say hi" ; ls ~/fai-traces/claude-traces
 ```
 
-### Options
-
-```bash
-./setup.sh --friendli           # route every agent through the Friendli Model API (see below)
-./setup.sh --codex --opencode   # force-wire both even if not auto-detected
-./setup.sh --skip-codex         # leave Codex's config untouched
-./setup.sh --no-service         # terminal-only Claude (IDE NOT traced, no daemon)
-./setup.sh --service-all        # always-on service serves ALL three (heavy IDE users)
-```
-
-Re-running is safe and idempotent — every config file is backed up to
-`<file>.pre-cc-trace.bak`, existing keys are preserved, the shell snippet is
-replaced in place (never duplicated), and any base URL a previous version
-injected is migrated to the current scheme.
-
-Codex needs an API key: `export OPENAI_API_KEY=sk-...` (see the Codex section).
+To trace a **different** set later, re-run `./setup.sh <agents>` — agents you
+drop are reverted to normal; agents you add are wired.
 
 ---
 
-## What gets installed / changed
+## How it works
 
-Everything lives under `~/.cc-trace/` (override with `CC_TRACE_HOME`):
+- **One always-on proxy** serves exactly the agents you chose (launchd on macOS,
+  systemd-user on Linux). One idle async process per agent (~0% CPU). It must be
+  up because the agents' configs point at it — so it's a service, not on-demand.
+- **No pinned upstream.** Codex and OpenCode talk to whatever provider/model you
+  pick. Their base URL is rewritten to
+  `http://127.0.0.1:<port>/__cc__/<base64 of the provider's real API>`; the proxy
+  decodes the real upstream per request and forwards there. Wire format is
+  auto-detected (`/messages`→Anthropic, `/chat/completions` or `/responses`→OpenAI).
+  Claude is single-provider, so it uses a fixed upstream (Anthropic, or Friendli
+  with `--friendli`).
+- **Headers are saved** (`*.request.headers.json`, auth redacted) — they carry the
+  session / sub-agent ids that aren't in the payload.
 
+---
+
+## Per-agent notes
+
+### Claude Code
+Routed via `~/.claude/settings.json`, so the terminal **and** the VSCode /
+JetBrains extension are both traced. Captures `thinking` (with signature),
+`tool_use` (with reconstructed input), text, and usage. Verified: 100+ multi-turn
+calls in one session.
+
+### Codex  *(tested with 0.139 — requires an OpenAI API key)*
+Setup adds a traced provider and sets `model_provider` in `~/.codex/config.toml`,
+so all Codex traffic routes through the proxy to `api.openai.com` over plain HTTP
+(a custom provider, so the built-in WebSocket auth-drop bug
+[codex#15492](https://github.com/openai/codex/issues/15492) doesn't apply).
+
+**Prerequisites:** `export OPENAI_API_KEY=sk-...` and a model your key can access
+(set `model` in `~/.codex/config.toml`, or `CC_TRACE_CODEX_MODEL` at setup) — the
+default `gpt-5.5` is ChatGPT-only and 404s on the API.
+
+> **ChatGPT-subscription login cannot be traced** (verified empirically). In
+> ChatGPT mode, `chatgpt_base_url` only redirects **auxiliary** REST calls
+> (`/plugins/*`, `/api/codex/apps`, analytics); the actual model **`/responses`**
+> call goes to an endpoint that **no base-URL setting overrides**, so it bypasses
+> the proxy entirely (the model reply still arrives, but nothing is captured —
+> 0 `/responses` seen). The API-key path works because a **custom provider's
+> `base_url` does govern the model call**. (The Cloudflare 403 you may see is only
+> the non-essential `codex_apps` MCP feature, unrelated to tracing.) Point Codex
+> at another OpenAI-compatible gateway with `CC_TRACE_CODEX_API`.
+
+### OpenCode  *(tested with 1.17.7)*
+OpenCode talks to many providers and only reads its **global** `opencode.json`
+(the `OPENCODE_CONFIG` env var is **not** honored in this version). Setup merges a
+forwarding `baseURL` into **each provider you use** (from your OpenCode auth +
+`models.dev`), so every provider/model is traced to its real endpoint — verified
+with Friendli (`zai-org/GLM-5.1`), correct model in the trace, multi-turn.
+
+> Earlier "everything logged as `claude-sonnet`" was the proxy seeing only
+> OpenCode's Anthropic **title-generation** sub-agent while the real chat used a
+> different provider. Forwarding every provider fixes it.
+
+---
+
+## Friendli Model API
+
+```bash
+./setup.sh claude --friendli      # prompts for key + model (or FRIENDLI_API_KEY / FRIENDLI_MODEL)
 ```
-~/.cc-trace/
-  trace_proxy.py        the proxy
-  venv/                 its Python deps (httpx, starlette, uvicorn)
-  profiles.json         port → upstream → trace-dir → format, per agent
-  claude.upstream       real upstream, for the --tracing=none bypass
-  opencode-trace.json   layered OpenCode config the wrapper applies
-  proxy.log             always-on Claude proxy log
-  codex.log/opencode.log on-demand proxy logs
-  fai-trace             management command
-  fai-trace-up          on-demand launcher used by the wrappers
-  friendli.key          Friendli key (only in --friendli mode; chmod 600)
-```
 
-Config files modified (each backed up first):
-
-- `~/.claude/settings.json` — `env.ANTHROPIC_BASE_URL`, `env.ENABLE_TOOL_SEARCH`,
-  `showThinkingSummaries: true`. (`--no-service` removes the base URL instead.)
-- `~/.codex/config.toml` — adds a `[model_providers.fai-trace]` + `[profiles.fai-trace]`
-  (only if Codex is wired). Your default `codex` is untouched.
-- OpenCode: your `opencode.json` is **not** modified (a layered trace config is
-  applied per-launch via `OPENCODE_CONFIG`).
-- Shell rc (`~/.zshrc` / `~/.bashrc`) — a `# >>> cc-trace >>>` block adding
-  `~/.cc-trace` to `PATH` and defining `claude` / `codex` / `opencode` wrappers.
-
-Background service (Claude only, unless `--service-all`):
-
-- **macOS** — `~/Library/LaunchAgents/ai.friendli.cc-trace.plist` (launchd).
-- **Linux** — `~/.config/systemd/user/cc-trace.service` (systemd user).
+Points Claude's upstream at `https://api.friendli.ai/serverless` (Anthropic-Messages
+compatible) and sets `ANTHROPIC_AUTH_TOKEN` + `model`. OpenCode's Friendli provider
+is already traced automatically if you have it configured (it's forwarded to
+`https://api.friendli.ai/serverless/v1`). Based on the official guides
+([Claude Code](https://friendli.ai/docs/integrate/agents/claude-code),
+[OpenCode](https://friendli.ai/docs/integrate/agents/opencode)) — the only
+difference is traffic goes through the local proxy first.
 
 ---
 
 ## Turning tracing off
 
-Per launch (works for all three agents):
-
-```bash
-claude --tracing=none      # this run talks to the real upstream directly
-codex  --tracing=none      # runs your normal, untraced codex
-opencode --tracing=none
-CC_TRACE=off claude        # env form, same effect
-```
-
-Globally:
-
-```bash
-fai-trace stop             # stop every proxy (Claude included)
-# or remove the service entirely:
-launchctl bootout gui/$(id -u)/ai.friendli.cc-trace     # macOS
-systemctl --user disable --now cc-trace.service         # Linux
-```
+- **One agent:** re-run `./setup.sh` without it (its config is reverted).
+- **Everything:** `fai-trace stop` (stops the service), or `./setup.sh` and pick none.
+- Uninstall: `fai-trace stop`; restore configs from the `*.pre-cc-trace.bak`
+  backups; remove the `# >>> cc-trace >>>` line from your shell rc; delete `~/.cc-trace`.
 
 ---
 
-## Using with the Friendli Model API
+## Troubleshooting
 
-Many people run these agents against the **Friendli Model API**. One command
-points all three at Friendli and traces them:
-
-```bash
-./setup.sh --friendli
-# prompts for your Friendli API key + model id (e.g. zai-org/GLM-5.1),
-# or read them from the env non-interactively:
-FRIENDLI_API_KEY=flp_... FRIENDLI_MODEL=zai-org/GLM-5.1 ./setup.sh --friendli --codex --opencode
-```
-
-What it does:
-
-- Sets every profile's `upstream` to `https://api.friendli.ai/serverless`
-  (Friendli's endpoint is Anthropic-Messages-compatible for Claude/OpenCode and
-  OpenAI-compatible for Codex).
-- Stores your key once and has the **proxy inject it** as the upstream
-  `Authorization` header — so you don't configure a Friendli key inside each
-  agent. (The key is never written into saved traces.)
-- Sets the chosen model: Claude `model`, Codex `[profiles.fai-trace] model`,
-  OpenCode `model` (`anthropic/<id>`).
-
-Then just use `claude` / `codex` / `opencode` as usual; traces land in
-`~/fai-traces/...` as always. To switch the model later, edit each agent's config
-(or re-run `./setup.sh --friendli`). To change only the upstream/key live without
-a re-run:
-
-```bash
-curl -X POST 127.0.0.1:8788/cc-trace/config \
-  -H 'content-type: application/json' \
-  -d '{"upstream":"https://api.friendli.ai/serverless","auth_token":"flp_..."}'
-```
-
-Notes:
-- This is built on the official integration guides
-  ([Claude Code](https://friendli.ai/docs/integrate/agents/claude-code),
-  [OpenCode](https://friendli.ai/docs/integrate/agents/opencode)); the difference
-  is that traffic goes through the local proxy first so it's captured.
-- Codex: if your Friendli model rejects Chat Completions, set `wire_api = "responses"`
-  in `~/.codex/config.toml`.
-- To go back to direct providers, re-run `./setup.sh` without `--friendli`.
-
----
-
-## Per-agent details
-
-### Claude Code
-
-Routed via `~/.claude/settings.json`, so the terminal **and** the VSCode /
-JetBrains extension are both traced (they share that file). Confirmed to capture
-`thinking` blocks (with signature), `tool_use` blocks (with reconstructed input),
-text, and usage.
-
-```bash
-claude -p "say hi"
-ls ~/fai-traces/claude-traces
-```
-
-### Codex
-
-Codex's built-in `openai` provider, pointed at a custom base URL, tries a
-**WebSocket first and drops the auth header when it falls back to HTTP** → 401s
-([codex#15492](https://github.com/openai/codex/issues/15492)). To avoid that, we
-add a **custom provider that uses plain HTTP**, opted into via a profile:
-
-```toml
-[model_providers.fai-trace]
-name = "FAI Trace (proxy)"
-base_url = "http://127.0.0.1:8789/v1"
-env_key = "OPENAI_API_KEY"
-wire_api = "chat"          # switch to "responses" if your model requires it
-[profiles.fai-trace]
-model_provider = "fai-trace"
-```
-
-The `codex` wrapper runs `codex --profile fai-trace`. Requirements:
-
-- **API key:** `export OPENAI_API_KEY=sk-...` (a key with Chat/Responses access).
-  Codex silently prefers `OPENAI_API_KEY` over ChatGPT login, so this is what the
-  traced provider uses.
-- **ChatGPT-subscription login is not traceable** this way — it talks to ChatGPT's
-  backend, not `api.openai.com`. Use an API key for traced Codex.
-- If your model rejects Chat Completions, change `wire_api` to `"responses"` in
-  `~/.codex/config.toml` (the proxy decodes both).
-- Friendli/other gateway: set that profile's `upstream` in `profiles.json` and
-  `fai-trace restart`.
-
-Verify: `codex` (via wrapper) on a small task, then check `~/fai-traces/codex-traces`.
-
-### OpenCode
-
-OpenCode's Anthropic provider (Vercel AI SDK) appends `/messages` to `baseURL`,
-so the base URL **must end in `/v1`** or you get `POST /messages → 404`
-([opencode#5163](https://github.com/anomalyco/opencode/issues/5163)). The wrapper
-applies a layered config (`OPENCODE_CONFIG`) with `baseURL: http://127.0.0.1:8790/v1`
-— your own `opencode.json` is left alone.
-
-> If OpenCode returns 401 "no API key" with a custom baseURL, that's a known
-> OpenCode bug with `@ai-sdk/anthropic`
-> ([opencode#21737](https://github.com/anomalyco/opencode/issues/21737)). Tracing
-> itself is unaffected — the proxy forwards whatever auth the agent sends.
-
-Verify: `opencode` (via wrapper), then check `~/fai-traces/opencode-traces`.
-
----
-
-## Other agents (manual, partial)
-
-### Cursor — chat/plan panel only
-
-Cursor's custom base URL is honored **only by its chat/plan panel**; Composer,
-inline edit/apply, and Tab stay on Cursor's backend and **cannot be traced**.
-
-1. Add a `cursor` profile to `~/.cc-trace/profiles.json`
-   (`{ "port": 8791, "upstream": "https://api.openai.com", "trace_dir": "~/fai-traces/cursor-traces", "format": "openai" }`)
-   and run it: `~/.cc-trace/venv/bin/python ~/.cc-trace/trace_proxy.py --only cursor &`
-2. Cursor → Settings → Models → **Override OpenAI Base URL** → `http://127.0.0.1:8791/v1`
-   (include `/v1`), set an OpenAI key, verify.
-
-### GitHub Copilot — not supported
-
-Copilot has **no supported custom endpoint**; intercepting it requires a
-system-wide HTTPS MITM with a trusted CA cert, and bulk traffic through that can
-trip GitHub's abuse-detection and suspend your access. We deliberately don't wire
-it up — use a supported agent for traced completions.
-
----
-
-## Edge cases & troubleshooting
-
-### Figma (and other MCP plugins) "don't work with tracing"
-
-**Fixed.** The old approach required launching `claude-trace` instead of `claude`;
-the IDE extension calls the real `claude` binary, so the wrapper never applied
-there and people couldn't have Figma/MCP in the IDE *and* tracing. Now tracing is
-configured in `settings.json`, which the terminal and IDE both read — plain
-`claude` is always traced, no conflicting wrapper.
-
-Also, **`ANTHROPIC_BASE_URL` does not affect MCP connections** — MCP servers
-(Figma, GitHub, …) connect independently, so the proxy never touches them. (Setup
-sets `ENABLE_TOOL_SEARCH=true` because a non-first-party base URL otherwise
-disables MCP tool search.) If an MCP plugin still misbehaves, it's unrelated to
-tracing — confirm with `claude --tracing=none`.
-
-### A Claude session disconnected for a second
-
-Restarting the Claude proxy (`fai-trace restart`, re-running `setup.sh`, or anything
-that bounces the service) briefly drops port 8788, and Claude Code has no
-connection retry — so an in-flight request can fail. Restart the proxy only when
-no Claude session is mid-task. (This is also why `setup.sh` warns before
-installing.)
-
-### VSCode / JetBrains extension
-
-Covered automatically (shares `settings.json`) **as long as the Claude service is
-running** — which it is by default. With `--no-service`, the IDE is not traced
-(only the terminal wrapper is). Use `--service-all` if you also want Codex/OpenCode
-traced inside IDEs.
-
-### Login / authentication
-
-Auth is untouched: the proxy forwards every header (OAuth token, `x-api-key`,
-`Authorization`) as-is. API keys are **redacted from the saved trace files** (not
-from the live request), so traces are safe to share.
-
-### `fai-trace status` shows a port down / agent can't connect
-
-```bash
-fai-trace status        # claude should be UP; codex/opencode "down" is normal until used
-fai-trace logs [agent]  # tail the log; look for "could not serve … port in use"
-fai-trace restart       # restart Claude service + clear on-demand proxies
-```
-
-A port already in use only disables that one profile — the others keep serving.
-To change a port, edit `~/.cc-trace/profiles.json` (and the matching base URL in
-the agent's config), then `fai-trace restart`.
-
-### Reasoning / thinking isn't in the trace
-
-`showThinkingSummaries: true` (set by setup) makes Claude return summarized
-reasoning. Trivial prompts may legitimately produce none. The raw `.response.sse`
-always holds the exact stream as ground truth.
-
-### Using Friendli or another upstream
-
-Each profile has its own `upstream` in `profiles.json`. Change it live without a
-restart:
-
-```bash
-curl -X POST 127.0.0.1:8788/cc-trace/config \
-  -H 'content-type: application/json' \
-  -d '{"upstream":"https://api.friendli.ai/serverless"}'
-```
-
-For providers that reject `thinking.display`, add `"strip_thinking_display": true`
-to that profile. `inject_fields` merges extra JSON into every model call. See
-`claude_friendli_setup.sh` for switching Claude's account to Friendli.
-
-### Uninstall
-
-```bash
-fai-trace stop
-launchctl bootout gui/$(id -u)/ai.friendli.cc-trace 2>/dev/null   # macOS
-systemctl --user disable --now cc-trace.service 2>/dev/null       # Linux
-# restore configs from the .pre-cc-trace.bak backups, remove the
-# "# >>> cc-trace >>>" block from your shell rc, and delete ~/.cc-trace
-```
+- **`fai-trace status` shows an agent `off` / agent can't connect** — the service
+  may not have started, or an old proxy held the port. `setup.sh` kills stale
+  proxies on every run, so re-running it fixes a stuck state. Check `fai-trace logs`.
+- **A Claude session blipped** — restarting the proxy (`fai-trace restart`,
+  re-running setup) briefly drops the port and Claude Code has no retry. Do it
+  when no session is mid-task.
+- **Figma / MCP plugins** — unaffected: `ANTHROPIC_BASE_URL` doesn't touch MCP
+  connections, and there's no wrapper anymore. (`ENABLE_TOOL_SEARCH=true` is set so
+  a non-first-party base URL doesn't disable MCP tool search.)
+- **Codex `Missing OPENAI_API_KEY`** — `export OPENAI_API_KEY=sk-...` (Codex
+  tracing needs API-key billing; ChatGPT-subscription login can't be traced).
+- **Codex 404 / `{"detail":"Not Found"}`** — your `model` isn't API-accessible
+  (e.g. `gpt-5.5`). Set `model` in `~/.codex/config.toml` to a model your key can use.
+- **Login / auth** — untouched; the proxy forwards every auth header as-is. Keys
+  are redacted from saved traces.
 
 ---
 
 ## Reference
 
-### `fai-trace` command
+### `fai-trace`
+```
+fai-trace status     # UP/off per agent port
+fai-trace logs [N]   # tail the proxy log
+fai-trace restart    # restart the service
+fai-trace stop       # stop everything
+fai-trace dirs       # print trace directories
+```
 
-```
-fai-trace status         # UP/down per profile port
-fai-trace logs [agent]   # tail -f a proxy log (default: claude/proxy.log)
-fai-trace restart        # restart Claude service; clear on-demand proxies
-fai-trace stop           # stop everything
-fai-trace dirs           # print the trace directories
-```
+### Files
+- `~/.cc-trace/` — `trace_proxy.py`, `venv/`, `profiles.json`, `proxy.log`, `fai-trace`.
+- Agent configs (each backed up to `*.pre-cc-trace.bak`): `~/.claude/settings.json`,
+  `~/.codex/config.toml`, `~/.config/opencode/opencode.json`.
+
+### Trace file layout — per call `<timestamp>_<id>`
+- `.request.json` — request body (API keys redacted)
+- `.request.headers.json` — request headers (auth redacted): `X-Claude-Code-Session-Id`
+  / `-Agent-Id` / `-Parent-Agent-Id`, Codex `x-codex-turn-metadata` / `session-id`,
+  OpenCode `x-session-id`
+- `.response.json` — reconstructed response (text + reasoning/thinking, tool calls, usage)
+- `.response.sse` — raw stream, ground truth
 
 ### `profiles.json`
-
 ```json
 {
   "claude":   { "port": 8788, "upstream": "https://api.anthropic.com", "trace_dir": "~/fai-traces/claude-traces",   "format": "anthropic" },
-  "codex":    { "port": 8789, "upstream": "https://api.openai.com",     "trace_dir": "~/fai-traces/codex-traces",    "format": "openai" },
-  "opencode": { "port": 8790, "upstream": "https://api.anthropic.com", "trace_dir": "~/fai-traces/opencode-traces", "format": "anthropic" }
+  "codex":    { "port": 8789, "upstream": "",                          "trace_dir": "~/fai-traces/codex-traces",    "format": "auto" },
+  "opencode": { "port": 8790, "upstream": "",                          "trace_dir": "~/fai-traces/opencode-traces", "format": "auto" }
 }
 ```
-
-Per-profile optional keys: `strip_thinking_display` (bool), `inject_fields`
-(object), `auth_token` (string — when set, the proxy rewrites the upstream
-`Authorization` header to `Bearer <auth_token>`, used by `--friendli` mode).
-
-### Proxy endpoints (per port)
-
-- `GET  /cc-trace/health` — status + live config (not traced)
-- `POST /cc-trace/config` — update `upstream` / `strip_thinking_display` /
-  `inject_fields` at runtime, no restart
-- everything else — forwarded to the upstream and traced
+`format: "auto"` + empty `upstream` = forwarding mode (upstream from the `/__cc__/`
+path). The service serves only the agents you selected (`CC_TRACE_ONLY`).
 
 ### Environment variables
-
 | Variable | Default | Meaning |
 |----------|---------|---------|
 | `CC_TRACE_HOME` | `~/.cc-trace` | install dir |
-| `CC_TRACE_ROOT` | `~/fai-traces` | parent of the per-agent trace dirs (setup time) |
-| `CC_TRACE_PROFILES` | `$CC_TRACE_HOME/profiles.json` | profiles file |
-| `CC_TRACE_ONLY` | (all) | comma-separated profiles to serve (also `--only` CLI) |
-| `CC_TRACE_IDLE_TIMEOUT` | `0` proxy / `1800` on-demand | seconds idle before self-stop (0 = never) |
+| `CC_TRACE_ROOT` | `~/fai-traces` | trace-dir parent |
+| `CC_TRACE_ONLY` | (chosen agents) | comma-separated profiles the proxy serves |
 | `CC_TRACE_REDACT` | `1` | redact API keys in saved traces |
-| `CC_TRACE_MAX_AGE_DAYS` / `CC_TRACE_MAX_FILES` | `0` (off) | trace rotation |
-| `CC_TRACE_NO_LAUNCHCTL` | `0` | skip all launchctl/systemctl calls (testing safety) |
-| `CC_TRACE_PORT_CLAUDE` / `_CODEX` / `_OPENCODE` | 8788/8789/8790 | ports (setup time) |
-
-### Trace file layout
-
-Per model call `<timestamp>_<id>`:
-
-- `.request.json` — full request (API keys redacted)
-- `.response.json` — reconstructed response (text + reasoning/thinking, tool calls, usage)
-- `.response.sse` — raw server-sent-events stream, ground truth
+| `CC_TRACE_NO_LAUNCHCTL` | `0` | skip launchctl/systemctl + stale-proxy kill (testing) |
+| `CC_TRACE_CODEX_API` | `https://api.openai.com/v1` | Codex upstream (OpenAI-compatible) |
+| `CC_TRACE_CODEX_MODEL` | (unset) | Codex model id (must be API-accessible) |
+| `CC_TRACE_PORT_CLAUDE` / `_CODEX` / `_OPENCODE` | 8788/8789/8790 | ports |
 
 ### Tests
-
 ```bash
-cd tracing-setup
 ~/.cc-trace/venv/bin/python test_proxy.py    # or: python3 test_proxy.py
 ```
-
-Starts a mock upstream emitting all three wire formats and asserts byte-identical
-streaming, incremental (non-buffered) delivery, reconstruction with reasoning,
-per-agent directory isolation, redaction, and the health/config endpoints — no
-real API keys required. Uses isolated ports (8801–8803), so it won't disturb a
-live install.
+Mock upstream + all wire formats: byte-identical streaming, incremental delivery,
+reconstruction with reasoning, forwarding (both formats), per-agent isolation,
+redaction, header/sub-agent capture, health/config. Isolated ports — won't disturb
+a live install.
