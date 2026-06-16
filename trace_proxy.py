@@ -470,6 +470,14 @@ def _reconstruct(fmt: str, path: str, raw_text: str):
     return _parse_anthropic_sse(raw_text)
 
 
+def _save_meta(trace_dir: str, rid: str, meta: dict) -> None:
+    """Write per-request metadata not present in the body: HTTP status, latency
+    (ttft_ms / duration_ms), and the response headers (provider request-id,
+    rate-limit/quota, retry-after, server timing). Auth values are redacted."""
+    _write(os.path.join(trace_dir, f"{rid}.meta.json"),
+           json.dumps(meta, ensure_ascii=False, indent=2))
+
+
 def _save_response(trace_dir: str, fmt: str, rid: str, raw: bytes, ctype: str, path: str) -> None:
     """Write the captured response to disk (reconstructing SSE if streamed)."""
     if "text/event-stream" in ctype:
@@ -601,7 +609,9 @@ def make_handler(profile: dict):
                            if k.lower() not in ("authorization", "x-api-key")}
             fwd_headers["authorization"] = f"Bearer {token}"
 
+        model = req_json.get("model") if isinstance(req_json, dict) else None
         started = time.time()
+        started_iso = datetime.now(timezone.utc).isoformat()
         upstream_req = CLIENT.build_request(
             request.method, f"{upstream_base}{real_path}{query}",
             headers=fwd_headers, content=fwd_body,
@@ -610,32 +620,51 @@ def make_handler(profile: dict):
             upstream = await CLIENT.send(upstream_req, stream=True)
         except httpx.HTTPError as e:
             sys.stderr.write(f"[trace:{name}] upstream error for {path}: {e}\n")
+            if trace:
+                _save_meta(trace_dir, rid, {
+                    "status": 502, "error": str(e), "method": request.method,
+                    "path": real_path, "model": model, "started_at": started_iso,
+                    "duration_ms": round((time.time() - started) * 1000, 1),
+                })
             return JSONResponse(
                 {"error": f"trace proxy: upstream unreachable ({e})"}, status_code=502)
 
         ctype = upstream.headers.get("content-type", "")
         status = upstream.status_code
+        upstream_headers = dict(upstream.headers)
         out_headers = {k: v for k, v in upstream.headers.items()
                        if k.lower() not in SKIP_RESPONSE_HEADERS}
 
         async def relay():
             """Yield chunks to the client as they arrive; save trace at the end."""
             chunks = []
+            ttft = None
             ACTIVITY["inflight"] += 1
             try:
                 async for chunk in upstream.aiter_bytes():
+                    if ttft is None:
+                        ttft = time.time() - started   # time to first byte
                     chunks.append(chunk)
                     yield chunk
             finally:
                 await upstream.aclose()
                 ACTIVITY["inflight"] -= 1
                 ACTIVITY["last"] = time.time()
+                duration = time.time() - started
                 if trace:
                     _save_response(trace_dir, fwd_fmt, rid, b"".join(chunks), ctype, real_path)
+                    # status code + latency/TTFT + response headers (not in the body)
+                    _save_meta(trace_dir, rid, {
+                        "status": status, "method": request.method, "path": real_path,
+                        "model": model, "started_at": started_iso,
+                        "ttft_ms": round(ttft * 1000, 1) if ttft is not None else None,
+                        "duration_ms": round(duration * 1000, 1),
+                        "response_headers": _maybe_redact(upstream_headers),
+                    })
                     _rotate_traces(trace_dir)
                 sys.stderr.write(
                     f"[trace:{name}] {request.method} {real_path} -> {status} "
-                    f"({(time.time()-started)*1000:.0f}ms)"
+                    f"({duration*1000:.0f}ms)"
                     + (f" saved {rid}\n" if trace else "\n")
                 )
 

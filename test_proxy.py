@@ -314,6 +314,17 @@ def main():
                 check("api key redacted in saved request",
                       "sk-secret-test-key" not in req_saved)
 
+            # meta: status code + latency/TTFT + response headers
+            meta_files = [x for x in fs if x.endswith(".meta.json")]
+            check("meta.json saved", len(meta_files) == 1, str(fs))
+            if meta_files:
+                meta = json.load(open(os.path.join(tdir, meta_files[0])))
+                check("meta has status/duration/ttft",
+                      meta.get("status") == 200 and isinstance(meta.get("duration_ms"), (int, float))
+                      and isinstance(meta.get("ttft_ms"), (int, float)))
+                check("meta has response headers",
+                      isinstance(meta.get("response_headers"), dict) and len(meta["response_headers"]) > 0)
+
             # (g) request headers saved, with sub-agent ids preserved + auth redacted
             hdr_files = [x for x in fs if x.endswith(".request.headers.json")]
             check("request headers saved", len(hdr_files) == 1, str(fs))
