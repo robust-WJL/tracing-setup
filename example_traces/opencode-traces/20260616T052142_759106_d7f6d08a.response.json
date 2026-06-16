@@ -1,0 +1,58 @@
+{
+  "id": "chatcmpl-511e0c03430646479dddade57394853d",
+  "object": "chat.completion.chunk",
+  "created": 1781587304,
+  "model": "zai-org/GLM-5.1",
+  "usage": {
+    "completion_tokens": 109,
+    "prompt_tokens": 29004,
+    "prompt_tokens_details": {
+      "cached_tokens": 23872
+    },
+    "total_tokens": 29113
+  },
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_EDFRT9utZH8oCreWntkxw0iC",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/.github/workflows/ci.yml\"}"
+            }
+          },
+          {
+            "id": "call_o9Hy4HzE9nFvBMfOxWJwkHc6",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/test/run_filecheck.cmake\"}"
+            }
+          },
+          {
+            "id": "call_FwlIZT3LTA7BmZdUyv8RzCZa",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/bench_sprint1.sh\"}"
+            }
+          },
+          {
+            "id": "call_wMugGMCeuW1GymBv1LrXIZjs",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/tsconfig*.json\", \"path\": \"/Users/woojin/swpp/llvm-project\"}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}

@@ -1,0 +1,452 @@
+{
+  "model": "zai-org/GLM-5.1",
+  "max_tokens": 32000,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are opencode, an interactive CLI tool that helps users with software engineering tasks. Use the instructions below and the tools available to you to assist the user.\n\nIMPORTANT: You must NEVER generate or guess URLs for the user unless you are confident that the URLs are for helping the user with programming. You may use URLs provided by the user in their messages or local files.\n\nIf the user asks for help or wants to give feedback inform them of the following:\n- /help: Get help with using opencode\n- To give feedback, users should report the issue at https://github.com/anomalyco/opencode/issues\n\nWhen the user directly asks about opencode (eg 'can opencode do...', 'does opencode have...') or asks in second person (eg 'are you able...', 'can you do...'), first use the WebFetch tool to gather information to answer the question from opencode docs at https://opencode.ai\n\n# Tone and style\nYou should be concise, direct, and to the point. When you run a non-trivial bash command, you should explain what the command does and why you are running it, to make sure the user understands what you are doing (this is especially important when you are running a command that will make changes to the user's system).\nRemember that your output will be displayed on a command line interface. Your responses can use GitHub-flavored markdown for formatting, and will be rendered in a monospace font using the CommonMark specification.\nOutput text to communicate with the user; all text you output outside of tool use is displayed to the user. Only use tools to complete tasks. Never use tools like Bash or code comments as means to communicate with the user during the session.\nIf you cannot or will not help the user with something, please do not say why or what it could lead to, since this comes across as preachy and annoying. Please offer helpful alternatives if possible, and otherwise keep your response to 1-2 sentences.\nOnly use emojis if the user explicitly requests it. Avoid using emojis in all communication unless asked.\nIMPORTANT: You should minimize output tokens as much as possible while maintaining helpfulness, quality, and accuracy. Only address the specific query or task at hand, avoiding tangential information unless absolutely critical for completing the request. If you can answer in 1-3 sentences or a short paragraph, please do.\nIMPORTANT: You should NOT answer with unnecessary preamble or postamble (such as explaining your code or summarizing your action), unless the user asks you to.\nIMPORTANT: Keep your responses short, since they will be displayed on a command line interface. You MUST answer concisely with fewer than 4 lines (not including tool use or code generation), unless user asks for detail. Answer the user's question directly, without elaboration, explanation, or details. One word answers are best. Avoid introductions, conclusions, and explanations. You MUST avoid text before/after your response, such as \"The answer is <answer>.\", \"Here is the content of the file...\" or \"Based on the information provided, the answer is...\" or \"Here is what I will do next...\". Here are some examples to demonstrate appropriate verbosity:\n<example>\nuser: what is 2+2?\nassistant: 4\n</example>\n\n<example>\nuser: is 11 a prime number?\nassistant: Yes\n</example>\n\n<example>\nuser: what command should I run to list files in the current directory?\nassistant: ls\n</example>\n\n<example>\nuser: what command should I run to watch files in the current directory?\nassistant: [use the ls tool to list the files in the current directory, then read docs/commands in the relevant file to find out how to watch files]\nnpm run dev\n</example>\n\n<example>\nuser: what files are in the directory src/?\nassistant: [runs ls and sees foo.c, bar.c, baz.c]\nuser: which file contains the implementation of foo?\nassistant: src/foo.c\n</example>\n\n<example>\nuser: write tests for new feature\nassistant: [uses grep and glob search tools to find where similar tests are defined, uses concurrent read file tool use blocks in one tool call to read relevant files at the same time, uses edit file tool to write new tests]\n</example>\n\n# Proactiveness\nYou are allowed to be proactive, but only when the user asks you to do something. You should strive to strike a balance between:\n1. Doing the right thing when asked, including taking actions and follow-up actions\n2. Not surprising the user with actions you take without asking\nFor example, if the user asks you how to approach something, you should do your best to answer their question first, and not immediately jump into taking actions.\n3. Do not add additional code explanation summary unless requested by the user. After working on a file, just stop, rather than providing an explanation of what you did.\n\n# Following conventions\nWhen making changes to files, first understand the file's code conventions. Mimic code style, use existing libraries and utilities, and follow existing patterns.\n- NEVER assume that a given library is available, even if it is well known. Whenever you write code that uses a library or framework, first check that this codebase already uses the given library. For example, you might look at neighboring files, or check the package.json (or cargo.toml, and so on depending on the language).\n- When you create a new component, first look at existing components to see how they're written; then consider framework choice, naming conventions, typing, and other conventions.\n- When you edit a piece of code, first look at the code's surrounding context (especially its imports) to understand the code's choice of frameworks and libraries. Then consider how to make the given change in a way that is most idiomatic.\n- Always follow security best practices. Never introduce code that exposes or logs secrets and keys. Never commit secrets or keys to the repository.\n\n# Code style\n- IMPORTANT: DO NOT ADD ***ANY*** COMMENTS unless asked\n\n# Doing tasks\nThe user will primarily request you perform software engineering tasks. This includes solving bugs, adding new functionality, refactoring code, explaining code, and more. For these tasks the following steps are recommended:\n- Use the available search tools to understand the codebase and the user's query. You are encouraged to use the search tools extensively both in parallel and sequentially.\n- Implement the solution using all tools available to you\n- Verify the solution if possible with tests. NEVER assume specific test framework or test script. Check the README or search codebase to determine the testing approach.\n- VERY IMPORTANT: When you have completed a task, you MUST run the lint and typecheck commands (e.g. npm run lint, npm run typecheck, ruff, etc.) with Bash if they were provided to you to ensure your code is correct. If you are unable to find the correct command, ask the user for the command to run and if they supply it, proactively suggest writing it to AGENTS.md so that you will know to run it next time.\nNEVER commit changes unless the user explicitly asks you to. It is VERY IMPORTANT to only commit when explicitly asked, otherwise the user will feel that you are being too proactive.\n\n- Tool results and user messages may include <system-reminder> tags. <system-reminder> tags contain useful information and reminders. They are NOT part of the user's provided input or the tool result.\n\n# Tool usage policy\n- When doing file search, prefer to use the Task tool in order to reduce context usage.\n- You have the capability to call multiple tools in a single response. When multiple independent pieces of information are requested, batch your tool calls together for optimal performance. When making multiple bash tool calls, you MUST send a single message with multiple tools calls to run the calls in parallel. For example, if you need to run \"git status\" and \"git diff\", send a single message with two tool calls to run the calls in parallel.\n\nYou MUST answer concisely with fewer than 4 lines of text (not including tool use or code generation), unless user asks for detail.\n\nIMPORTANT: Before you begin work, think about what the code you're editing is supposed to do based on the filenames directory structure.\n\n# Code References\n\nWhen referencing specific functions or pieces of code include the pattern `file_path:line_number` to allow the user to easily navigate to the source code location.\n\n<example>\nuser: Where are errors from the client handled?\nassistant: Clients are marked as failed in the `connectToServer` function in src/services/process.ts:712.\n</example>\n\nYou are powered by the model named zai-org/GLM-5.1. The exact model ID is friendli/zai-org/GLM-5.1\nHere is some useful information about the environment you are running in:\n<env>\n  Working directory: /Users/woojin/swpp\n  Workspace root folder: /Users/woojin\n  Is directory a git repo: yes\n  Platform: darwin\n  Today's date: Tue Jun 16 2026\n</env>\nSkills provide specialized instructions and workflows for specific tasks.\nUse the skill tool to load a skill when a task matches its description.\n<available_skills>\n  <skill>\n    <name>customize-opencode</name>\n    <description>Use ONLY when the user is editing or creating opencode's own configuration: opencode.json, opencode.jsonc, files under .opencode/, or files under ~/.config/opencode/. Also use when creating or fixing opencode agents, subagents, skills, plugins, MCP servers, or permission rules. Do not use for the user's own application code, or for any project that is not configuring opencode itself.</description>\n    <location>file:///Users/woojin/swpp/%3Cbuilt-in%3E</location>\n  </skill>\n</available_skills>"
+    },
+    {
+      "role": "user",
+      "content": "Hello"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you today?",
+      "reasoning_content": ""
+    },
+    {
+      "role": "user",
+      "content": "❯ Using multiple subagents, analyze the build config in this repo. (use 'task' tool)"
+    },
+    {
+      "role": "assistant",
+      "content": "I'll launch multiple subagents in parallel to analyze different aspects of the build configuration.",
+      "tool_calls": [
+        {
+          "id": "call_iD8qAYfVMpqvKe6Vzc2JTuG9",
+          "type": "function",
+          "function": {
+            "name": "task",
+            "arguments": "{\"description\":\"Analyze package.json and deps\",\"prompt\":\"Explore the build configuration in this repository. Focus on:\\n1. Find all package.json files and analyze their build-related scripts, devDependencies, and build tool configurations\\n2. Identify the package manager used (npm, yarn, pnpm, bun, etc.)\\n3. Look for lock files (package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb)\\n4. Report back a detailed summary of all findings\\n\\nStart by reading the root directory structure, then read package.json files. Be thorough - check for monorepo setups with multiple package.json files.\",\"subagent_type\":\"explore\"}"
+          }
+        },
+        {
+          "id": "call_XOA5Fr6TVXhglFcxZ7GOsLZq",
+          "type": "function",
+          "function": {
+            "name": "task",
+            "arguments": "{\"description\":\"Analyze build tool configs\",\"prompt\":\"Explore the build tool configuration files in this repository. Focus on:\\n1. Find and analyze all build tool config files: webpack configs, vite configs, rollup configs, esbuild configs, tsconfig.json, babel configs, postcss configs, tailwind configs, etc.\\n2. Look for files like vite.config.*, webpack.config.*, rollup.config.*, tsconfig.*, babel.config.*, .babelrc, postcss.config.*, tailwind.config.*, next.config.*, nuxt.config.*, etc.\\n3. Also check for Makefile, Dockerfile, docker-compose.yml, .env files, CI/CD configs (.github/workflows/*, .gitlab-ci.yml, Jenkinsfile, etc.)\\n4. Report back a detailed summary of all build tool configurations found\\n\\nBe thorough - search using glob patterns like **/*.config.*, **/tsconfig*, **/Dockerfile*, etc.\",\"subagent_type\":\"explore\"}"
+          }
+        },
+        {
+          "id": "call_tHpYpk7lUEvbUz8DOC33h1So",
+          "type": "function",
+          "function": {
+            "name": "task",
+            "arguments": "{\"description\":\"Analyze project structure\",\"prompt\":\"Explore the overall project structure and build-related architecture in this repository. Focus on:\\n1. List the top-level directory structure\\n2. Identify the project type (frontend, backend, fullstack, library, monorepo, etc.)\\n3. Look for monorepo tools: lerna.json, nx.json, turbo.json, pnpm-workspace.yaml, etc.\\n4. Check for framework-specific directories: src/, lib/, dist/, build/, out/, public/, static/, assets/, etc.\\n5. Look for any custom build scripts in scripts/ or tools/ directories\\n6. Check the README for build instructions\\n7. Report back a detailed summary of the project structure and how builds are organized\\n\\nBe very thorough in your exploration.\",\"subagent_type\":\"explore\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user wants me to analyze the build configuration in this repo using multiple subagents via the 'task' tool. Let me launch multiple agents to explore different aspects of the build config in parallel."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_iD8qAYfVMpqvKe6Vzc2JTuG9",
+      "content": "<task id=\"ses_1311fe860ffeF9Mktp1HL6iZ4g\" state=\"completed\">\n<task_result>\nNow I have a thorough understanding of the entire repository structure. Here is the detailed summary:\n\n---\n\n## Build Configuration Summary for `/Users/woojin/swpp`\n\n### Repository Overview\n\nThis repository is a workspace for the **SWPP 2026-1** (Principles and Practices of Software Development) course at Seoul National University. It contains three major subdirectories:\n\n| Directory | Purpose |\n|---|---|\n| `llvm-project/` | Full LLVM 22.1.0 source tree (upstream) |\n| `swpp202601-team19/` | Team 19's compiler optimization project (C++/CMake) |\n| `swpp202601/` | Course repository with project specs (no build system) |\n\n---\n\n### 1. Package Manager Identification\n\n**The primary project (`swpp202601-team19`) does NOT use any Node.js package manager.** It is a C++ project built with **CMake + Ninja**.\n\nAll four `package.json` files found belong to **auxiliary VS Code extensions inside the llvm-project submodule**, and they all use **npm**:\n- Each has a corresponding `package-lock.json` confirming npm as the lockfile format.\n- No `yarn.lock`, `pnpm-lock.yaml`, or `bun.lockb` files exist anywhere in the repository.\n\n---\n\n### 2. Package.json Files (4 total -- all in llvm-project)\n\n#### 2a. tree-sitter-mlir (`/Users/woojin/swpp/llvm-project/mlir/utils/tree-sitter-mlir/package.json`)\n- **Purpose**: Tree-sitter grammar for MLIR\n- **Scripts**:\n  - `\"compile\"`: `tree-sitter generate`\n  - `\"test\"`: `tree-sitter test`\n  - `\"update-tests\"`: `tree-sitter test --update`\n- **devDependencies**: `glob@^8.1.0`, `tree-sitter-cli@^0.20.7`\n- **dependencies**: `nan@^2.17.0`\n- **Build tool**: tree-sitter CLI for parser generation\n\n#### 2b. vscode-mlir (`/Users/woojin/swpp/llvm-project/mlir/utils/vscode/package.json`)\n- **Purpose**: VS Code extension for MLIR language support\n- **Scripts**:\n  - `\"vscode:prepublish\"`: `tsc -p ./`\n  - `\"compile\"`: `tsc -watch -p ./`\n  - `\"format\"`: `clang-format -i --glob=\"{src,test}/*.ts\"`\n  - `\"package\"`: `vsce package`\n  - `\"publish\"`: `vsce publish`\n- **devDependencies**: `@types/mocha@^7.0.2`, `@types/node@^14.17.0`, `@types/vscode@~1.67.0`, `@vscode/vsce@^2.19.0`, `clang-format@^1.8.0`, `typescript@^4.9.5`, `vscode-test@^1.3.0`\n- **dependencies**: `base64-js@^1.5.1`, `chokidar@3.5.2`, `minimatch@^3.0.5`, `semver@^7.5.2`, `vscode-languageclient@^8.0.2-next.5`\n- **Build tool**: TypeScript compiler (`tsc`)\n\n#### 2c. llvm-vscode (`/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/package.json`)\n- **Purpose**: VS Code extension for LLVM IR and TableGen development\n- **Scripts**:\n  - `\"vscode:prepublish\"`: `npx js-yaml syntaxes/ll.tmLanguage.yaml > syntaxes/ll.tmLanguage.json && tsc -b`\n  - `\"watch\"`: `tsc -b -w`\n- **devDependencies**: `@types/node@^8.10.59`, `@types/vscode@^1.39.0`, `js-yaml@^3.13.1`, `tslint@^5.16.0`, `typescript@^3.8.3`\n- **No runtime dependencies**\n- **Build tool**: TypeScript compiler (`tsc`), js-yaml for grammar generation\n\n#### 2d. lldb-dap (`/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/package.json`)\n- **Purpose**: VS Code Debug Adapter Protocol extension for LLDB\n- **Scripts** (most complex of the four):\n  - `\"bundle-extension\"`: `tsc -p ./ --noEmit` + `esbuild src/extension.ts --bundle --minify`\n  - `\"bundle-symbols-table-view\"`: `tsc -p src/webview --noEmit` + `esbuild src/webview/...` \n  - `\"bundle-webview\"`: chains the above two + copies tabulator assets\n  - `\"vscode:prepublish\"`: `npm run bundle-webview && npm run bundle-extension`\n  - `\"compile\"`: `tsc -p ./`\n  - `\"test\"`: `vscode-test`\n  - `\"unittest\"`: `mocha --ui tdd ./out/test/unit`\n  - `\"format\"`: `npx prettier . --write`\n  - `\"package\"` / `\"publish\"` / `\"publish-ovsx\"`: for VSIX packaging\n- **devDependencies**: `@types/mocha@^10.0.10`, `@types/node@^18.19.41`, `@types/vscode@1.75.0`, `@vscode/debugprotocol@^1.68.0`, `@vscode/test-cli@^0.0.12`, `@vscode/test-electron@^2.5.2`, `@vscode/vsce@^3.2.2`, `esbuild@^0.25.9`, `mocha@^10.2.0`, `ovsx@^0.10.8`, `prettier@^3.4.2`, `prettier-plugin-curly@^0.3.1`, `prettier-plugin-organize-imports@^4.3.0`, `tabulator-tables@^6.3.1`, `typescript@^5.7.3`\n- **dependencies**: `chokidar@^4.0.3`\n- **Build tools**: TypeScript + esbuild (bundler) + Prettier (formatter)\n\n---\n\n### 3. Lock Files\n\n| Lock File | Location | Package Manager |\n|---|---|---|\n| `/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/package-lock.json` | llvm VS Code extension | npm |\n| `/Users/woojin/swpp/llvm-project/mlir/utils/tree-sitter-mlir/package-lock.json` | tree-sitter-mlir | npm |\n| `/Users/woojin/swpp/llvm-project/mlir/utils/vscode/package-lock.json` | MLIR VS Code extension | npm |\n| `/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/package-lock.json` | LLDB DAP extension | npm |\n| `/Users/woojin/swpp/llvm-project/utils/bazel/MODULE.bazel.lock` | Bazel dependency lock | Bazel (not package manager) |\n\n**No `yarn.lock`, `pnpm-lock.yaml`, or `bun.lockb` found anywhere.**\n\n---\n\n### 4. Main Project Build System: CMake + Ninja (`swpp202601-team19`)\n\nThis is the primary active project. It is a **C++23 LLVM-based compiler** with a custom backend target (\"SWPP\").\n\n**Build Configuration Hierarchy** (7 CMakeLists.txt files):\n\n```\nCMakeLists.txt (root)\n  - project: swpp-compiler, version 2026.1.1\n  - requires CMake >= 3.28.0\n  - finds Doxygen for docs\n  - add_subdirectory(src)\n  - add_subdirectory(test)\n\nsrc/CMakeLists.txt\n  - C++23 standard (required)\n  - Finds LLVM via find_package(LLVM REQUIRED CONFIG)\n  - Links LLVM components: passes, analysis, irreader\n  - Main executable: swpp-compiler\n  - Libraries: SComp, SCArgs\n  - add_subdirectory(lib)\n\nsrc/lib/CMakeLists.txt\n  - Libraries: SCPrintIR, SCOpt, SCBackend\n  - Links many LLVM components (Analysis, CodeGen, MC, Target, etc.)\n  - add_subdirectory(backend), add_subdirectory(opt)\n\nsrc/lib/opt/CMakeLists.txt\n  - 24 optimization passes registered as object libraries\n  - Builds SWPPOptPlugin as an LLVM pass plugin (.so/.dylib)\n  - Key passes: DiamondIfConvert, TriangleIfConvert, MulAddFusion, etc.\n\nsrc/lib/backend/CMakeLists.txt\n  - 9 backend passes (calloc_eliminate, gep_eliminate, mir_translator, etc.)\n\nsrc/lib/backend/SWPP/CMakeLists.txt\n  - Custom LLVM target machine: \"SWPP\"\n  - 8 target components (FrameLowering, TargetLowering, RegisterInfo, InstrInfo, etc.)\n  - Uses LLVM TableGen for register info generation\n\ntest/CMakeLists.txt\n  - Discovers *.ll test files recursively\n  - Runs opt + FileCheck for each test via CMake script\n  - Optional benchmark tests (SWPP_ENABLE_BENCHMARK_TESTS=OFF by default)\n```\n\n**Build Script** (`compile.sh`):\n- Configures with: `cmake -S . -GNinja -Bbuild`\n- Requires LLVM 22.1.0 (default at `/opt/llvm-22.1.0`, overridable via `LLVM_ROOT`)\n- Uses `clang`/`clang++` from LLVM installation\n- Detects and configures libc++ linkage if LLVM was built with it\n- Auto-cleans stale build directories\n- Builds with: `cmake --build build -j$(nproc)`\n\n**Build Output**: `/Users/woojin/swpp/swpp202601-team19/build/`\n- Contains: `swpp-compiler` binary, `SWPPOptPlugin.so`, Ninja build files, `compile_commands.json`\n\n---\n\n### 5. CI Configuration\n\n**File**: `/Users/woojin/swpp/swpp202601-team19/.github/workflows/ci.yml`\n\n- **Trigger**: push/PR to `main`\n- **Runner**: `ubuntu-latest` using Docker image `strikef/swpp202601-ci:latest`\n- **Steps**:\n  1. Checkout code\n  2. Check formatting: `./format-all.sh --check`\n  3. Build compiler: `./compile.sh`\n  4. Run tests: `ctest --test-dir build`\n\n---\n\n### 6. Formatting Tool\n\n**File**: `/Users/woojin/swpp/swpp202601-team19/.clang-format`\n- Based on LLVM style\n- Column limit: 80\n- Indent width: 2\n- C++ standard: Latest\n- Script: `format-all.sh` runs `clang-format` over all `.h`/`.cpp` files in `src/` and `test/`\n\n---\n\n### 7. Additional Build-Related Scripts\n\n| Script | Purpose |\n|---|---|\n| `compile.sh` | Full CMake configure + Ninja build |\n| `format-all.sh` | clang-format all C++ files |\n| `install-alive2.sh` | Install Z3 + Alive2 for compiler verification |\n| `bench_sprint1.sh` (root) | Per-PR benchmark runner (resumable, across git worktrees) |\n\n---\n\n### 8. Summary Table\n\n| Aspect | Value |\n|---|---|\n| **Primary project type** | C++ LLVM compiler (custom \"SWPP\" backend) |\n| **Primary build system** | CMake 3.28+ with Ninja generator |\n| **C++ standard** | C++23 |\n| **LLVM dependency** | LLVM 22.1.0 |\n| **Node.js package manager** | npm (only for llvm-project VS Code extensions) |\n| **Number of package.json files** | 4 (all in llvm-project/) |\n| **Lock files present** | 4 package-lock.json (npm), 1 MODULE.bazel.lock |\n| **Monorepo structure** | Yes -- multi-directory workspace with llvm-project, team project, and course repo |\n| **CI** | GitHub Actions (Docker-based, same pipeline as local) |\n| **TypeScript build tools** | tsc, esbuild (lldb-dap only) |\n| **Test framework** | LLVM FileCheck + CTest; Mocha for lldb-dap |\n</task_result>\n</task>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_XOA5Fr6TVXhglFcxZ7GOsLZq",
+      "content": "<task id=\"ses_1311fe0a6ffeJ0ckZmpbIcGE80\" state=\"completed\">\n<task_result>\nHere is a detailed summary of all build tool configurations found in this repository.\n\n---\n\n## Build Tool Configuration Summary\n\n### Repository Overview\n\nThis repository (`/Users/woojin/swpp`) contains two major components:\n1. **`llvm-project/`** -- The upstream LLVM 22.1.0 source tree\n2. **`swpp202601-team19/`** -- A custom SWPP compiler project (a course project that converts LLVM IR to SWPP assembly)\n3. **`swpp202601/`** -- The course meta-repository (specifications, not build-related)\n4. **Top-level scripts** -- Infrastructure scripts for LLVM installation and benchmarking\n\n---\n\n### 1. CMake Build System (Primary Build Tool)\n\nThe entire project uses **CMake** with **Ninja** as the generator. This is the dominant build system across both LLVM and the custom SWPP compiler.\n\n#### 1.1 SWPP Compiler CMakeLists.txt Files\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/swpp202601-team19/CMakeLists.txt` | **Root CMake**: project `swpp-compiler` v2026.1.1, C++23, Doxygen integration, `add_subdirectory(src)` and `add_subdirectory(test)`, `enable_testing()` |\n| `/Users/woojin/swpp/swpp202601-team19/src/CMakeLists.txt` | **Source root**: Finds LLVM via `find_package(LLVM REQUIRED CONFIG)`, sets C++23 standard, builds `SComp` library, `swpp-compiler` executable, adds `-Wno-deprecated`, exports compile commands, links against LLVM components (passes, analysis, irreader) |\n| `/Users/woojin/swpp/swpp202601-team19/src/lib/CMakeLists.txt` | **Lib root**: Defines 3 libraries: `SCPrintIR` (LLVM core/support/transformutils), `SCOpt` (LLVM analysis/passes/scalaropts/transformutils), `SCBackend` (LLVM Analysis/CodeGen/MC/Target/SelectionDAG/GlobalISel/etc. + SWPP backend targets) |\n| `/Users/woojin/swpp/swpp202601-team19/src/lib/opt/CMakeLists.txt` | **Optimization passes**: Uses `add_llvm_pass_plugin()` to create `SWPPOptPlugin.so` / `.dylib`. Defines 19 optimization pass targets as OBJECT libraries via custom `add_opt_pass()` function |\n| `/Users/woojin/swpp/swpp202601-team19/src/lib/backend/CMakeLists.txt` | **Backend passes**: Defines 9 backend pass OBJECT libraries (calloc elim, const expr elim, GEP elim, GV elim, sext elim, trunc adjust, MIR translator, MIR printer, const copy elim) |\n| `/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/CMakeLists.txt` | **SWPP target backend**: Uses LLVM TableGen to generate register info from `SWPP.td`. Defines 8 SWPP machine target OBJECT libraries (FrameLowering, TargetLowering, RegisterInfo, InstrInfo, Subtarget, TargetMachine, TargetInfo, MCTargetDesc) |\n| `/Users/woojin/swpp/swpp202601-team19/test/CMakeLists.txt` | **Test configuration**: Finds `opt` and `FileCheck` from LLVM tools. Auto-discovers `*.ll` test files and registers them as CTest FileCheck tests. Optional benchmark integration tests via `SWPP_ENABLE_BENCHMARK_TESTS` option |\n\n#### 1.2 SWPP CMake Test Runner\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/swpp202601-team19/test/run_filecheck.cmake` | CMake script mode test runner: Invokes `opt -load-pass-plugin=SWPPOptPlugin.so -passes=swpp-opt` on `.ll` inputs, then runs `FileCheck` validation |\n\n#### 1.3 LLVM CMake Configuration\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/llvm-project/llvm/CMakePresets.json` | CMake Presets v6 for LLVM build configuration. Defines hidden preset fragments for: shared libs, build tests, assertions, clang project, clang-tools-extra, LTO, compile commands export, no-build-testing, x86 target, ASAN sanitizer |\n\nThe LLVM project itself contains **hundreds** of `CMakeLists.txt` and `.cmake` files (too many to enumerate individually -- 100+ CMakeLists.txt and 100+ .cmake files were found in the first page of results alone). These are standard LLVM upstream build files.\n\n---\n\n### 2. Shell Build Scripts\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/swpp202601-team19/compile.sh` | **Main build script**: Auto-detects LLVM installation at `$LLVM_ROOT` (default `/opt/llvm-22.1.0`), configures libc++ linkage if LLVM was built with it, handles stale CMake cache detection, runs `cmake -S . -GNinja -Bbuild` + `cmake --build build` |\n| `/Users/woojin/swpp/swpp202601-team19/format-all.sh` | **Code formatter**: Finds `clang-format` from `$LLVM_ROOT/bin/clang-format`, formats all `.h`/`.cpp` under `src/` and `test/` using the LLVM style from `.clang-format`. Supports `--check` mode for CI dry-run |\n| `/Users/woojin/swpp/swpp202601-team19/install-alive2.sh` | **Alive2 verification tool installer**: Installs re2c via brew, clones and builds Z3 4.16.0, clones and builds Alive2 (formal verification for LLVM optimizations) against the LLVM installation |\n| `/Users/woojin/swpp/install-llvm.sh` | **LLVM installer**: Two-phase build: (1) builds clang/lld with compiler-rt/libcxx/libcxxabi/libunwind runtimes, (2) rebuilds full LLVM with clang/lldb/lld using libc++ |\n| `/Users/woojin/swpp/bench_sprint1.sh` | **Benchmark runner**: Iterates through Sprint 1 PR commits, builds `swpp-compiler` at each commit using `compile.sh`, runs benchmarks via `run_benchmarks.py`, generates markdown comparison summary |\n\n---\n\n### 3. Clang-Format Configuration\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/swpp202601-team19/.clang-format` | **Project clang-format config**: Based on LLVM style, C++ language, 80-column limit, 2-space indent, attach braces, right-aligned pointers, case-sensitive include sorting, Latest C++ standard |\n\nThe LLVM project also has **52 `.clang-format` files** in various subdirectories, all following LLVM coding conventions.\n\n---\n\n### 4. Clang-Tidy Configuration\n\nFound **65+ `.clang-tidy` files** across the LLVM project tree (e.g., `/Users/woojin/swpp/llvm-project/.clang-tidy`, `/Users/woojin/swpp/llvm-project/llvm/.clang-tidy`, `/Users/woojin/swpp/llvm-project/clang/.clang-tidy`, etc.). These are standard LLVM linting configurations. Notably, the SWPP team project does **not** have its own `.clang-tidy`.\n\n---\n\n### 5. EditorConfig\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/.editorconfig` | EditorConfig for the LLDB DAP VS Code extension only (not project-wide) |\n\n---\n\n### 6. TypeScript/VS Code Extension Configs\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/package.json` | VS Code extension for LLVM |\n| `/Users/woojin/swpp/llvm-project/mlir/utils/vscode/package.json` | VS Code extension for MLIR |\n| `/Users/woojin/swpp/llvm-project/mlir/utils/tree-sitter-mlir/package.json` | Tree-sitter grammar for MLIR |\n| `/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/package.json` | LLDB Debug Adapter Protocol extension |\n\nThese are upstream LLVM tooling, not the SWPP project's configs.\n\n---\n\n### 7. TypeScript Configs\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/tsconfig.json` | TypeScript config for LLVM VS Code extension |\n| `/Users/woojin/swpp/llvm-project/mlir/utils/vscode/tsconfig.json` | TypeScript config for MLIR VS Code extension |\n| `/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/tsconfig.json` | TypeScript config for LLDB DAP extension |\n| `/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/src/webview/tsconfig.json` | TypeScript config for LLDB DAP webview |\n\n---\n\n### 8. Docker / Containerization\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/llvm-project/clang/utils/analyzer/Dockerfile` | Docker image for Clang Static Analyzer |\n| `/Users/woojin/swpp/llvm-project/bolt/utils/docker-tests/Dockerfile` | Docker image for BOLT testing |\n| `/Users/woojin/swpp/llvm-project/bolt/utils/docker/Dockerfile` | Docker image for BOLT |\n| `/Users/woojin/swpp/llvm-project/libc/utils/buildbot/Dockerfile` | Docker image for libc buildbot |\n| `/Users/woojin/swpp/llvm-project/libcxx/utils/ci/vendor/android/Dockerfile.emulator` | Docker image for Android libcxx CI |\n| `/Users/woojin/swpp/llvm-project/llvm/utils/docker/debian12/Dockerfile` | Docker image for Debian 12 LLVM build |\n| `/Users/woojin/swpp/llvm-project/llvm/utils/docker/example/Dockerfile` | Example Docker image for LLVM |\n| `/Users/woojin/swpp/llvm-project/llvm/utils/docker/nvidia-cuda/Dockerfile` | Docker image for CUDA LLVM build |\n| `/Users/woojin/swpp/llvm-project/polly/lib/External/isl/imath/tests/linux/Dockerfile` | Docker image for ISL imath testing |\n| `/Users/woojin/swpp/llvm-project/libcxx/utils/ci/docker/docker-compose.yml` | Docker Compose for libcxx CI |\n\nThe SWPP team project itself references Docker in its `.gitignore` (`build-docker/`) and CLAUDE.md Pre-PR checklist, but has **no Dockerfile or docker-compose** in its repository.\n\n---\n\n### 9. Makefiles\n\nFound **100+ Makefiles** in the LLVM project tree, primarily in:\n- `/Users/woojin/swpp/llvm-project/lldb/test/API/` -- dozens of test Makefiles\n- `/Users/woojin/swpp/llvm-project/lldb/packages/Python/lldbsuite/test/make/Makefile.rules` -- shared LLDB test rules\n- `/Users/woojin/swpp/llvm-project/lldb/examples/` -- example Makefiles\n- `/Users/woojin/swpp/llvm-project/clang/utils/ABITest/` -- ABI test Makefiles\n- `/Users/woojin/swpp/llvm-project/polly/lib/External/isl/imath/` -- ISL library Makefiles\n- `/Users/woojin/swpp/llvm-project/libc/AOR_v20.02/Makefile` -- Arm Optimized Routines Makefile\n\nThe SWPP team project has **no Makefiles** -- it uses CMake exclusively.\n\n---\n\n### 10. Doxygen Configuration\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/swpp202601-team19/Doxyfile.in` | **Doxygen template**: CMake-configured Doxyfile that substitutes `@CMAKE_PROJECT_NAME@`, `@CMAKE_PROJECT_VERSION@`, and `@CMAKE_CURRENT_SOURCE_DIR@`. Input set to `src/` directory, recursive, generates HTML docs to `docs/` |\n\n---\n\n### 11. Git Ignore\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/swpp202601-team19/.gitignore` | Ignores: `.vscode`, `.cache`, `.DS_Store`, `build/`, `build-docker/`, `docs`, `__pycache__/`, `*.ll` (except test/*.ll), `*.s`, `*.inc`, `tmp-swpp-bench/` |\n| `/Users/woojin/swpp/swpp202601/.gitignore` | Ignores: `**/.DS_Store`, `.vscode` |\n| `/Users/woojin/swpp/llvm-project/.gitignore` + 30+ subdirectory `.gitignore` files | Standard LLVM gitignore patterns |\n\n---\n\n### 12. CI/CD Configuration\n\n**No CI/CD configuration files were found.** Specifically:\n- No `.github/workflows/` directory exists in the SWPP team project\n- No `.gitlab-ci.yml`\n- No `Jenkinsfile`\n\nThe SWPP project's CLAUDE.md references CI (\"Must pass CI at time of merge\"), suggesting CI may be configured on the GitHub repository settings side (not in the repo files) or may have been removed/not yet added.\n\n---\n\n### 13. Environment / Dot-files\n\n**No `.env` files** were found anywhere in the repository.\n\n---\n\n### 14. TableGen Definition Files (SWPP Target)\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPP.td` | Main SWPP target definition: `def SWPP : Target {}`, includes `Target.td` and `SWPPRegisterInfo.td` |\n| `/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPRegisterInfo.td` | SWPP register info TableGen definitions |\n\nThese are processed by `llvm-tblgen` at build time to generate `SWPPGenRegisterInfo.inc`.\n\n---\n\n### 15. Python Test/Tooling Scripts\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/swpp202601-team19/test/run_benchmarks.py` | Benchmark runner script for the SWPP compiler |\n| `/Users/woojin/swpp/swpp202601-team19/test/run_alive2_tv.py` | Alive2 translation validation script |\n\n---\n\n### 16. AI Assistant Configuration\n\n| File | Purpose |\n|---|---|\n| `/Users/woojin/swpp/swpp202601-team19/CLAUDE.md` | Behavioral guidelines for Claude (AI assistant), containing build/test commands, cost model facts, team assignments, PR checklist |\n| `/Users/woojin/swpp/swpp202601-team19/.claude/settings.local.json` | Claude permissions config: allows specific bash commands (build, benchmark, git checkout) and read access to benchmark directories |\n\n---\n\n### 17. Notable ABSENCES\n\nThe following common build tool config files were **not found** anywhere in the repository:\n\n- **webpack.config.*** -- Not a JavaScript/Node.js project\n- **vite.config.*** -- Not a Vite project\n- **rollup.config.*** -- Not a Rollup project\n- **esbuild*** -- Not using esbuild\n- **babel.config.*** / **.babelrc** -- Not a Babel/JavaScript project\n- **postcss.config.*** -- Not using PostCSS\n- **tailwind.config.*** -- Not using Tailwind CSS\n- **next.config.*** / **nuxt.config.*** -- Not a Next.js/Nuxt.js project\n- **.env*** -- No environment variable files\n- **CMakeCache.txt** -- Not committed (in `.gitignore` under `build/`)\n- **CMakeUserPresets.json** -- Not committed\n\n---\n\n### Summary Table\n\n| Category | Count | Key Files |\n|---|---|---|\n| CMakeLists.txt (SWPP) | 7 | Root, src, lib, opt, backend, SWPP, test |\n| CMakeLists.txt (LLVM) | 100+ | Throughout llvm-project tree |\n| .cmake files | 100+ | LLVM cmake modules, SWPP test runner |\n| CMakePresets.json | 1 | LLVM upstream |\n| Shell scripts | 5 | compile.sh, format-all.sh, install-alive2.sh, install-llvm.sh, bench_sprint1.sh |\n| .clang-format | 1 (SWPP) + 52 (LLVM) | LLVM-based C++ style |\n| .clang-tidy | 65+ | LLVM project only |\n| tsconfig.json | 4 | LLVM VS Code extensions |\n| package.json | 4 | LLVM VS Code extensions |\n| Dockerfile | 9 | LLVM CI utilities |\n| docker-compose.yml | 1 | LLVM libcxx CI |\n| Makefile | 100+ | LLDB tests, ISL, libc |\n| Doxyfile.in | 1 | SWPP project documentation |\n| TableGen (.td) | 2 | SWPP target & register defs |\n| .gitignore | 3 (main) + 30+ (LLVM subdirs) | Standard patterns |\n| .editorconfig | 1 | LLDB DAP only |\n| CLAUDE.md | 1 | AI assistant guidelines |\n| .claude/settings.local.json | 1 | AI permissions |\n| Python scripts | 2 | Benchmark & alive2 runners |\n</task_result>\n</task>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_tHpYpk7lUEvbUz8DOC33h1So",
+      "content": "<task id=\"ses_1311fd970ffehDz4LcMTTgX5kt\" state=\"completed\">\n<task_result>\nNow I have a thorough picture. Here is the detailed summary:\n\n---\n\n## Project Structure and Build Architecture Report\n\n### 1. Top-Level Directory Structure\n\n```\n/Users/woojin/swpp/\n├── .DS_Store\n├── bench_sprint1.sh          # Per-PR benchmark script\n├── install-llvm.sh            # LLVM 22.1.0 build/install script\n├── llvm-project/              # LLVM 22.1.0 source tree (~10 GB)\n├── swpp202601-team19/         # Main project: SWPP compiler (~134 MB)\n└── swpp202601/                # Course repo (assignments, specs) (~5 MB)\n```\n\nThis workspace is **not** a conventional monorepo. It consists of three largely independent directories, each with its own Git repository. There are no monorepo orchestration tools (lerna, nx, turbo, pnpm-workspace) present.\n\n### 2. Project Type\n\n**This is a C++ compiler project** -- specifically, an LLVM pass plugin and backend that compiles LLVM IR into a custom \"SWPP\" target machine assembly. It is a university course project (M1522.002400, \"Principles and Practices of Software Development\" at Seoul National University, Spring 2026). The student team (Team 19) implements optimization passes for a fictional target machine with an unusual cost model.\n\n- **Not** a frontend, backend (web), or fullstack project\n- **Not** a library for general consumption\n- **Not** a monorepo managed by any monorepo tool\n\n### 3. Monorepo Tools\n\n**None found.** No `lerna.json`, `nx.json`, `turbo.json`, `pnpm-workspace.yaml`, or any other monorepo configuration exists anywhere in the workspace.\n\n### 4. Framework-Specific Directories\n\nWithin `swpp202601-team19/`:\n\n| Directory | Purpose |\n|---|---|\n| `src/` | All C++ source code (main entry, library, optimization passes, backend) |\n| `src/lib/` | Core library: `opt`, `backend`, `print_ir` sub-libraries |\n| `src/lib/opt/` | **Student-editable optimization passes** (20+ .cpp/.h pairs, each an LLVM pass) |\n| `src/lib/backend/` | Backend passes (TA-only, students must not modify) |\n| `src/lib/backend/SWPP/` | SWPP target machine definition (TargetMachine, RegisterInfo, InstrInfo, etc.) |\n| `build/` | CMake/Ninja build output directory (64 MB `swpp-compiler` binary lives here) |\n| `test/` | Test infrastructure |\n| `test/filecheck/` | LLVM FileCheck-style IR tests (35 subdirectories, one per pass) |\n| `references/` | PDF specs (TM Specification, Project Specification) and notes |\n| `.github/workflows/` | CI: `ci.yml` (GitHub Actions) |\n\nThere are no `dist/`, `out/`, `public/`, `static/`, or `assets/` directories. The project produces a single native binary, not a web artifact.\n\n### 5. Custom Build Scripts\n\n| Script | Location | Purpose |\n|---|---|---|\n| `compile.sh` | `swpp202601-team19/` | **Primary build script.** Auto-detects LLVM root (default `/opt/llvm-22.1.0`), detects whether LLVM was built with libc++, handles stale `build/` directories, runs `cmake -S . -GNinja -Bbuild` with correct flags, then `cmake --build build -j$(nproc)`. |\n| `format-all.sh` | `swpp202601-team19/` | Runs `clang-format` on all `.cpp/.h` files in `src/` and `test/`. Supports `--check` (dry-run) mode for CI. |\n| `install-alive2.sh` | `swpp202601-team19/` | Installs Z3 and Alive2 (formal verification tool for LLVM passes). |\n| `install-llvm.sh` | workspace root | Builds and installs LLVM 22.1.0 from source using the `llvm-project/` checkout. Two-phase build: first libc++ (bootstrap compiler), then full LLVM with clang/lldb/lld. Installs to `~/opt/llvm-22.1.0`. |\n| `bench_sprint1.sh` | workspace root | Resumable per-commit benchmark runner. Checks out git worktrees for each Sprint 1 PR commit, builds the compiler, runs benchmarks, and generates a comparison summary table. |\n\nThere are no `scripts/` or `tools/` directories.\n\n### 6. Build Instructions (from README)\n\n**Build prerequisite:** LLVM 22.1.0 must be installed first (use `install-llvm.sh` or build manually).\n\n**Build the compiler:**\n```\ncmake -GNinja -Bbuild\ncmake --build build --target swpp-compiler\n```\n\n**Or equivalently (using the convenience script):**\n```\n./compile.sh\n```\n\n**Run tests:**\n```\ncd build && ctest\n```\n\n**Build documentation (Doxygen):**\n```\ncmake -GNinja -Bbuild\ncmake --build build --target docs\n```\n\n**Run the compiler:**\n```\nbuild/swpp-compiler input.ll a.s [--verbose]\n```\n\n**Pre-PR checklist (from CLAUDE.md):**\n1. `LLVM_ROOT=~/opt/llvm-22.1.0 ./format-all.sh`\n2. `cmake --build build --target swpp-compiler`\n3. `ctest --test-dir build`\n4. Verify transformed IR via `opt -load-pass-plugin=... -passes=swpp-opt -S`\n5. `python3 test/run_benchmarks.py --compiler build/swpp-compiler ...`\n\n### 7. Detailed Build Architecture Summary\n\n#### Build System: CMake + Ninja\n\nThe entire build is driven by **CMake 3.28.0+** with the **Ninja** generator. There are 5 `CMakeLists.txt` files forming a hierarchical build:\n\n```\nswpp202601-team19/CMakeLists.txt          # Root: Doxygen, enable_testing(), add_subdirectory(src test)\nswpp202601-team19/src/CMakeLists.txt      # Main executable + libraries, find_package(LLVM)\nswpp202601-team19/src/lib/CMakeLists.txt   # SCOpt, SCBackend, SCPrintIR libraries, add_subdirectory(backend opt)\nswpp202601-team19/src/lib/opt/CMakeLists.txt    # 20+ optimization passes + SWPPOptPlugin shared library\nswpp202601-team19/src/lib/backend/CMakeLists.txt # 9 backend passes + SWPP target subdirectory\nswpp202601-team19/test/CMakeLists.txt      # Auto-discovered .ll FileCheck tests + optional benchmark tests\n```\n\n#### Key Build Targets\n\n| Target | Type | Description |\n|---|---|---|\n| `swpp-compiler` | Executable (64 MB) | Main compiler binary. Links `SComp`, `SCArgs`. |\n| `SWPPOptPlugin` | Shared library (`.so`/`.dylib`) | LLVM pass plugin, loadable via `opt -load-pass-plugin=...`. Links all optimization passes via `OptPasses` interface library. |\n| `docs` | Custom target | Doxygen-generated API documentation into `docs/`. |\n| `ctest` (via files) | Test targets | Auto-discovered from `test/filecheck/**/*.ll` files. Each runs `opt` with the plugin, then `FileCheck`. |\n\n#### Library Architecture\n\n```\nswpp-compiler (executable)\n  └── SComp (static library)\n        ├── SCOpt (optimizer)\n        │     ├── SCPrintIR (IR printer)\n        │     └── OptPasses (interface library collecting all opt pass object files)\n        │           ├── DiamondIfConvert, TriangleIfConvert, MulAddFusion, ... (20+ passes)\n        │           └── SCOptPipeline (orchestrates pass execution order)\n        ├── SCBackend (code generator)\n        │     ├── 9 backend pass object libraries\n        │     └── SWPP target machine libraries (TargetInfo, InstrInfo, RegisterInfo, etc.)\n        └── LLVM libraries (passes, analysis, irreader, CodeGen, etc.)\n  └── SCArgs (argument parser)\n```\n\n#### Optimization Pass Pipeline\n\nDefined in `/Users/woojin/swpp/swpp202601-team19/src/lib/opt/opt_pipeline.cpp`, the pipeline runs passes in a specific order organized into phases:\n\n1. **Memory/SSA** -- strip_lifetime, lower_tm_intrinsics, reorder_load_inst, malloc_to_stack, SROA, mem2reg, large_block_cse, redundant_memory_forwarding, heap_scalarization, heap_loop_licm, heap_accumulator_promotion\n2. **Control-flow (if-conversion)** -- loop_branch_reordering, diamond_if_convert, triangle_if_convert\n3. **Constants** -- remove_const4\n4. **Integer arithmetic** -- shiftadd_to_mul, scalar_cse, pointer_induction, scalar_licm, mul_add_fusion, odd_add_lowering, lower_tm_intrinsics (again)\n5. **Loop layout & CFG cleanup** -- loop_branch_reordering (again), shiftadd_to_mul (again), empty_block_forwarding, heap_lifetime_shrink, delayed_use_aload\n6. **Interprocedural** -- InlinerPass (at CGSCC level)\n\n#### CI Pipeline\n\nGitHub Actions (`ci.yml`):\n- Runs in Docker container `strikef/swpp202601-ci:latest`\n- Steps: Checkout, format check (`format-all.sh --check`), build (`compile.sh`), test (`ctest`)\n\n#### Testing Architecture\n\n- **Unit tests:** LLVM FileCheck tests in `test/filecheck/` -- each `.ll` file contains IR input + `CHECK` directives for expected output. Discovered automatically via `file(GLOB_RECURSE ...)` and run through a CMake test driver (`run_filecheck.cmake`) that invokes `opt` with the plugin and then `FileCheck`.\n- **Benchmarks:** `test/run_benchmarks.py` runs the compiler against benchmark programs, measures cost using the custom TM cost model (`test/tm_cost_static.json`), and requires a separate interpreter and benchmarks repository.\n- **Alive2 verification:** `test/run_alive2_tv.py` for formal translation validation.\n\n#### External Dependencies\n\n| Dependency | Version | Purpose |\n|---|---|---|\n| LLVM | 22.1.0 | Core compiler infrastructure; `swpp-compiler` links against LLVM libraries and loads the optimization plugin into `opt`. |\n| Doxygen | any | API documentation generation (optional) |\n| Alive2 + Z3 | Z3 4.16.0, Alive2 at commit `0dc2be5f` | Formal verification of optimization passes (optional) |\n| Ninja | any | Build system backend |\n| clang-format | from LLVM 22.1.0 | Code formatting (enforced by CI) |\n| Python 3 | any | Test/benchmark runners |\n\n#### Scope Constraint\n\nThe project has a strict scope boundary: **students may only modify `src/lib/opt.cpp` and files under `src/lib/opt/`** (plus test files). The backend (`src/lib/backend/`), main entry (`main.cpp`), argument parser (`args.cpp`), and library glue (`lib.cpp`) are TA-maintained and off-limits.\n</task_result>\n</task>"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "Executes a given bash command in a persistent shell session with optional timeout, ensuring proper handling and security measures.\n\nBe aware: OS: darwin, Shell: zsh\n\nAll commands run in the current working directory by default. Use the `workdir` parameter if you need to run a command in a different directory. AVOID using `cd <directory> && <command>` patterns - use `workdir` instead.\n\nUse `/var/folders/55/h73l3pns0t7blyz9c6skr8xm0000gn/T/opencode` for temporary work outside the workspace. This directory has already been created, already exists, and is pre-approved for external directory access.\n\nIMPORTANT: This tool is for terminal operations like git, npm, docker, etc. DO NOT use it for file operations (reading, writing, editing, searching, finding files) - use the specialized tools for this instead.\n\nBefore executing the command, please follow these steps:\n\n1. Directory Verification:\n   - If the command will create new directories or files, first use `ls` to verify the parent directory exists and is the correct location\n   - For example, before running \"mkdir foo/bar\", first use `ls foo` to check that \"foo\" exists and is the intended parent directory\n\n2. Command Execution:\n   - Always quote file paths that contain spaces with double quotes (e.g., rm \"path with spaces/file.txt\")\n   - Examples of proper quoting:\n     - mkdir \"/Users/name/My Documents\" (correct)\n     - mkdir /Users/name/My Documents (incorrect - will fail)\n     - python \"/path/with spaces/script.py\" (correct)\n     - python /path/with spaces/script.py (incorrect - will fail)\n   - After ensuring proper quoting, execute the command.\n   - Capture the output of the command.\n\nUsage notes:\n  - The command argument is required.\n  - You can specify an optional timeout in milliseconds. If not specified, commands will time out after 120000ms.\n  - It is very helpful if you write a clear, concise description of what this command does in 5-10 words.\n  - If the output exceeds 2000 lines or 51200 bytes, it will be truncated and the full output will be written to a file. You can use Read with offset/limit to read specific sections or Grep to search the full content. Do NOT use `head`, `tail`, or other truncation commands to limit output; the full output will already be captured to a file for more precise searching.\n\n  - Avoid using Bash with the `find`, `grep`, `cat`, `head`, `tail`, `sed`, `awk`, or `echo` commands, unless explicitly instructed or when these commands are truly necessary for the task. Instead, always prefer using the dedicated tools for these commands:\n    - File search: Use Glob (NOT find or ls)\n    - Content search: Use Grep (NOT grep or rg)\n    - Read files: Use Read (NOT cat/head/tail)\n    - Edit files: Use Edit (NOT sed/awk)\n    - Write files: Use Write (NOT echo >/cat <<EOF)\n    - Communication: Output text directly (NOT echo/printf)\n  - When issuing multiple commands:\n    - If the commands are independent and can run in parallel, make multiple bash tool calls in a single message. For example, if you need to run \"git status\" and \"git diff\", send a single message with two bash tool calls in parallel.\n    - If the commands depend on each other and must run sequentially, use a single Bash call with '&&' to chain them together (e.g., `git add . && git commit -m \"message\" && git push`). For instance, if one operation must complete before another starts (like mkdir before cp, Write before Bash for git operations, or git add before git commit), run these operations sequentially instead.\n    - Use ';' only when you need to run commands sequentially but don't care if earlier commands fail\n    - DO NOT use newlines to separate commands (newlines are ok in quoted strings)\n  - AVOID using `cd <directory> && <command>`. Use the `workdir` parameter to change directories instead.\n    <good-example>\n    Use workdir=\"/foo/bar\" with command: pytest tests\n    </good-example>\n    <bad-example>\n    cd /foo/bar && pytest tests\n    </bad-example>\n\n# Git and GitHub\n- Only commit, amend, push, or create PRs when explicitly requested.\n- Before committing, inspect `git status`, `git diff`, and `git log --oneline -10`; stage only intended files and never commit secrets.\n- Write a concise commit message that matches the repo style.\n- Do not update git config, skip hooks, use interactive `-i`, force-push, or create empty commits unless explicitly requested.\n- If a commit fails or hooks reject it, fix the issue and create a new commit; do not amend the failed commit.\n- Before creating a PR, inspect status, diff, remote tracking, recent commits, and the diff from the base branch.\n- Review all commits included in the PR, not just the latest commit.\n- Use `gh` for GitHub tasks, including PRs, issues, checks, and releases; return the PR URL when done.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "The command to execute"
+            },
+            "timeout": {
+              "minimum": -9007199254740991,
+              "exclusiveMinimum": 0,
+              "type": "integer",
+              "maximum": 9007199254740991,
+              "description": "Optional timeout in milliseconds"
+            },
+            "workdir": {
+              "type": "string",
+              "description": "The working directory to run the command in. Defaults to the current directory. Use this instead of 'cd' commands."
+            },
+            "description": {
+              "type": "string",
+              "description": "Clear, concise description of what this command does in 5-10 words. Examples:\nInput: ls\nOutput: Lists files in current directory\n\nInput: git status\nOutput: Shows working tree status\n\nInput: npm install\nOutput: Installs package dependencies\n\nInput: mkdir foo\nOutput: Creates directory 'foo'"
+            }
+          },
+          "required": [
+            "command",
+            "description"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "edit",
+        "description": "Performs exact string replacements in files. \n\nUsage:\n- You must use your `Read` tool at least once in the conversation before editing. This tool will error if you attempt an edit without reading the file. \n- When editing text from Read tool output, ensure you preserve the exact indentation (tabs/spaces) as it appears AFTER the line number prefix. The line number prefix format is: line number + colon + space (e.g., `1: `). Everything after that space is the actual file content to match. Never include any part of the line number prefix in the oldString or newString.\n- ALWAYS prefer editing existing files in the codebase. NEVER write new files unless explicitly required.\n- Only use emojis if the user explicitly requests it. Avoid adding emojis to files unless asked.\n- The edit will FAIL if `oldString` is not found in the file with an error \"oldString not found in content\".\n- The edit will FAIL if `oldString` is found multiple times in the file with an error \"Found multiple matches for oldString. Provide more surrounding lines in oldString to identify the correct match.\" Either provide a larger string with more surrounding context to make it unique or use `replaceAll` to change every instance of `oldString`. \n- Use `replaceAll` for replacing and renaming strings across the file. This parameter is useful if you want to rename a variable for instance.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "filePath": {
+              "type": "string",
+              "description": "The absolute path to the file to modify"
+            },
+            "oldString": {
+              "type": "string",
+              "description": "The text to replace"
+            },
+            "newString": {
+              "type": "string",
+              "description": "The text to replace it with (must be different from oldString)"
+            },
+            "replaceAll": {
+              "type": "boolean",
+              "description": "Replace all occurrences of oldString (default false)"
+            }
+          },
+          "required": [
+            "filePath",
+            "oldString",
+            "newString"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "glob",
+        "description": "- Fast file pattern matching tool that works with any codebase size\n- Supports glob patterns like \"**/*.js\" or \"src/**/*.ts\"\n- Returns matching file paths\n- Use this tool when you need to find files by name patterns\n- When you are doing an open-ended search that may require multiple rounds of globbing and grepping, use the Task tool instead\n- You have the capability to call multiple tools in a single response. It is always better to speculatively perform multiple searches as a batch that are potentially useful.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "The glob pattern to match files against"
+            },
+            "path": {
+              "type": "string",
+              "description": "The directory to search in. If not specified, the current working directory will be used. IMPORTANT: Omit this field to use the default directory. DO NOT enter \"undefined\" or \"null\" - simply omit it for the default behavior. Must be a valid directory path if provided."
+            }
+          },
+          "required": [
+            "pattern"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "grep",
+        "description": "- Fast content search tool that works with any codebase size\n- Searches file contents using regular expressions\n- Supports full regex syntax (eg. \"log.*Error\", \"function\\s+\\w+\", etc.)\n- Filter files by pattern with the include parameter (eg. \"*.js\", \"*.{ts,tsx}\")\n- Returns file paths and line numbers with matching lines\n- Use this tool when you need to find files containing specific patterns\n- If you need to identify/count the number of matches within files, use the Bash tool with `rg` (ripgrep) directly. Do NOT use `grep`.\n- When you are doing an open-ended search that may require multiple rounds of globbing and grepping, use the Task tool instead\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "The regex pattern to search for in file contents"
+            },
+            "path": {
+              "type": "string",
+              "description": "The directory to search in. Defaults to the current working directory."
+            },
+            "include": {
+              "type": "string",
+              "description": "File pattern to include in the search (e.g. \"*.js\", \"*.{ts,tsx}\")"
+            }
+          },
+          "required": [
+            "pattern"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "question",
+        "description": "Use this tool when you need to ask the user questions during execution. This allows you to:\n1. Gather user preferences or requirements\n2. Clarify ambiguous instructions\n3. Get decisions on implementation choices as you work\n4. Offer choices to the user about what direction to take.\n\nUsage notes:\n- When `custom` is enabled (default), a \"Type your own answer\" option is added automatically; don't include \"Other\" or catch-all options\n- Answers are returned as arrays of labels; set `multiple: true` to allow selecting more than one\n- If you recommend a specific option, make that the first option in the list and add \"(Recommended)\" at the end of the label\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "questions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "question": {
+                    "type": "string",
+                    "description": "Complete question"
+                  },
+                  "header": {
+                    "type": "string",
+                    "description": "Very short label (max 30 chars)"
+                  },
+                  "options": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "description": "Display text (1-5 words, concise)"
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "Explanation of choice"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "description"
+                      ]
+                    },
+                    "description": "Available choices"
+                  },
+                  "multiple": {
+                    "type": "boolean",
+                    "description": "Allow selecting multiple choices"
+                  }
+                },
+                "required": [
+                  "question",
+                  "header",
+                  "options"
+                ]
+              },
+              "description": "Questions to ask"
+            }
+          },
+          "required": [
+            "questions"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "description": "Read a file or directory from the local filesystem. If the path does not exist, an error is returned.\n\nUsage:\n- The filePath parameter should be an absolute path.\n- By default, this tool returns up to 2000 lines from the start of the file.\n- The offset parameter is the line number to start from (1-indexed).\n- To read later sections, call this tool again with a larger offset.\n- Use the grep tool to find specific content in large files or files with long lines.\n- If you are unsure of the correct file path, use the glob tool to look up filenames by glob pattern.\n- Contents are returned with each line prefixed by its line number as `<line>: <content>`. For example, if a file has contents \"foo\\n\", you will receive \"1: foo\\n\". For directories, entries are returned one per line (without line numbers) with a trailing `/` for subdirectories.\n- Any line longer than 2000 characters is truncated.\n- Call this tool in parallel when you know there are multiple files you want to read.\n- Avoid tiny repeated slices (30 line chunks). If you need more context, read a larger window.\n- This tool can read image files and PDFs and return them as file attachments.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "filePath": {
+              "type": "string",
+              "description": "The absolute path to the file or directory to read"
+            },
+            "offset": {
+              "minimum": 0,
+              "type": "integer",
+              "maximum": 9007199254740991,
+              "description": "The line number to start reading from (1-indexed)"
+            },
+            "limit": {
+              "minimum": 0,
+              "type": "integer",
+              "maximum": 9007199254740991,
+              "description": "The maximum number of lines to read (defaults to 2000)"
+            }
+          },
+          "required": [
+            "filePath"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "skill",
+        "description": "Load a specialized skill when the task at hand matches one of the skills listed in the system prompt.\n\nUse this tool to inject the skill's instructions and resources into current conversation. The output may contain detailed workflow guidance as well as references to scripts, files, etc in the same directory as the skill.\n\nThe skill name must match one of the skills listed in your system prompt.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The name of the skill from available_skills"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "task",
+        "description": "Launch a new agent to handle complex, multistep tasks autonomously.\n\nWhen using the Task tool, you must specify a subagent_type parameter to select which agent type to use.\n\nWhen NOT to use the Task tool:\n- If you want to read a specific file path, use the Read or Glob tool instead of the Task tool, to find the match more quickly\n- If you are searching for a specific class definition like \"class Foo\", use the Grep tool instead, to find the match more quickly\n- If you are searching for code within a specific file or set of 2-3 files, use the Read tool instead of the Task tool, to find the match more quickly\n- If no available agent is a good fit for the task, use other tools directly\n\n\nUsage notes:\n1. Launch multiple agents concurrently whenever possible, to maximize performance; to do that, use a single message with multiple tool uses\n2. Once you have delegated work to an agent, do not duplicate that work yourself. Continue with non-overlapping tasks, or wait for the result. For background tasks, you will be notified automatically when the result is ready.\n3. When the agent is done, it will return a single message back to you. The result returned by the agent is not visible to the user. To show the user the result, you should send a text message back to the user with a concise summary of the result. The output includes a task_id you can reuse later to continue the same subagent session.\n4. Each agent invocation starts with a fresh context unless you provide task_id to resume the same subagent session (which continues with its previous messages and tool outputs). When starting fresh, your prompt should contain a highly detailed task description for the agent to perform autonomously and you should specify exactly what information the agent should return back to you in its final and only message to you.\n5. The agent's outputs should generally be trusted\n6. Clearly tell the agent whether you expect it to write code or just to do research (search, file reads, web fetches, etc.), since it is not aware of the user's intent. Tell it how to verify its work if possible (e.g., relevant test commands).\n7. If the agent description mentions that it should be used proactively, then you should try your best to use it without the user having to ask for it first. Use your judgement.\n\nAvailable agent types and the tools they have access to:\n- explore: Fast agent specialized for exploring codebases. Use this when you need to quickly find files by patterns (eg. \"src/components/**/*.tsx\"), search code for keywords (eg. \"API endpoints\"), or answer questions about the codebase (eg. \"how do API endpoints work?\"). When calling this agent, specify the desired thoroughness level: \"quick\" for basic searches, \"medium\" for moderate exploration, or \"very thorough\" for comprehensive analysis across multiple locations and naming conventions.\n- general: General-purpose agent for researching complex questions and executing multi-step tasks. Use this agent to execute multiple units of work in parallel.\n- guideline-checker: Validates a docs page against STYLE_GUIDE.md. Returns a structured JSON issues list.\n- review: Reviews .mdx page fixes for correctness, minimality, and Mintlify syntax preservation. Enforces lint safety.",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "A short (3-5 words) description of the task"
+            },
+            "prompt": {
+              "type": "string",
+              "description": "The task for the agent to perform"
+            },
+            "subagent_type": {
+              "type": "string",
+              "description": "The type of specialized agent to use for this task"
+            },
+            "task_id": {
+              "type": "string",
+              "description": "This should only be set if you mean to resume a previous task (you can pass a prior task_id and the task will continue the same subagent session as before instead of creating a fresh one)"
+            },
+            "command": {
+              "type": "string",
+              "description": "The command that triggered this task"
+            }
+          },
+          "required": [
+            "description",
+            "prompt",
+            "subagent_type"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "todowrite",
+        "description": "Create and maintain a structured task list for the current coding session. Tracks progress, organizes multi-step work, and surfaces status to the user.\n\n## When to use\nUse proactively when:\n- The task requires 3+ distinct steps or actions (not just 3 tool calls for a single conceptual step)\n- The work is non-trivial and benefits from planning\n- The user provides multiple tasks (numbered or comma-separated) or explicitly asks for a todo list\n- New instructions arrive - capture them as todos\n- You start a task - mark it `in_progress` (only one at a time) before working\n- You finish a task - mark it `completed` and add any follow-ups discovered during the work\n\n## When NOT to use\nSkip when:\n- The work is a single, straightforward task (or <3 trivial steps)\n- The request is purely informational or conversational\n- Tracking adds no organizational value\n\n## States\n- `pending` - not started\n- `in_progress` - actively working (exactly ONE at a time)\n- `completed` - finished successfully\n- `cancelled` - no longer needed\n\n## Rules\n- Update status in real time; don't batch completions\n- Mark `completed` only after the required work is actually done, including any required verification. Never based on intent.\n- Keep exactly one `in_progress` while work remains\n- If blocked or partial, keep it `in_progress` and add a follow-up todo describing the blocker\n- Preserve user-provided commands verbatim (flags, args, order)\n- Items should be specific and actionable; break large work into smaller steps\n\n## Examples\n\nUse it:\n- \"Add a dark mode toggle and run the tests\" -> multi-step feature + explicit verification\n- \"Rename getCwd -> getCurrentWorkingDirectory across the repo\" -> grep reveals 15 occurrences in 8 files\n- \"Implement registration, catalog, cart, checkout\" -> multiple complex features\n\nSkip it:\n- \"How do I print Hello World in Python?\" -> informational\n- \"Add a comment to calculateTotal\" -> single edit\n- \"Run npm install and tell me what happened\" -> one command\n\nWhen in doubt, use it.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "todos": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Brief description of the task"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Current status of the task: pending, in_progress, completed, cancelled"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "description": "Priority level of the task: high, medium, low"
+                  }
+                },
+                "required": [
+                  "content",
+                  "status",
+                  "priority"
+                ]
+              },
+              "description": "The updated todo list"
+            }
+          },
+          "required": [
+            "todos"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "webfetch",
+        "description": "- Fetches content from a specified URL\n- Takes a URL and optional format as input\n- Fetches the URL content, converts to requested format (markdown by default)\n- Returns the content in the specified format\n- Use this tool when you need to retrieve and analyze web content\n\nUsage notes:\n  - IMPORTANT: if another tool is present that offers better web fetching capabilities, is more targeted to the task, or has fewer restrictions, prefer using that tool instead of this one.\n  - The URL must be a fully-formed valid URL\n  - HTTP URLs will be automatically upgraded to HTTPS\n  - Format options: \"markdown\" (default), \"text\", or \"html\"\n  - This tool is read-only and does not modify any files\n  - Results may be summarized if the content is very large\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The URL to fetch content from"
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "text",
+                "markdown",
+                "html"
+              ],
+              "description": "The format to return the content in (text, markdown, or html). Defaults to markdown.",
+              "default": "markdown"
+            },
+            "timeout": {
+              "type": "number",
+              "description": "Optional timeout in seconds (max 120)"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "write",
+        "description": "Writes a file to the local filesystem.\n\nUsage:\n- This tool will overwrite the existing file if there is one at the provided path.\n- If this is an existing file, you MUST use the Read tool first to read the file's contents. This tool will fail if you did not read the file first.\n- ALWAYS prefer editing existing files in the codebase. NEVER write new files unless explicitly required.\n- NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.\n- Only use emojis if the user explicitly requests it. Avoid writing emojis to files unless asked.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "The content to write to the file"
+            },
+            "filePath": {
+              "type": "string",
+              "description": "The absolute path to the file to write (must be absolute, not relative)"
+            }
+          },
+          "required": [
+            "content",
+            "filePath"
+          ]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  }
+}

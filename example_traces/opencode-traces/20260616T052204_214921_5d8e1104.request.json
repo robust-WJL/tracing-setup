@@ -1,0 +1,809 @@
+{
+  "model": "zai-org/GLM-5.1",
+  "max_tokens": 32000,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a file search specialist. You excel at thoroughly navigating and exploring codebases.\n\nYour strengths:\n- Rapidly finding files using glob patterns\n- Searching code and text with powerful regex patterns\n- Reading and analyzing file contents\n\nGuidelines:\n- Use Glob for broad file pattern matching\n- Use Grep for searching file contents with regex\n- Use Read when you know the specific file path you need to read\n- Use Bash for file operations like copying, moving, or listing directory contents\n- Adapt your search approach based on the thoroughness level specified by the caller\n- Return file paths as absolute paths in your final response\n- For clear communication, avoid using emojis\n- Do not create any files, or run bash commands that modify the user's system state in any way\n\nComplete the user's search request efficiently and report your findings clearly.\n\nYou are powered by the model named zai-org/GLM-5.1. The exact model ID is friendli/zai-org/GLM-5.1\nHere is some useful information about the environment you are running in:\n<env>\n  Working directory: /Users/woojin/swpp\n  Workspace root folder: /Users/woojin\n  Is directory a git repo: yes\n  Platform: darwin\n  Today's date: Tue Jun 16 2026\n</env>"
+    },
+    {
+      "role": "user",
+      "content": "Explore the build configuration in this repository. Focus on:\n1. Find all package.json files and analyze their build-related scripts, devDependencies, and build tool configurations\n2. Identify the package manager used (npm, yarn, pnpm, bun, etc.)\n3. Look for lock files (package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb)\n4. Report back a detailed summary of all findings\n\nStart by reading the root directory structure, then read package.json files. Be thorough - check for monorepo setups with multiple package.json files."
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_KcG3tf34yNzLAVW1FBOB2WwH",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_D17ohxKVTAAQq4byz2W54wbJ",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/package.json\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_Otef7snbCHQXhULy0TACFQNX",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/package-lock.json\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_lkT6R2vz1V4YqJ7JlW31rB4K",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/yarn.lock\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_N21QBGAh1DdioDMNOcJTJw6a",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/pnpm-lock.yaml\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_rDPvpe6TjYwxyMPmXkHsxfIe",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/bun.lockb\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_Kq1PbLkwBP5gcXP1VnrRBEE0",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/*.lock\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Let me start by exploring the root directory structure and finding all package.json files and lock files."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_KcG3tf34yNzLAVW1FBOB2WwH",
+      "content": "<path>/Users/woojin/swpp</path>\n<type>directory</type>\n<entries>\n.DS_Store\nbench_sprint1.sh\ninstall-llvm.sh\nllvm-project/\nswpp202601-team19/\nswpp202601/\n\n(6 entries)\n</entries>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_D17ohxKVTAAQq4byz2W54wbJ",
+      "content": "/Users/woojin/swpp/llvm-project/mlir/utils/tree-sitter-mlir/package.json\n/Users/woojin/swpp/llvm-project/mlir/utils/vscode/package.json\n/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/package.json\n/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/package.json"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_Otef7snbCHQXhULy0TACFQNX",
+      "content": "/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/package-lock.json\n/Users/woojin/swpp/llvm-project/mlir/utils/tree-sitter-mlir/package-lock.json\n/Users/woojin/swpp/llvm-project/mlir/utils/vscode/package-lock.json\n/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/package-lock.json"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_lkT6R2vz1V4YqJ7JlW31rB4K",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_N21QBGAh1DdioDMNOcJTJw6a",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_rDPvpe6TjYwxyMPmXkHsxfIe",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_Kq1PbLkwBP5gcXP1VnrRBEE0",
+      "content": "/Users/woojin/swpp/llvm-project/utils/bazel/MODULE.bazel.lock"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_oEmiGDVmzyLARfCxkwFFLZGF",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/package.json\",\"path\":\"/Users/woojin/swpp/swpp202601-team19\"}"
+          }
+        },
+        {
+          "id": "call_9iPtgeKbf3I1MEmKvcic9iIp",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/package.json\",\"path\":\"/Users/woojin/swpp/swpp202601\"}"
+          }
+        },
+        {
+          "id": "call_pnwQqQiaybM0R1vDjxCbDCEY",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/package-lock.json\",\"path\":\"/Users/woojin/swpp/swpp202601-team19\"}"
+          }
+        },
+        {
+          "id": "call_dvQuYUDCpgsdyWtkp7ypyU4Y",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/package-lock.json\",\"path\":\"/Users/woojin/swpp/swpp202601\"}"
+          }
+        },
+        {
+          "id": "call_mvMFwrwOX4aAFWGsXfw28KL2",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601\"}"
+          }
+        },
+        {
+          "id": "call_bteHhWAB9iEWUpCEttsPs1ay",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Let me now check the other directories (swpp202601-team19 and swpp202601) for package.json files, and also read the package.json files I found."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_oEmiGDVmzyLARfCxkwFFLZGF",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_9iPtgeKbf3I1MEmKvcic9iIp",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_pnwQqQiaybM0R1vDjxCbDCEY",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_dvQuYUDCpgsdyWtkp7ypyU4Y",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_mvMFwrwOX4aAFWGsXfw28KL2",
+      "content": "<path>/Users/woojin/swpp/swpp202601</path>\n<type>directory</type>\n<entries>\n.DS_Store\n.git/\n.gitignore\nproject/\nREADME.md\n\n(5 entries)\n</entries>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_bteHhWAB9iEWUpCEttsPs1ay",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19</path>\n<type>directory</type>\n<entries>\n.cache/\n.clang-format\n.claude/\n.DS_Store\n.git/\n.github/\n.gitignore\nbuild/\nCLAUDE.md\nCMakeLists.txt\ncompile.sh\nDoxyfile.in\nformat-all.sh\ninstall-alive2.sh\nLICENSE.md\npr_body.txt\nREADME.md\nreferences/\nsrc/\ntest/\n\n(20 entries)\n</entries>"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_oGvMZyD3b6ebctsH1eydfw6q",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601/project\"}"
+          }
+        },
+        {
+          "id": "call_Te9giiFC4HIAqB3EV9URzu1s",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/package.json\",\"path\":\"/Users/woojin/swpp/swpp202601/project\"}"
+          }
+        },
+        {
+          "id": "call_CBHBAgQ2WNdPCHBFZoSUeI08",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/CMakeLists.txt\",\"path\":\"/Users/woojin/swpp/swpp202601\"}"
+          }
+        },
+        {
+          "id": "call_NKMsGtayEIYUBZBVRKAJOHSZ",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/Makefile\",\"path\":\"/Users/woojin/swpp/swpp202601\"}"
+          }
+        },
+        {
+          "id": "call_uX3LRGXsV58dvhtHsSxTt2Ro",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/CMakeLists.txt\"}"
+          }
+        },
+        {
+          "id": "call_gLwVjbPcWNcC3KaqcusfGyj4",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601/README.md\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The swpp202601 directory has a `project/` subdirectory which might contain package.json. And swpp202601-team19 looks like a C++ project (CMakeLists.txt, .clang-format). Let me check the project/ directory and then also look for other config files like CMakeLists.txt, Makefile, etc."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_oGvMZyD3b6ebctsH1eydfw6q",
+      "content": "<path>/Users/woojin/swpp/swpp202601/project</path>\n<type>directory</type>\n<entries>\napplying-patch.md\nSWPP202601 Project Specification.pdf\nSWPP202601 TM Specification.pdf\nSWPP202601-alive2-260417.patch\n\n(4 entries)\n</entries>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_Te9giiFC4HIAqB3EV9URzu1s",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_CBHBAgQ2WNdPCHBFZoSUeI08",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_NKMsGtayEIYUBZBVRKAJOHSZ",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_uX3LRGXsV58dvhtHsSxTt2Ro",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/CMakeLists.txt</path>\n<type>file</type>\n<content>\n1: cmake_minimum_required(VERSION 3.28.0)\n2: project(swpp-compiler VERSION 2026.1.1 LANGUAGES CXX)\n3: \n4: # check if Doxygen is installed\n5: find_package(Doxygen)\n6: if (DOXYGEN_FOUND)\n7:     # set input and output files\n8:     set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)\n9:     set(DOXYGEN_OUT ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile)\n10: \n11:     # request to configure the file\n12:     configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)\n13:     message(\"Doxygen build started\")\n14: \n15:     add_custom_target(docs ALL\n16:         COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}\n17:         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}\n18:         COMMENT \"Generating API documentation with Doxygen\"\n19:         VERBATIM )\n20: else (DOXYGEN_FOUND)\n21:   message(\"Doxygen should be installed to generate the doxygen documentation\")\n22: endif (DOXYGEN_FOUND)\n23: \n24: enable_testing()\n25: \n26: # Add tests, subdirectories, etc below\n27: add_subdirectory(src)\n28: add_subdirectory(test)\n\n(End of file - total 28 lines)\n</content>\n\n<system-reminder>\nInstructions from: /Users/woojin/swpp/swpp202601-team19/CLAUDE.md\n# CLAUDE.md\n\nBehavioral guidelines for the SWPP 2026-1 compiler optimization project.\n\n---\n\n## 1. Think Before Coding\n\n**Don't assume. Surface tradeoffs. Ask when uncertain.**\n\n- State assumptions explicitly before implementing.\n- If multiple approaches exist, present them — don't pick silently.\n- If something is unclear or risky, stop and name it.\n- Prefer one correct pass over a fast but broken one. Compiler bugs are silent and hard to debug.\n\n---\n\n## 2. Surgical Changes\n\n**Touch only what you must.**\n\n- Scope: `src/lib/opt.cpp` and files under `src/lib/opt/`. Everything else is out of scope — do not modify it.\n  Only those files and under test/ files are ok to be modified.\n- Don't \"improve\" adjacent code, formatting, or unrelated logic.\n- Match existing code style exactly.\n- Every changed line should trace directly to the task.\n\n---\n\n## 3. This Target Machine Is Not Normal\n\n**The standard LLVM cost model does not apply here. Always reason from the TM spec.**\n\nKey cost facts to internalize:\n\n| Instruction | Cost |\n|---|---|\n| `br` (true / forward) | 90 (×1.5 if forward jump) |\n| `br` (false) | 30 |\n| `select` | 3 |\n| `mul` | 2 (0 if immediately followed by add/sub) |\n| `add` / `sub` (eadd/oadd) | 10 if parity matches, 20 otherwise |\n| `icmp` | 3 |\n| Any instruction with literal `4` | +10 penalty |\n\n**Do not apply optimizations that are \"generally good\" unless they're profitable on this machine.** When in doubt, compute the cost delta explicitly before recommending a transformation.\n\n---\n\n## 4. This Is a Team Project\n\n**Coordinate. Never duplicate. Never break teammates' invariants.**\n\nTeam member assignments (from `team_sprint_planning.pdf`):\n\n| Member | Sprint 1 | Sprint 2 | Sprint 3 |\n|---|---|---|---|\n| 이우진 (me) | Diamond If-Conversion | Triangle If-Conversion | Mul-Add Fusion |\n| 윤성원 | Load Spacing | Malloc Splitting | Access Width Opt |\n| 유주성 | Parity-aware Lowering | Branch Reordering | Parity/CFG Refinement |\n| 양동환 | 4-Phobia Mitigation | Cheap-ALU Rewriting | Heat-Decaying NOP Insertion |\n\n**Before suggesting any optimization, check this table.** If a teammate owns that area, do not touch it — even if the opportunity looks obvious. Suggest coordination instead.\n\nMy passes (if-conversion, mul-add fusion) run before parity lowering and branch reordering. Ensure transformations I emit are well-formed IR that downstream passes can process cleanly.\n\n---\n\n## 5. Key Reference Files (under references)\n\n| File | Purpose |\n|---|---|\n| `references/SWPP202601_TM_Specification.pdf` | Ground truth for instruction costs, calling convention, memory model, 4-phobia, heat, etc. |\n| `references/SWPP202601_Project_Specification.pdf` | PR format, grading rubric, doc requirements, CI rules. |\n\n---\n\n## 6. Optimization Discipline\n\n**Correctness over performance. A miscompilation is worse than no optimization.**\n\nFor every pass:\n1. Write the structural check first — pattern must match exactly before transforming.\n2. Write the safety check second — all speculated instructions must be side-effect-free (`isSafeToSpeculativelyExecute()`).\n3. Transform only after both checks pass.\n4. Cover edge cases explicitly: faulting loads, division by zero, extra phi predecessors, loop back-edges.\n\nFor if-conversion specifically:\n- Reject any diamond/triangle where a branch block contains: `store`, `call`, `load` (Sprint 1), `div`/`rem` with non-constant-nonzero divisor, or any instruction where `isSafeToSpeculativelyExecute() = false`.\n- Verify merge block has **exactly** the expected number of predecessors before replacing phis with selects.\n\nFor mul-add fusion:\n- The fused add/sub must be the **very next** instruction after mul in emitted order. Run this pass as late as possible.\n- Skip any candidate whose operands include the literal constant `4` (4-phobia makes fusion pointless).\n\n---\n\n## 7. Build & Test\n\n# Every code change:\ncmake --build build --target swpp-compiler\nLLVM_ROOT=~/opt/llvm-22.1.0 ./format-all.sh\n\n# Run tests:\nctest --test-dir build\n\n# Run benchmarks:\nbash compile.sh 2>&1 | tail -5\npython3 test/run_benchmarks.py --compiler build/swpp-compiler \\\n   --work-dir ~/swpp-bench --skip-interpreter-build \\\n  --cost-model test/tm_cost_static.json --timeout 10 2>&1\n\n---\n\n## Pre-PR Checklist\n\nRun these in order inside Docker before every PR:\n\n0. LLVM_ROOT=~/opt/llvm-22.1.0 ./format-all.sh\n1. cmake --build build --target swpp-compiler\n2. ctest --test-dir build\n3. Sanity-check transformed IR by eye:\n   /opt/llvm-22.1.0/bin/opt \\\n     -load-pass-plugin=build/src/lib/opt/SWPPOptPlugin.so \\\n     -passes=swpp-opt -S <your_test.ll>\n4. python3 test/run_benchmarks.py \\\n     --compiler build/swpp-compiler \\\n     --work-dir build/benchmarks\n5. cat build/benchmarks/benchmark_costs.md\n   -> paste results into PR performance table\n\nAll 5 steps must pass before opening a PR.\n\n---\n\n## 8. PR Standards\n\nEvery PR must have (from project spec):\n- **Issue description** — what problem or missed optimization exists.\n- **Algorithm** — high-level pseudo-code or clear explanation of the transformation logic.\n- **Performance evaluation** — quantitative results on benchmarks + brief analysis.\n- **Unit tests** — at least 3, as LLVM IR + FileCheck. Run via `ctest --test-dir build`.\n- **Example program tests** — full suite must pass with no regressions.\n- **Correctness discussion** — safety conditions, edge cases, intentional limitations.\n- Title must start with `[Sprint X]`.\n- Must pass CI at time of merge. Squash-merge only (you merge your own PRs).\n- 2+ human reviewers required. AI review does not count.\n\n---\n\n## 9. Simplicity First\n\n**Minimum code that solves the problem.**\n\n- No speculative abstractions.\n- No handling of cases beyond the current sprint's scope.\n- If a helper already exists in LLVM (e.g., `isSafeToSpeculativelyExecute`, `replaceAllUsesWith`), use it — don't reimplement it.\n- If an implementation exceeds ~500 lines diff (excl. tests/comments), split it into smaller PRs.\n\n</system-reminder>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_gLwVjbPcWNcC3KaqcusfGyj4",
+      "content": "<path>/Users/woojin/swpp/swpp202601/README.md</path>\n<type>file</type>\n<content>\n1: # M1522.002400 Principles and Practices of Software Development\n2: \n3: - Instructor: Prof. [Chung-Kil Hur](http://sf.snu.ac.kr/gil.hur)\n4: - TA: [Taeyoung Rhee](https://sf.snu.ac.kr/taeyoung.rhee/)(@SB1491),\n5: [Sanghyun Yi](https://sf.snu.ac.kr/sanghyun.yi/)(@brighthonor),\n6: [Soonwon Moon](https://sf.snu.ac.kr/soonwon.moon/)(@damhiya)\n7:   + Email address: swpp@sf.snu.ac.kr\n8:     * When sending TA an email,\n9:       - The subject (제목) must start with [SWPP]\n10:       - Your name and student ID must be included in the body (본문)\n11:     * When replying to TA's email, please CC swpp@sf.snu.ac.kr as well.\n12:       Otherwise, you may not be able to get response from TA.\n13:       **Reply to all** will do that for you.\n14:     * Unless your question involves sensitive data (your assignment code,\n15:       personal information, etc), use GitHub Discussions instead.\n16:   + Place: Bldg 302 Rm 315-1\n17: \n18: **Check the repository and issues page on a daily basis!**  \n19: All important updates and notices will be uploaded only on GitHub!  \n20: *Updates* include (but are not limited to) assignment, project, class policy, etc.\n21: \n22: We'll *rarely* be using eTL on this course!\n23: * We may instruct you to submit some of the assignments via eTL\n24: \n25: ## Announcements\n26: * ~~Submit your GitHub username by 3/12 (Thu)~~\n27: * ~~If you need to use development server, submit your username by 3/17 (Tue)~~\n28: \n29: ## Assignments\n30: * (Mar. 10) Assignment 1 has been released. See [Assignment 1 Directory](assignments/assignment1) for details.\n31: * (Mar. 19) Assignment 2 has been released. See [Assignment 2 Directory](assignments/assignment2) for details.\n32: * (Mar. 29) Assignment 3 has been released. See [Assignment 3 Directory](assignments/assignment3) for details.\n33: * (Mar. 30) Assignment 4 has been released. See [Assignment 4 Directory](assignments/assignment4) for details.\n34: \n35: ## Projects\n36: * (Apr. 17) Project repositories are released. Visit [the announcement](https://github.com/snu-sf-class/swpp202601/discussions/24) for details.\n\n(End of file - total 36 lines)\n</content>"
+    },
+    {
+      "role": "assistant",
+      "content": "Now let me read all four package.json files found, and also explore the swpp202601-team19 build setup more deeply:",
+      "tool_calls": [
+        {
+          "id": "call_sLkTeG6N9Xx6SdQY4K9yPuHZ",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/llvm-project/mlir/utils/tree-sitter-mlir/package.json\"}"
+          }
+        },
+        {
+          "id": "call_nPHxDIffnrnfYwDnMroubvy0",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/llvm-project/mlir/utils/vscode/package.json\"}"
+          }
+        },
+        {
+          "id": "call_bfvCvNa1ExbBOolUzhQcrrCG",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/package.json\"}"
+          }
+        },
+        {
+          "id": "call_JSzEjGvW8RUrGeJkkqQXDsIw",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/package.json\"}"
+          }
+        },
+        {
+          "id": "call_ACdo3HMMrDWtIAmq1CuXIuEl",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/CMakeLists.txt\",\"path\":\"/Users/woojin/swpp/swpp202601-team19\"}"
+          }
+        },
+        {
+          "id": "call_iDoKO0lVkqVlRMskY1iHQv9V",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/Makefile*\",\"path\":\"/Users/woojin/swpp/swpp202601-team19\"}"
+          }
+        },
+        {
+          "id": "call_GN1GSBiCftrs5cEdWVNZ8UMU",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/*.cmake\",\"path\":\"/Users/woojin/swpp/swpp202601-team19\"}"
+          }
+        },
+        {
+          "id": "call_qzP562jTPozjVcsg2cRHsgE1",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/compile.sh\"}"
+          }
+        },
+        {
+          "id": "call_ApHZuSbBJ43EqehtUA5GZLzx",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/format-all.sh\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Now let me read the four package.json files found in the llvm-project subdirectory, as well as look for other build configuration files in the swpp202601-team19 directory."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_sLkTeG6N9Xx6SdQY4K9yPuHZ",
+      "content": "<path>/Users/woojin/swpp/llvm-project/mlir/utils/tree-sitter-mlir/package.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"name\": \"tree-sitter-mlir\",\n3:   \"description\": \"Tree sitter grammar for MLIR\",\n4:   \"version\": \"0.0.1\",\n5:   \"license\": \"Apache-2.0\",\n6:   \"main\": \"grammar.js\",\n7:   \"scripts\": {\n8:     \"compile\": \"tree-sitter generate\",\n9:     \"update-tests\": \"tree-sitter test --update\",\n10:     \"test\": \"tree-sitter test\"\n11:   },\n12:   \"keywords\": [\n13:     \"tree-sitter\",\n14:     \"lexer\",\n15:     \"parser\",\n16:     \"grammar\"\n17:   ],\n18:   \"dependencies\": {\n19:     \"nan\": \"^2.17.0\"\n20:   },\n21:   \"devDependencies\": {\n22:     \"glob\": \"^8.1.0\",\n23:     \"tree-sitter-cli\": \"^0.20.7\"\n24:   },\n25:   \"tree-sitter\": [\n26:     {\n27:       \"scope\": \"source.mlir\",\n28:       \"file-types\": [\n29:         \"mlir\"\n30:       ]\n31:     }\n32:   ]\n33: }\n\n(End of file - total 33 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_nPHxDIffnrnfYwDnMroubvy0",
+      "content": "<path>/Users/woojin/swpp/llvm-project/mlir/utils/vscode/package.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"name\": \"vscode-mlir\",\n3:   \"displayName\": \"MLIR\",\n4:   \"description\": \"MLIR Language Extension\",\n5:   \"version\": \"0.0.12\",\n6:   \"publisher\": \"llvm-vs-code-extensions\",\n7:   \"homepage\": \"https://mlir.llvm.org/\",\n8:   \"icon\": \"icon.png\",\n9:   \"engines\": {\n10:     \"vscode\": \"^1.67.0\"\n11:   },\n12:   \"categories\": [\n13:     \"Programming Languages\"\n14:   ],\n15:   \"keywords\": [\n16:     \"LLVM\",\n17:     \"MLIR\",\n18:     \"PDLL\",\n19:     \"TableGen\",\n20:     \"tblgen\",\n21:     \"tablegen\"\n22:   ],\n23:   \"activationEvents\": [\n24:     \"onFileSystem:mlir.bytecode-mlir\",\n25:     \"onCustomEditor:mlir.bytecode\",\n26:     \"onLanguage:mlir\",\n27:     \"onLanguage:pdll\",\n28:     \"onLanguage:tablegen\"\n29:   ],\n30:   \"main\": \"./out/extension\",\n31:   \"scripts\": {\n32:     \"vscode:prepublish\": \"tsc -p ./\",\n33:     \"compile\": \"tsc -watch -p ./\",\n34:     \"format\": \"clang-format -i --glob=\\\"{src,test}/*.ts\\\"\",\n35:     \"package\": \"vsce package\",\n36:     \"publish\": \"vsce publish\",\n37:     \"git-clang-format\": \"git-clang-format\"\n38:   },\n39:   \"dependencies\": {\n40:     \"base64-js\": \"^1.5.1\",\n41:     \"chokidar\": \"3.5.2\",\n42:     \"minimatch\": \"^3.0.5\",\n43:     \"semver\": \"^7.5.2\",\n44:     \"vscode-languageclient\": \"^8.0.2-next.5\"\n45:   },\n46:   \"devDependencies\": {\n47:     \"@types/mocha\": \"^7.0.2\",\n48:     \"@types/node\": \"^14.17.0\",\n49:     \"@types/vscode\": \"~1.67.0\",\n50:     \"@vscode/vsce\": \"^2.19.0\",\n51:     \"clang-format\": \"^1.8.0\",\n52:     \"typescript\": \"^4.9.5\",\n53:     \"vscode-test\": \"^1.3.0\"\n54:   },\n55:   \"repository\": {\n56:     \"type\": \"git\",\n57:     \"url\": \"https://github.com/llvm/vscode-mlir.git\"\n58:   },\n59:   \"contributes\": {\n60:     \"customEditors\": [\n61:       {\n62:         \"viewType\": \"mlir.bytecode\",\n63:         \"displayName\": \"MLIR Bytecode\",\n64:         \"priority\": \"default\",\n65:         \"selector\": [\n66:           {\n67:             \"filenamePattern\": \"*.mlirbc\"\n68:           }\n69:         ]\n70:       }\n71:     ],\n72:     \"languages\": [\n73:       {\n74:         \"id\": \"mlir\",\n75:         \"aliases\": [\n76:           \"MLIR\",\n77:           \"mlir\"\n78:         ],\n79:         \"extensions\": [\n80:           \".mlir\",\n81:           \".mlirbc\"\n82:         ],\n83:         \"configuration\": \"./language-configuration.json\"\n84:       },\n85:       {\n86:         \"id\": \"mlir-injection\"\n87:       },\n88:       {\n89:         \"id\": \"pdll\",\n90:         \"aliases\": [\n91:           \"PDLL\",\n92:           \"pdll\"\n93:         ],\n94:         \"extensions\": [\n95:           \".pdll\"\n96:         ],\n97:         \"configuration\": \"./pdll-language-configuration.json\"\n98:       },\n99:       {\n100:         \"id\": \"tablegen\",\n101:         \"aliases\": [\n102:           \"TableGen\",\n103:           \"tblgen\"\n104:         ],\n105:         \"extensions\": [\n106:           \".td\"\n107:         ],\n108:         \"configuration\": \"./tablegen-language-configuration.json\"\n109:       }\n110:     ],\n111:     \"grammars\": [\n112:       {\n113:         \"language\": \"mlir\",\n114:         \"scopeName\": \"source.mlir\",\n115:         \"path\": \"./grammar.json\"\n116:       },\n117:       {\n118:         \"language\": \"mlir-injection\",\n119:         \"scopeName\": \"markdown.mlir.codeblock\",\n120:         \"path\": \"markdown-grammar.json\",\n121:         \"injectTo\": [\n122:           \"text.html.markdown\"\n123:         ],\n124:         \"embeddedLanguages\": {\n125:           \"meta.embedded.block.mlir\": \"mlir\",\n126:           \"meta.embedded.block.pdll\": \"pdll\",\n127:           \"meta.embedded.block.tablegen\": \"tablegen\"\n128:         }\n129:       },\n130:       {\n131:         \"scopeName\": \"source.cpp.mlir\",\n132:         \"path\": \"./cpp-grammar.json\",\n133:         \"injectTo\": [\n134:           \"source.cpp\"\n135:         ],\n136:         \"embeddedLanguages\": {\n137:           \"source.mlir\": \"mlir\"\n138:         }\n139:       },\n140:       {\n141:         \"language\": \"pdll\",\n142:         \"scopeName\": \"source.pdll\",\n143:         \"path\": \"./pdll-grammar.json\"\n144:       },\n145:       {\n146:         \"language\": \"tablegen\",\n147:         \"scopeName\": \"source.tablegen\",\n148:         \"path\": \"./tablegen-grammar.json\"\n149:       }\n150:     ],\n151:     \"configuration\": {\n152:       \"type\": \"object\",\n153:       \"title\": \"MLIR\",\n154:       \"properties\": {\n155:         \"mlir.server_path\": {\n156:           \"scope\": \"resource\",\n157:           \"type\": \"string\",\n158:           \"description\": \"The file path of the mlir-lsp-server executable.\"\n159:         },\n160:         \"mlir.mlir_additional_server_args\": {\n161:           \"scope\": \"resource\",\n162:           \"type\": \"array\",\n163:           \"description\": \"A list of additional arguments for mlir-lsp-server executable. E.g. --log=verbose.\"\n164:         },\n165:         \"mlir.pdll_server_path\": {\n166:           \"scope\": \"resource\",\n167:           \"type\": \"string\",\n168:           \"description\": \"The file path of the mlir-pdll-lsp-server executable.\"\n169:         },\n170:         \"mlir.pdll_compilation_databases\": {\n171:           \"scope\": \"resource\",\n172:           \"type\": \"array\",\n173:           \"description\": \"A list of `pdll_compile_commands.yml` database files containing information about .pdll files processed by the server.\"\n174:         },\n175:         \"mlir.pdll_additional_server_args\": {\n176:           \"scope\": \"resource\",\n177:           \"type\": \"array\",\n178:           \"description\": \"A list of additional arguments for pdll-lsp-server executable. E.g. --log=verbose.\"\n179:         },\n180:         \"mlir.tablegen_server_path\": {\n181:           \"scope\": \"resource\",\n182:           \"type\": \"string\",\n183:           \"description\": \"The file path of the tblgen-lsp-server executable.\"\n184:         },\n185:         \"mlir.tablegen_compilation_databases\": {\n186:           \"scope\": \"resource\",\n187:           \"type\": \"array\",\n188:           \"description\": \"A list of `tablegen_compile_commands.yml` database files containing information about .td files processed by the server.\"\n189:         },\n190:         \"mlir.tablegen_additional_server_args\": {\n191:           \"scope\": \"resource\",\n192:           \"type\": \"array\",\n193:           \"description\": \"A list of additional arguments for tblgen-lsp-server executable. E.g. --log=verbose.\"\n194:         },\n195:         \"mlir.onSettingsChanged\": {\n196:           \"type\": \"string\",\n197:           \"default\": \"prompt\",\n198:           \"description\": \"Action taken when a setting change requires a server restart to take effect.\",\n199:           \"enum\": [\n200:             \"prompt\",\n201:             \"restart\",\n202:             \"ignore\"\n203:           ],\n204:           \"enumDescriptions\": [\n205:             \"Prompt the user for restarting the server\",\n206:             \"Automatically restart the server\",\n207:             \"Do nothing\"\n208:           ]\n209:         }\n210:       }\n211:     },\n212:     \"commands\": [\n213:       {\n214:         \"command\": \"mlir.restart\",\n215:         \"title\": \"mlir: Restart language server\"\n216:       },\n217:       {\n218:         \"command\": \"mlir.viewPDLLOutput\",\n219:         \"title\": \"mlir-pdll: View PDLL output\"\n220:       }\n221:     ],\n222:     \"menus\": {\n223:       \"editor/context\": [\n224:         {\n225:           \"command\": \"mlir.viewPDLLOutput\",\n226:           \"group\": \"z_commands\",\n227:           \"when\": \"editorLangId == pdll\"\n228:         }\n229:       ]\n230:     }\n231:   }\n232: }\n\n(End of file - total 232 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_bfvCvNa1ExbBOolUzhQcrrCG",
+      "content": "<path>/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/package.json</path>\n<type>file</type>\n<content>\n1: {\n2:     \"name\": \"llvm\",\n3:     \"displayName\": \"llvm\",\n4:     \"description\": \"VS Code Externsion for LLVM development\",\n5:     \"publisher\": \"llvm-vs-code-extensions\",\n6:     \"version\": \"0.0.1\",\n7:     \"repository\": \"somewhere\",\n8:     \"engines\": {\n9:         \"vscode\": \"^1.42.0\"\n10:     },\n11:     \"categories\": [\n12:         \"Programming Languages\"\n13:     ],\n14:     \"activationEvents\": [\n15:         \"onCommand:workbench.action.tasks.runTask\"\n16:     ],\n17:     \"main\": \"./out/extension\",\n18:     \"contributes\": {\n19:         \"languages\": [\n20:             {\n21:                 \"id\": \"tablegen\",\n22:                 \"aliases\": [\n23:                     \"TableGen\",\n24:                     \"tablegen\"\n25:                 ],\n26:                 \"extensions\": [\n27:                     \".td\"\n28:                 ],\n29:                 \"configuration\": \"./language-configuration-tablegen.json\"\n30:             },\n31:             {\n32:                 \"id\": \"llvm\",\n33:                 \"aliases\": [\n34:                     \"LLVM IR\",\n35:                     \"LLVM\",\n36:                     \"llvm\"\n37:                 ],\n38:                 \"extensions\": [\n39:                     \".ll\"\n40:                 ],\n41:                 \"configuration\": \"./language-configuration.json\"\n42:             }\n43:         ],\n44:         \"grammars\": [\n45:             {\n46:                 \"language\": \"tablegen\",\n47:                 \"scopeName\": \"source.tablegen\",\n48:                 \"path\": \"./syntaxes/TableGen.tmLanguage\"\n49:             },\n50:             {\n51:                 \"language\": \"llvm\",\n52:                 \"scopeName\": \"source.llvm\",\n53:                 \"path\": \"./syntaxes/ll.tmLanguage.json\"\n54:             }\n55:         ],\n56:         \"taskDefinitions\": [\n57:             {\n58:                 \"type\": \"llvm-lit\",\n59:                 \"required\": [\n60:                     \"task\"\n61:                 ],\n62:                 \"properties\": {\n63:                     \"task\": {\n64:                         \"type\": \"string\",\n65:                         \"description\": \"The Rake task to customize\"\n66:                     }\n67:                 }\n68:             }\n69:         ],\n70:         \"problemMatchers\": [\n71:             {\n72:                 \"name\": \"llvm-lit\",\n73:                 \"fileLocation\": [\n74:                     \"absolute\"\n75:                 ],\n76:                 \"label\": \"LLVM LIT\",\n77:                 \"source\": \"llvm lit\",\n78:                 \"severity\": \"error\",\n79:                 \"pattern\": [\n80:                     {\n81:                         \"regexp\": \"^(.+):(\\\\d+)\\\\((\\\\d+)\\\\):\\\\s+(.+)$\",\n82:                         \"kind\": \"location\",\n83:                         \"file\": 1,\n84:                         \"line\": 2,\n85:                         \"code\": 3,\n86:                         \"message\": 4\n87:                     }\n88:                 ]\n89:             },\n90:             {\n91:                 \"name\": \"llvm-filecheck\",\n92:                 \"fileLocation\": [\n93:                     \"absolute\"\n94:                 ],\n95:                 \"label\": \"LLVM FileCheck\",\n96:                 \"source\": \"llvm filecheck\",\n97:                 \"pattern\": [\n98:                     {\n99:                         \"regexp\": \"^(.+):(\\\\d+):\\\\d+:\\\\s+(error|warning|note|remark):\\\\s+(.+)$\",\n100:                         \"kind\": \"location\",\n101:                         \"file\": 1,\n102:                         \"line\": 2,\n103:                         \"severity\": 3,\n104:                         \"message\": 4\n105:                     }\n106:                 ]\n107:             }\n108:         ]\n109:     },\n110:     \"devDependencies\": {\n111:         \"@types/node\": \"^8.10.59\",\n112:         \"@types/vscode\": \"^1.39.0\",\n113:         \"js-yaml\": \"^3.13.1\",\n114:         \"tslint\": \"^5.16.0\",\n115:         \"typescript\": \"^3.8.3\"\n116:     },\n117:     \"extensionDependencies\": [\"ms-vscode.cmake-tools\"],\n118:     \"scripts\": {\n119:         \"vscode:prepublish\": \"npx js-yaml syntaxes/ll.tmLanguage.yaml > syntaxes/ll.tmLanguage.json && tsc -b\",\n120:         \"watch\": \"tsc -b -w\"\n121:     }\n122: }\n\n(End of file - total 122 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_JSzEjGvW8RUrGeJkkqQXDsIw",
+      "content": "<path>/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/package.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"name\": \"lldb-dap\",\n3:   \"displayName\": \"LLDB DAP\",\n4:   \"version\": \"0.4.1\",\n5:   \"publisher\": \"llvm-vs-code-extensions\",\n6:   \"homepage\": \"https://lldb.llvm.org\",\n7:   \"description\": \"Debugging with LLDB in Visual Studio Code\",\n8:   \"license\": \"Apache 2.0 License with LLVM exceptions\",\n9:   \"repository\": {\n10:     \"type\": \"git\",\n11:     \"url\": \"https://github.com/llvm/llvm-project.git\",\n12:     \"directory\": \"lldb/tools/lldb-dap/\"\n13:   },\n14:   \"bugs\": {\n15:     \"url\": \"https://github.com/llvm/llvm-project/issues\"\n16:   },\n17:   \"icon\": \"llvm-logo.png\",\n18:   \"keywords\": [\n19:     \"C\",\n20:     \"C++\",\n21:     \"LLVM\",\n22:     \"LLDB\"\n23:   ],\n24:   \"engines\": {\n25:     \"vscode\": \"^1.75.0\"\n26:   },\n27:   \"categories\": [\n28:     \"Debuggers\"\n29:   ],\n30:   \"dependencies\": {\n31:     \"chokidar\": \"^4.0.3\"\n32:   },\n33:   \"devDependencies\": {\n34:     \"@types/mocha\": \"^10.0.10\",\n35:     \"@types/node\": \"^18.19.41\",\n36:     \"@types/tabulator-tables\": \"^6.2.10\",\n37:     \"@types/vscode\": \"1.75.0\",\n38:     \"@types/vscode-webview\": \"^1.57.5\",\n39:     \"@vscode/debugprotocol\": \"^1.68.0\",\n40:     \"@vscode/test-cli\": \"^0.0.12\",\n41:     \"@vscode/test-electron\": \"^2.5.2\",\n42:     \"@vscode/vsce\": \"^3.2.2\",\n43:     \"esbuild\": \"^0.25.9\",\n44:     \"mocha\": \"^10.2.0\",\n45:     \"ovsx\": \"^0.10.8\",\n46:     \"prettier\": \"^3.4.2\",\n47:     \"prettier-plugin-curly\": \"^0.3.1\",\n48:     \"prettier-plugin-organize-imports\": \"^4.3.0\",\n49:     \"tabulator-tables\": \"^6.3.1\",\n50:     \"typescript\": \"^5.7.3\"\n51:   },\n52:   \"activationEvents\": [\n53:     \"onDebug\",\n54:     \"onUri\"\n55:   ],\n56:   \"main\": \"./out/extension\",\n57:   \"scripts\": {\n58:     \"bundle-extension\": \"npx tsc -p ./ --noEmit && npx esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --target=node22 --minify\",\n59:     \"bundle-symbols-table-view\": \"npx tsc -p src/webview --noEmit && npx esbuild src/webview/symbols-table-view.ts --bundle --format=iife --outdir=./out/webview\",\n60:     \"bundle-tabulator\": \"cp node_modules/tabulator-tables/dist/js/tabulator.min.js ./out/webview/ && cp node_modules/tabulator-tables/dist/css/tabulator_midnight.min.css ./out/webview/ && cp node_modules/tabulator-tables/dist/css/tabulator_simple.min.css ./out/webview/\",\n61:     \"bundle-webview\": \"npm run bundle-symbols-table-view && npm run bundle-tabulator\",\n62:     \"vscode:prepublish\": \"npm run bundle-webview && npm run bundle-extension\",\n63:     \"watch\": \"npm run bundle-webview && tsc -watch -p ./\",\n64:     \"format\": \"npx prettier . --write\",\n65:     \"package\": \"rm -rf ./out && vsce package --out ./out/lldb-dap.vsix\",\n66:     \"compile\": \"tsc -p ./\",\n67:     \"publish\": \"vsce publish\",\n68:     \"publish-ovsx\": \"ovsx publish\",\n69:     \"pretest\": \"npm run compile\",\n70:     \"preunittest\": \"npm run pretest\",\n71:     \"unittest\": \"mocha --ui tdd ./out/test/unit\",\n72:     \"test\": \"vscode-test\",\n73:     \"vscode-uninstall\": \"code --uninstall-extension llvm-vs-code-extensions.lldb-dap\",\n74:     \"vscode-install\": \"code --install-extension ./out/lldb-dap.vsix\"\n75:   },\n76:   \"contributes\": {\n77:     \"languages\": [\n78:       {\n79:         \"id\": \"lldb.disassembly\",\n80:         \"aliases\": [\n81:           \"Disassembly\"\n82:         ],\n83:         \"extensions\": [\n84:           \".disasm\"\n85:         ]\n86:       }\n87:     ],\n88:     \"grammars\": [\n89:       {\n90:         \"language\": \"lldb.disassembly\",\n91:         \"scopeName\": \"source.disassembly\",\n92:         \"path\": \"./syntaxes/disassembly.json\"\n93:       }\n94:     ],\n95:     \"configuration\": [\n96:       {\n97:         \"type\": \"object\",\n98:         \"title\": \"Adapter\",\n99:         \"properties\": {\n100:           \"lldb-dap.executable-path\": {\n101:             \"order\": 0,\n102:             \"scope\": \"machine-overridable\",\n103:             \"type\": \"string\",\n104:             \"description\": \"The path to the lldb-dap binary, e.g. /usr/local/bin/lldb-dap\"\n105:           },\n106:           \"lldb-dap.log-path\": {\n107:             \"scope\": \"machine-overridable\",\n108:             \"type\": \"string\",\n109:             \"description\": \"The log path for lldb-dap (if any)\",\n110:             \"markdownDeprecationMessage\": \"Use the `#lldb-dap.logFolder#` setting instead\"\n111:           },\n112:           \"lldb-dap.logFolder\": {\n113:             \"order\": 0,\n114:             \"scope\": \"machine-overridable\",\n115:             \"type\": \"string\",\n116:             \"markdownDescription\": \"The folder to persist lldb-dap logs. If no value is provided, logs will be persisted in the [Extension Logs Folder](command:workbench.action.openExtensionLogsFolder).\"\n117:           },\n118:           \"lldb-dap.serverMode\": {\n119:             \"order\": 0,\n120:             \"scope\": \"resource\",\n121:             \"type\": \"boolean\",\n122:             \"markdownDescription\": \"Run lldb-dap in server mode.\\n\\nWhen enabled, lldb-dap will start a background server that will be reused between debug sessions. This allows caching of debug symbols between sessions and improves launch performance.\",\n123:             \"default\": false\n124:           },\n125:           \"lldb-dap.connectionTimeout\": {\n126:             \"order\": 0,\n127:             \"scope\": \"resource\",\n128:             \"type\": \"number\",\n129:             \"markdownDescription\": \"When running lldb-dap in server mode, the time in seconds to wait for new connections after the server has started and after all clients have disconnected. Each new connection will reset the timeout. When the timeout is reached, the server will be closed and the process will exit. Specifying non-positive values will cause the server to wait for new connections indefinitely.\",\n130:             \"default\": 0\n131:           },\n132:           \"lldb-dap.arguments\": {\n133:             \"scope\": \"resource\",\n134:             \"type\": \"array\",\n135:             \"default\": [],\n136:             \"items\": {\n137:               \"type\": \"string\"\n138:             },\n139:             \"description\": \"The list of additional arguments used to launch the debug adapter executable.\"\n140:           },\n141:           \"lldb-dap.environment\": {\n142:             \"scope\": \"resource\",\n143:             \"type\": \"object\",\n144:             \"default\": {},\n145:             \"description\": \"The environment of the lldb-dap process.\",\n146:             \"additionalProperties\": {\n147:               \"type\": \"string\"\n148:             }\n149:           },\n150:           \"lldb-dap.captureSessionLogs\": {\n151:             \"type\": \"boolean\",\n152:             \"description\": \"When enabled, LLDB-DAP session logs will be written to the Extension's log folder if the `lldb-dap.log-path` setting is not explicitly set.\",\n153:             \"default\": false\n154:           }\n155:         }\n156:       },\n157:       {\n158:         \"title\": \"Defaults\",\n159:         \"type\": \"object\",\n160:         \"properties\": {\n161:           \"lldb-dap.commandEscapePrefix\": {\n162:             \"order\": 0,\n163:             \"type\": \"string\",\n164:             \"description\": \"The escape prefix to use for executing regular LLDB commands in the Debug Console, instead of printing variables. Defaults to a back-tick (`). If it's an empty string, then all expression in the Debug Console are treated as regular LLDB commands.\",\n165:             \"default\": \"`\"\n166:           },\n167:           \"lldb-dap.customFrameFormat\": {\n168:             \"order\": 0,\n169:             \"type\": \"string\",\n170:             \"description\": \"If non-empty, stack frames will have descriptions generated based on the provided format. See https://lldb.llvm.org/use/formatting.html for an explanation on format strings for frames. If the format string contains errors, an error message will be displayed on the Debug Console and the default frame names will be used. This might come with a performance cost because debug information might need to be processed to generate the description.\",\n171:             \"default\": \"\"\n172:           },\n173:           \"lldb-dap.customThreadFormat\": {\n174:             \"order\": 0,\n175:             \"type\": \"string\",\n176:             \"description\": \"If non-empty, threads will have descriptions generated based on the provided format. See https://lldb.llvm.org/use/formatting.html for an explanation on format strings for threads. If the format string contains errors, an error message will be displayed on the Debug Console and the default thread names will be used. This might come with a performance cost because debug information might need to be processed to generate the description.\",\n177:             \"default\": \"\"\n178:           },\n179:           \"lldb-dap.detachOnError\": {\n180:             \"order\": 0,\n181:             \"type\": \"boolean\",\n182:             \"description\": \"Detach from the program.\",\n183:             \"default\": false\n184:           },\n185:           \"lldb-dap.disableASLR\": {\n186:             \"order\": 0,\n187:             \"type\": \"boolean\",\n188:             \"description\": \"Enable or disable Address space layout randomization if the debugger supports it.\",\n189:             \"default\": true\n190:           },\n191:           \"lldb-dap.disableSTDIO\": {\n192:             \"order\": 0,\n193:             \"type\": \"boolean\",\n194:             \"description\": \"Don't retrieve STDIN, STDOUT and STDERR as the program is running.\",\n195:             \"default\": false\n196:           },\n197:           \"lldb-dap.displayExtendedBacktrace\": {\n198:             \"order\": 0,\n199:             \"type\": \"boolean\",\n200:             \"description\": \"Enable language specific extended backtraces.\",\n201:             \"default\": false\n202:           },\n203:           \"lldb-dap.enableAutoVariableSummaries\": {\n204:             \"order\": 0,\n205:             \"type\": \"boolean\",\n206:             \"description\": \"Enable auto generated summaries for variables when no summaries exist for a given type. This feature can cause performance delays in large projects when viewing variables.\",\n207:             \"default\": false\n208:           },\n209:           \"lldb-dap.enableSyntheticChildDebugging\": {\n210:             \"order\": 0,\n211:             \"type\": \"boolean\",\n212:             \"description\": \"If a variable is displayed using a synthetic children, also display the actual contents of the variable at the end under a [raw] entry. This is useful when creating sythetic child plug-ins as it lets you see the actual contents of the variable.\",\n213:             \"default\": false\n214:           },\n215:           \"lldb-dap.timeout\": {\n216:             \"order\": 0,\n217:             \"type\": \"number\",\n218:             \"description\": \"The time in seconds to wait for a program to stop at entry point when launching with \\\"launchCommands\\\". Defaults to 30 seconds.\",\n219:             \"default\": 30\n220:           },\n221:           \"lldb-dap.targetTriple\": {\n222:             \"order\": 1,\n223:             \"type\": \"string\",\n224:             \"description\": \"Triplet of the target architecture to override value derived from the program file.\"\n225:           },\n226:           \"lldb-dap.platformName\": {\n227:             \"order\": 1,\n228:             \"type\": \"string\",\n229:             \"description\": \"Name of the execution platform to override value derived from the program file.\"\n230:           },\n231:           \"lldb-dap.initCommands\": {\n232:             \"order\": 2,\n233:             \"type\": \"array\",\n234:             \"items\": {\n235:               \"type\": \"string\"\n236:             },\n237:             \"description\": \"Initialization commands executed upon debugger startup.\",\n238:             \"default\": []\n239:           },\n240:           \"lldb-dap.preRunCommands\": {\n241:             \"order\": 3,\n242:             \"type\": \"array\",\n243:             \"items\": {\n244:               \"type\": \"string\"\n245:             },\n246:             \"description\": \"Commands executed just before the program is launched.\",\n247:             \"default\": []\n248:           },\n249:           \"lldb-dap.postRunCommands\": {\n250:             \"order\": 4,\n251:             \"type\": \"array\",\n252:             \"items\": {\n253:               \"type\": \"string\"\n254:             },\n255:             \"description\": \"Commands executed just as soon as the program is successfully launched when it's in a stopped state prior to any automatic continuation.\",\n256:             \"default\": []\n257:           },\n258:           \"lldb-dap.stopCommands\": {\n259:             \"order\": 5,\n260:             \"type\": \"array\",\n261:             \"items\": {\n262:               \"type\": \"string\"\n263:             },\n264:             \"description\": \"Commands executed each time the program stops.\",\n265:             \"default\": []\n266:           },\n267:           \"lldb-dap.exitCommands\": {\n268:             \"order\": 6,\n269:             \"type\": \"array\",\n270:             \"items\": {\n271:               \"type\": \"string\"\n272:             },\n273:             \"description\": \"Commands executed when the program exits.\",\n274:             \"default\": []\n275:           },\n276:           \"lldb-dap.terminateCommands\": {\n277:             \"order\": 7,\n278:             \"type\": \"array\",\n279:             \"items\": {\n280:               \"type\": \"string\"\n281:             },\n282:             \"description\": \"Commands executed when the debugging session ends.\",\n283:             \"default\": []\n284:           }\n285:         }\n286:       }\n287:     ],\n288:     \"commands\": [\n289:       {\n290:         \"command\": \"lldb-dap.modules.copyProperty\",\n291:         \"title\": \"Copy Value\"\n292:       },\n293:       {\n294:         \"command\": \"lldb-dap.modules.showSymbols\",\n295:         \"title\": \"Show Module Symbols\"\n296:       },\n297:       {\n298:         \"category\": \"lldb-dap\",\n299:         \"command\": \"lldb-dap.debug.showSymbols\",\n300:         \"title\": \"Show Symbols of a Module\"\n301:       }\n302:     ],\n303:     \"menus\": {\n304:       \"commandPalette\": [\n305:         {\n306:           \"command\": \"lldb-dap.modules.copyProperty\",\n307:           \"when\": \"false\"\n308:         },\n309:         {\n310:           \"command\": \"lldb-dap.modules.showSymbols\",\n311:           \"when\": \"false\"\n312:         },\n313:         {\n314:           \"command\": \"lldb-dap.debug.showSymbols\",\n315:           \"when\": \"debuggersAvailable && debugType == 'lldb-dap' && lldb-dap.supportsModuleSymbolsRequest\"\n316:         }\n317:       ],\n318:       \"view/item/context\": [\n319:         {\n320:           \"command\": \"lldb-dap.modules.copyProperty\",\n321:           \"when\": \"view == lldb-dap.modules && viewItem == property\"\n322:         },\n323:         {\n324:           \"command\": \"lldb-dap.modules.showSymbols\",\n325:           \"when\": \"view == lldb-dap.modules && viewItem == module && lldb-dap.supportsModuleSymbolsRequest\"\n326:         }\n327:       ]\n328:     },\n329:     \"breakpoints\": [\n330:       {\n331:         \"language\": \"lldb.disassembly\"\n332:       },\n333:       {\n334:         \"language\": \"ada\"\n335:       },\n336:       {\n337:         \"language\": \"arm\"\n338:       },\n339:       {\n340:         \"language\": \"asm\"\n341:       },\n342:       {\n343:         \"language\": \"c\"\n344:       },\n345:       {\n346:         \"language\": \"cpp\"\n347:       },\n348:       {\n349:         \"language\": \"crystal\"\n350:       },\n351:       {\n352:         \"language\": \"d\"\n353:       },\n354:       {\n355:         \"language\": \"fortran\"\n356:       },\n357:       {\n358:         \"language\": \"fortran-modern\"\n359:       },\n360:       {\n361:         \"language\": \"nim\"\n362:       },\n363:       {\n364:         \"language\": \"objective-c\"\n365:       },\n366:       {\n367:         \"language\": \"objective-cpp\"\n368:       },\n369:       {\n370:         \"language\": \"objectpascal\"\n371:       },\n372:       {\n373:         \"language\": \"pascal\"\n374:       },\n375:       {\n376:         \"language\": \"rust\"\n377:       },\n378:       {\n379:         \"language\": \"swift\"\n380:       }\n381:     ],\n382:     \"debuggers\": [\n383:       {\n384:         \"type\": \"lldb-dap\",\n385:         \"label\": \"LLDB DAP Debugger\",\n386:         \"languages\": [\n387:           \"ada\",\n388:           \"arm\",\n389:           \"c\",\n390:           \"cpp\",\n391:           \"crystal\",\n392:           \"d\",\n393:           \"fortran\",\n394:           \"fortran-modern\",\n395:           \"nim\",\n396:           \"objective-c\",\n397:           \"objective-cpp\",\n398:           \"objectpascal\",\n399:           \"pascal\",\n400:           \"rust\",\n401:           \"swift\"\n402:         ],\n403:         \"configurationAttributes\": {\n404:           \"launch\": {\n405:             \"required\": [\n406:               \"program\"\n407:             ],\n408:             \"properties\": {\n409:               \"debugAdapterHostname\": {\n410:                 \"type\": \"string\",\n411:                 \"markdownDescription\": \"The hostname that an existing lldb-dap executable is listening on.\"\n412:               },\n413:               \"debugAdapterPort\": {\n414:                 \"type\": \"number\",\n415:                 \"markdownDescription\": \"The port that an existing lldb-dap executable is listening on.\"\n416:               },\n417:               \"debugAdapterExecutable\": {\n418:                 \"type\": \"string\",\n419:                 \"markdownDescription\": \"The absolute path to the LLDB debug adapter executable to use. Overrides any user or workspace settings.\"\n420:               },\n421:               \"debugAdapterArgs\": {\n422:                 \"type\": \"array\",\n423:                 \"items\": {\n424:                   \"type\": \"string\"\n425:                 },\n426:                 \"markdownDescription\": \"The list of additional arguments used to launch the debug adapter executable. Overrides any user or workspace settings.\"\n427:               },\n428:               \"debugAdapterEnv\": {\n429:                 \"anyOf\": [\n430:                   {\n431:                     \"type\": \"object\",\n432:                     \"markdownDescription\": \"Additional environment variables to set when launching the debug adapter executable. For example `{ \\\"FOO\\\": \\\"1\\\" }`\",\n433:                     \"patternProperties\": {\n434:                       \".*\": {\n435:                         \"type\": \"string\"\n436:                       }\n437:                     },\n438:                     \"default\": {}\n439:                   },\n440:                   {\n441:                     \"type\": \"array\",\n442:                     \"markdownDescription\": \"Additional environment variables to set when launching the debug adapter executable. For example `[\\\"FOO=1\\\", \\\"BAR\\\"]`\",\n443:                     \"items\": {\n444:                       \"type\": \"string\",\n445:                       \"pattern\": \"^\\\\w+(=.*)?$\"\n446:                     },\n447:                     \"default\": []\n448:                   }\n449:                 ]\n450:               },\n451:               \"program\": {\n452:                 \"type\": \"string\",\n453:                 \"description\": \"Path to the program to debug.\"\n454:               },\n455:               \"args\": {\n456:                 \"type\": [\n457:                   \"array\"\n458:                 ],\n459:                 \"items\": {\n460:                   \"type\": \"string\"\n461:                 },\n462:                 \"description\": \"Program arguments.\",\n463:                 \"default\": []\n464:               },\n465:               \"cwd\": {\n466:                 \"type\": \"string\",\n467:                 \"description\": \"Program working directory.\",\n468:                 \"default\": \"${workspaceFolder}\"\n469:               },\n470:               \"env\": {\n471:                 \"anyOf\": [\n472:                   {\n473:                     \"type\": \"object\",\n474:                     \"description\": \"Additional environment variables to set when launching the program. E.g. `{ \\\"FOO\\\": \\\"1\\\" }`\",\n475:                     \"patternProperties\": {\n476:                       \".*\": {\n477:                         \"type\": \"string\"\n478:                       }\n479:                     },\n480:                     \"default\": {}\n481:                   },\n482:                   {\n483:                     \"type\": \"array\",\n484:                     \"description\": \"Additional environment variables to set when launching the program. E.g. `[\\\"FOO=1\\\", \\\"BAR\\\"]`\",\n485:                     \"items\": {\n486:                       \"type\": \"string\",\n487:                       \"pattern\": \"^((\\\\w+=.*)|^\\\\w+)$\"\n488:                     },\n489:                     \"default\": []\n490:                   }\n491:                 ]\n492:               },\n493:               \"stopOnEntry\": {\n494:                 \"type\": \"boolean\",\n495:                 \"description\": \"Automatically stop after launch.\",\n496:                 \"default\": false\n497:               },\n498:               \"disableASLR\": {\n499:                 \"type\": \"boolean\",\n500:                 \"description\": \"Enable or disable Address space layout randomization if the debugger supports it.\",\n501:                 \"default\": true\n502:               },\n503:               \"disableSTDIO\": {\n504:                 \"type\": \"boolean\",\n505:                 \"description\": \"Don't retrieve STDIN, STDOUT and STDERR as the program is running.\",\n506:                 \"default\": false\n507:               },\n508:               \"shellExpandArguments\": {\n509:                 \"type\": \"boolean\",\n510:                 \"description\": \"Expand program arguments as a shell would without actually launching the program in a shell.\",\n511:                 \"default\": false\n512:               },\n513:               \"detachOnError\": {\n514:                 \"type\": \"boolean\",\n515:                 \"description\": \"Detach from the program.\",\n516:                 \"default\": false\n517:               },\n518:               \"sourcePath\": {\n519:                 \"type\": \"string\",\n520:                 \"description\": \"Specify a source path to remap \\\"./\\\" to allow full paths to be used when setting breakpoints in binaries that have relative source paths.\"\n521:               },\n522:               \"sourceMap\": {\n523:                 \"anyOf\": [\n524:                   {\n525:                     \"type\": \"object\",\n526:                     \"description\": \"Specify an object of path remappings; each entry has a key containing the source path and a value containing the destination path. E.g `{ \\\"/the/source/path\\\": \\\"/the/destination/path\\\" }`. Overrides sourcePath.\",\n527:                     \"patternProperties\": {\n528:                       \".*\": {\n529:                         \"type\": \"string\"\n530:                       }\n531:                     },\n532:                     \"default\": {}\n533:                   },\n534:                   {\n535:                     \"type\": \"array\",\n536:                     \"description\": \"Specify an array of path remappings; each element must itself be a two element array containing a source and destination path name. Overrides sourcePath.\",\n537:                     \"items\": {\n538:                       \"type\": \"array\",\n539:                       \"minItems\": 2,\n540:                       \"maxItems\": 2,\n541:                       \"items\": {\n542:                         \"type\": \"string\"\n543:                       }\n544:                     },\n545:                     \"default\": []\n546:                   }\n547:                 ]\n548:               },\n549:               \"debuggerRoot\": {\n550:                 \"type\": \"string\",\n551:                 \"description\": \"Specify a working directory to set the debug adapter to so relative object files can be located.\"\n552:               },\n553:               \"targetTriple\": {\n554:                 \"type\": \"string\",\n555:                 \"description\": \"Triplet of the target architecture to override value derived from the program file.\"\n556:               },\n557:               \"platformName\": {\n558:                 \"type\": \"string\",\n559:                 \"description\": \"Name of the execution platform to override value derived from the program file.\"\n560:               },\n561:               \"initCommands\": {\n562:                 \"type\": \"array\",\n563:                 \"items\": {\n564:                   \"type\": \"string\"\n565:                 },\n566:                 \"description\": \"Initialization commands executed upon debugger startup.\",\n567:                 \"default\": []\n568:               },\n569:               \"preRunCommands\": {\n570:                 \"type\": \"array\",\n571:                 \"items\": {\n572:                   \"type\": \"string\"\n573:                 },\n574:                 \"description\": \"Commands executed just before the program is launched.\",\n575:                 \"default\": []\n576:               },\n577:               \"postRunCommands\": {\n578:                 \"type\": \"array\",\n579:                 \"items\": {\n580:                   \"type\": \"string\"\n581:                 },\n582:                 \"description\": \"Commands executed just as soon as the program is successfully launched when it's in a stopped state prior to any automatic continuation.\",\n583:                 \"default\": []\n584:               },\n585:               \"launchCommands\": {\n586:                 \"type\": \"array\",\n587:                 \"items\": {\n588:                   \"type\": \"string\"\n589:                 },\n590:                 \"description\": \"Custom commands that are executed instead of launching a process. A target will be created with the launch arguments prior to executing these commands. The commands may optionally create a new target and must perform a launch. A valid process must exist after these commands complete or the \\\"launch\\\" will fail. Launch the process with \\\"process launch -s\\\" to make the process to at the entry point since lldb-dap will auto resume if necessary.\",\n591:                 \"default\": []\n592:               },\n593:               \"stopCommands\": {\n594:                 \"type\": \"array\",\n595:                 \"items\": {\n596:                   \"type\": \"string\"\n597:                 },\n598:                 \"description\": \"Commands executed each time the program stops.\",\n599:                 \"default\": []\n600:               },\n601:               \"exitCommands\": {\n602:                 \"type\": \"array\",\n603:                 \"items\": {\n604:                   \"type\": \"string\"\n605:                 },\n606:                 \"description\": \"Commands executed when the program exits.\",\n607:                 \"default\": []\n608:               },\n609:               \"terminateCommands\": {\n610:                 \"type\": \"array\",\n611:                 \"items\": {\n612:                   \"type\": \"string\"\n613:                 },\n614:                 \"description\": \"Commands executed when the debugging session ends.\",\n615:                 \"default\": []\n616:               },\n617:               \"runInTerminal\": {\n618:                 \"type\": \"boolean\",\n619:                 \"description\": \"Launch the program inside an integrated terminal in the IDE. Useful for debugging interactive command line programs\",\n620:                 \"default\": false,\n621:                 \"deprecationMessage\": \"Attribute 'runInTerminal' is deprecated, use 'console' instead.\"\n622:               },\n623:               \"console\": {\n624:                 \"type\": \"string\",\n625:                 \"enum\": [\n626:                   \"internalConsole\",\n627:                   \"integratedTerminal\",\n628:                   \"externalTerminal\"\n629:                 ],\n630:                 \"enumDescriptions\": [\n631:                   \"Use Debug Console for output (input is not supported).\",\n632:                   \"Launch the program inside an integrated terminal in the IDE.\",\n633:                   \"Launch the program inside an external terminal window.\"\n634:                 ],\n635:                 \"description\": \"Specify where to launch the program: internal console, integrated terminal or external terminal.\",\n636:                 \"default\": \"internalConsole\"\n637:               },\n638:               \"stdio\": {\n639:                 \"type\": \"array\",\n640:                 \"items\": {\n641:                   \"type\": [\n642:                     \"string\",\n643:                     \"null\"\n644:                   ]\n645:                 },\n646:                 \"description\": \"The stdio property specifies the redirection targets for the debuggee's stdio streams. A null value redirects a stream to the default debug terminal. String can be a path to file, named pipe or TTY device. If less than three values are provided, the list will be padded with the last value. Specifying more than three values will create additional file descriptors (4, 5, etc.).\",\n647:                 \"default\": []\n648:               },\n649:               \"timeout\": {\n650:                 \"type\": \"number\",\n651:                 \"description\": \"The time in seconds to wait for a program to stop at entry point when launching with \\\"launchCommands\\\". Defaults to 30 seconds.\"\n652:               },\n653:               \"enableAutoVariableSummaries\": {\n654:                 \"type\": \"boolean\",\n655:                 \"description\": \"Enable auto generated summaries for variables when no summaries exist for a given type. This feature can cause performance delays in large projects when viewing variables.\",\n656:                 \"default\": false\n657:               },\n658:               \"displayExtendedBacktrace\": {\n659:                 \"type\": \"boolean\",\n660:                 \"description\": \"Enable language specific extended backtraces.\",\n661:                 \"default\": false\n662:               },\n663:               \"enableSyntheticChildDebugging\": {\n664:                 \"type\": \"boolean\",\n665:                 \"description\": \"If a variable is displayed using a synthetic children, also display the actual contents of the variable at the end under a [raw] entry. This is useful when creating sythetic child plug-ins as it lets you see the actual contents of the variable.\",\n666:                 \"default\": false\n667:               },\n668:               \"commandEscapePrefix\": {\n669:                 \"type\": \"string\",\n670:                 \"description\": \"The escape prefix to use for executing regular LLDB commands in the Debug Console, instead of printing variables. Defaults to a back-tick (`). If it's an empty string, then all expression in the Debug Console are treated as regular LLDB commands.\",\n671:                 \"default\": \"`\"\n672:               },\n673:               \"customFrameFormat\": {\n674:                 \"type\": \"string\",\n675:                 \"description\": \"If non-empty, stack frames will have descriptions generated based on the provided format. See https://lldb.llvm.org/use/formatting.html for an explanation on format strings for frames. If the format string contains errors, an error message will be displayed on the Debug Console and the default frame names will be used. This might come with a performance cost because debug information might need to be processed to generate the description.\",\n676:                 \"default\": \"\"\n677:               },\n678:               \"customThreadFormat\": {\n679:                 \"type\": \"string\",\n680:                 \"description\": \"If non-empty, threads will have descriptions generated based on the provided format. See https://lldb.llvm.org/use/formatting.html for an explanation on format strings for threads. If the format string contains errors, an error message will be displayed on the Debug Console and the default thread names will be used. This might come with a performance cost because debug information might need to be processed to generate the description.\",\n681:                 \"default\": \"\"\n682:               }\n683:             }\n684:           },\n685:           \"attach\": {\n686:             \"properties\": {\n687:               \"debugAdapterHostname\": {\n688:                 \"type\": \"string\",\n689:                 \"markdownDescription\": \"The hostname that an existing lldb-dap executable is listening on.\"\n690:               },\n691:               \"debugAdapterPort\": {\n692:                 \"type\": \"number\",\n693:                 \"markdownDescription\": \"The port that an existing lldb-dap executable is listening on.\"\n694:               },\n695:               \"debugAdapterExecutable\": {\n696:                 \"type\": \"string\",\n697:                 \"markdownDescription\": \"The absolute path to the LLDB debug adapter executable to use. Overrides any user or workspace settings.\"\n698:               },\n699:               \"debugAdapterArgs\": {\n700:                 \"type\": \"array\",\n701:                 \"items\": {\n702:                   \"type\": \"string\"\n703:                 },\n704:                 \"markdownDescription\": \"The list of additional arguments used to launch the debug adapter executable. Overrides any user or workspace settings.\"\n705:               },\n706:               \"debugAdapterEnv\": {\n707:                 \"anyOf\": [\n708:                   {\n709:                     \"type\": \"object\",\n710:                     \"markdownDescription\": \"Additional environment variables to set when launching the debug adapter executable. For example `{ \\\"FOO\\\": \\\"1\\\" }`\",\n711:                     \"patternProperties\": {\n712:                       \".*\": {\n713:                         \"type\": \"string\"\n714:                       }\n715:                     },\n716:                     \"default\": {}\n717:                   },\n718:                   {\n719:                     \"type\": \"array\",\n720:                     \"markdownDescription\": \"Additional environment variables to set when launching the debug adapter executable. For example `[\\\"FOO=1\\\", \\\"BAR\\\"]`\",\n721:                     \"items\": {\n722:                       \"type\": \"string\",\n723:                       \"pattern\": \"^\\\\w+(=.*)?$\"\n724:                     },\n725:                     \"default\": []\n726:                   }\n727:                 ]\n728:               },\n729:               \"program\": {\n730:                 \"type\": \"string\",\n731:                 \"description\": \"Path to the program to attach to.\"\n732:               },\n733:               \"pid\": {\n734:                 \"type\": \"number\",\n735:                 \"description\": \"System process ID to attach to.\"\n736:               },\n737:               \"waitFor\": {\n738:                 \"type\": \"boolean\",\n739:                 \"description\": \"If set to true, then wait for the process to launch by looking for a process with a basename that matches `program`. No process ID needs to be specified when using this flag.\",\n740:                 \"default\": true\n741:               },\n742:               \"stopOnEntry\": {\n743:                 \"type\": \"boolean\",\n744:                 \"description\": \"Automatically stop after attach.\",\n745:                 \"default\": false\n746:               },\n747:               \"sourcePath\": {\n748:                 \"type\": \"string\",\n749:                 \"description\": \"Specify a source path to remap \\\"./\\\" to allow full paths to be used when setting breakpoints in binaries that have relative source paths.\"\n750:               },\n751:               \"sourceMap\": {\n752:                 \"anyOf\": [\n753:                   {\n754:                     \"type\": \"object\",\n755:                     \"description\": \"Specify an object of path remappings; each entry has a key containing the source path and a value containing the destination path. E.g `{ \\\"/the/source/path\\\": \\\"/the/destination/path\\\" }`. Overrides sourcePath.\",\n756:                     \"patternProperties\": {\n757:                       \".*\": {\n758:                         \"type\": \"string\"\n759:                       }\n760:                     },\n761:                     \"default\": {}\n762:                   },\n763:                   {\n764:                     \"type\": \"array\",\n765:                     \"description\": \"Specify an array of path remappings; each element must itself be a two element array containing a source and destination path name. Overrides sourcePath.\",\n766:                     \"items\": {\n767:                       \"type\": \"array\",\n768:                       \"minItems\": 2,\n769:                       \"maxItems\": 2,\n770:                       \"items\": {\n771:                         \"type\": \"string\"\n772:                       }\n773:                     },\n774:                     \"default\": []\n775:                   }\n776:                 ]\n777:               },\n778:               \"debuggerRoot\": {\n779:                 \"type\": \"string\",\n780:                 \"description\": \"Specify a working directory to set the debug adapter to so relative object files can be located.\"\n781:               },\n782:               \"targetTriple\": {\n783:                 \"type\": \"string\",\n784:                 \"description\": \"Triplet of the target architecture to override value derived from the program file.\"\n785:               },\n786:               \"platformName\": {\n787:                 \"type\": \"string\",\n788:                 \"description\": \"Name of the execution platform to override value derived from the program file.\"\n789:               },\n790:               \"attachCommands\": {\n791:                 \"type\": \"array\",\n792:                 \"items\": {\n793:                   \"type\": \"string\"\n794:                 },\n795:                 \"description\": \"Custom commands that are executed instead of attaching to a process ID or to a process by name. These commands may optionally create a new target and must perform an attach. A valid process must exist after these commands complete or the \\\"attach\\\" will fail.\",\n796:                 \"default\": []\n797:               },\n798:               \"session\": {\n799:                 \"type\": \"object\",\n800:                 \"properties\": {\n801:                   \"targetId\": {\n802:                     \"type\": \"number\",\n803:                     \"description\": \"The globally unique target id to attach to. Use when a target is dynamically created.\"\n804:                   },\n805:                   \"debuggerId\": {\n806:                     \"type\": \"number\",\n807:                     \"description\": \"ID of an existing debugger instance to use.\"\n808:                   },\n809:                   \"additionalProperties\": false,\n810:                   \"required\": [\"targetId\", \"debuggerId\"]\n811:                 },\n812:                 \"description\": \"This property is Experimental.\\nAttach to an existing debugging session.\\nAdded in version 22.0.\"\n813:               },\n814:               \"initCommands\": {\n815:                 \"type\": \"array\",\n816:                 \"items\": {\n817:                   \"type\": \"string\"\n818:                 },\n819:                 \"description\": \"Initialization commands executed upon debugger startup.\",\n820:                 \"default\": []\n821:               },\n822:               \"preRunCommands\": {\n823:                 \"type\": \"array\",\n824:                 \"items\": {\n825:                   \"type\": \"string\"\n826:                 },\n827:                 \"description\": \"Commands executed just before the program is attached to.\",\n828:                 \"default\": []\n829:               },\n830:               \"postRunCommands\": {\n831:                 \"type\": \"array\",\n832:                 \"items\": {\n833:                   \"type\": \"string\"\n834:                 },\n835:                 \"description\": \"Commands executed just as soon as the program is successfully attached when it's in a stopped state prior to any automatic continuation.\",\n836:                 \"default\": []\n837:               },\n838:               \"stopCommands\": {\n839:                 \"type\": \"array\",\n840:                 \"items\": {\n841:                   \"type\": \"string\"\n842:                 },\n843:                 \"description\": \"Commands executed each time the program stops.\",\n844:                 \"default\": []\n845:               },\n846:               \"exitCommands\": {\n847:                 \"type\": \"array\",\n848:                 \"items\": {\n849:                   \"type\": \"string\"\n850:                 },\n851:                 \"description\": \"Commands executed when the program exits.\",\n852:                 \"default\": []\n853:               },\n854:               \"terminateCommands\": {\n855:                 \"type\": \"array\",\n856:                 \"items\": {\n857:                   \"type\": \"string\"\n858:                 },\n859:                 \"description\": \"Commands executed when the debugging session ends.\",\n860:                 \"default\": []\n861:               },\n862:               \"coreFile\": {\n863:                 \"type\": \"string\",\n864:                 \"description\": \"Path to the core file to debug.\"\n865:               },\n866:               \"timeout\": {\n867:                 \"type\": \"number\",\n868:                 \"description\": \"The time in seconds to wait for a program to stop when attaching using \\\"attachCommands\\\". Defaults to 30 seconds.\"\n869:               },\n870:               \"gdb-remote-port\": {\n871:                 \"type\": [\n872:                   \"number\",\n873:                   \"string\"\n874:                 ],\n875:                 \"description\": \"TCP/IP port to attach to a remote system. Specifying both pid and port is an error.\"\n876:               },\n877:               \"gdb-remote-hostname\": {\n878:                 \"type\": \"string\",\n879:                 \"description\": \"The hostname to connect to a remote system. The default hostname being used localhost.\"\n880:               },\n881:               \"enableAutoVariableSummaries\": {\n882:                 \"type\": \"boolean\",\n883:                 \"description\": \"Enable auto generated summaries for variables when no summaries exist for a given type. This feature can cause performance delays in large projects when viewing variables.\",\n884:                 \"default\": false\n885:               },\n886:               \"displayExtendedBacktrace\": {\n887:                 \"type\": \"boolean\",\n888:                 \"description\": \"Enable language specific extended backtraces.\",\n889:                 \"default\": false\n890:               },\n891:               \"enableSyntheticChildDebugging\": {\n892:                 \"type\": \"boolean\",\n893:                 \"description\": \"If a variable is displayed using a synthetic children, also display the actual contents of the variable at the end under a [raw] entry. This is useful when creating sythetic child plug-ins as it lets you see the actual contents of the variable.\",\n894:                 \"default\": false\n895:               },\n896:               \"commandEscapePrefix\": {\n897:                 \"type\": \"string\",\n898:                 \"description\": \"The escape prefix character to use for executing regular LLDB commands in the Debug Console, instead of printing variables. Defaults to a back-tick (`). If empty, then all expression in the Debug Console are treated as regular LLDB commands.\",\n899:                 \"default\": \"`\"\n900:               },\n901:               \"customFrameFormat\": {\n902:                 \"type\": \"string\",\n903:                 \"description\": \"If non-empty, stack frames will have descriptions generated based on the provided format. See https://lldb.llvm.org/use/formatting.html for an explanation on format strings for frames. If the format string contains errors, an error message will be displayed on the Debug Console and the default frame names will be used. This might come with a performance cost because debug information might need to be processed to generate the description.\",\n904:                 \"default\": \"\"\n905:               },\n906:               \"customThreadFormat\": {\n907:                 \"type\": \"string\",\n908:                 \"description\": \"If non-empty, threads will have descriptions generated based on the provided format. See https://lldb.llvm.org/use/formatting.html for an explanation on format strings for threads. If the format string contains errors, an error message will be displayed on the Debug Console and the default thread names will be used. This might come with a performance cost because debug information might need to be processed to generate the description.\",\n909:                 \"default\": \"\"\n910:               }\n911:             }\n912:           }\n913:         },\n914:         \"initialConfigurations\": [\n915:           {\n916:             \"type\": \"lldb-dap\",\n917:             \"request\": \"launch\",\n918:             \"name\": \"Debug\",\n919:             \"program\": \"${workspaceFolder}/<your program>\",\n920:             \"args\": [],\n921:             \"env\": [],\n922:             \"cwd\": \"${workspaceFolder}\"\n923:           }\n924:         ],\n925:         \"configurationSnippets\": [\n926:           {\n927:             \"label\": \"LLDB: Launch\",\n928:             \"description\": \"\",\n929:             \"body\": {\n930:               \"type\": \"lldb-dap\",\n931:               \"request\": \"launch\",\n932:               \"name\": \"${2:Launch}\",\n933:               \"program\": \"^\\\"\\\\${workspaceFolder}/${1:<your program>}\\\"\",\n934:               \"args\": [],\n935:               \"env\": [],\n936:               \"cwd\": \"^\\\"\\\\${workspaceFolder}\\\"\"\n937:             }\n938:           },\n939:           {\n940:             \"label\": \"LLDB: Attach\",\n941:             \"description\": \"\",\n942:             \"body\": {\n943:               \"type\": \"lldb-dap\",\n944:               \"request\": \"attach\",\n945:               \"name\": \"${2:Attach}\",\n946:               \"program\": \"${1:<your program>}\",\n947:               \"waitFor\": true\n948:             }\n949:           },\n950:           {\n951:             \"label\": \"LLDB: Load Coredump\",\n952:             \"description\": \"\",\n953:             \"body\": {\n954:               \"type\": \"lldb-dap\",\n955:               \"request\": \"attach\",\n956:               \"name\": \"${2:Core}\",\n957:               \"program\": \"${1:<your program>}\",\n958:               \"coreFile\": \"${1:<your program>}.core\"\n959:             }\n960:           }\n961:         ]\n962:       }\n963:     ],\n964:     \"views\": {\n965:       \"debug\": [\n966:         {\n967:           \"id\": \"lldb-dap.modules\",\n968:           \"name\": \"Modules\",\n969:           \"when\": \"inDebugMode && debugType == 'lldb-dap' && lldb-dap.showModules\",\n970:           \"icon\": \"$(symbol-module)\"\n971:         }\n972:       ]\n973:     }\n974:   }\n975: }\n\n(End of file - total 975 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_ACdo3HMMrDWtIAmq1CuXIuEl",
+      "content": "/Users/woojin/swpp/swpp202601-team19/src/lib/opt/CMakeLists.txt\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/CMakeLists.txt\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/CMakeLists.txt\n/Users/woojin/swpp/swpp202601-team19/src/lib/CMakeLists.txt\n/Users/woojin/swpp/swpp202601-team19/src/CMakeLists.txt\n/Users/woojin/swpp/swpp202601-team19/CMakeLists.txt\n/Users/woojin/swpp/swpp202601-team19/test/CMakeLists.txt"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_iDoKO0lVkqVlRMskY1iHQv9V",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_GN1GSBiCftrs5cEdWVNZ8UMU",
+      "content": "/Users/woojin/swpp/swpp202601-team19/test/run_filecheck.cmake"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_qzP562jTPozjVcsg2cRHsgE1",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/compile.sh</path>\n<type>file</type>\n<content>\n1: #!/bin/bash\n2: # Build script for SWPP compiler\n3: # [AI-Disclosure] This build commands have been generated with Claude\n4: \n5: set -euo pipefail\n6: \n7: REPO_ROOT=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)\"\n8: cd \"$REPO_ROOT\"\n9: \n10: LLVM_ROOT=\"${LLVM_ROOT:-/opt/llvm-22.1.0}\"\n11: NINJA=\"${NINJA:-ninja}\"\n12: SWPP_ENABLE_BENCHMARK_TESTS=\"${SWPP_ENABLE_BENCHMARK_TESTS:-OFF}\"\n13: \n14: LLVM_DIR=\"$LLVM_ROOT/lib/cmake/llvm\"\n15: C_COMPILER=\"$LLVM_ROOT/bin/clang\"\n16: CXX_COMPILER=\"$LLVM_ROOT/bin/clang++\"\n17: BUILD_DIR=\"$REPO_ROOT/build\"\n18: CACHE_FILE=\"$BUILD_DIR/CMakeCache.txt\"\n19: \n20: CMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS:-}\"\n21: CMAKE_EXE_LINKER_FLAGS=\"${CMAKE_EXE_LINKER_FLAGS:-}\"\n22: CMAKE_SHARED_LINKER_FLAGS=\"${CMAKE_SHARED_LINKER_FLAGS:-}\"\n23: \n24: append_unique_flag() {\n25:   local var_name=\"$1\"\n26:   local flag=\"$2\"\n27:   local current=\"${!var_name}\"\n28:   if [[ \" $current \" != *\" $flag \"* ]]; then\n29:     printf -v \"$var_name\" '%s%s%s' \"$current\" \"${current:+ }\" \"$flag\"\n30:   fi\n31: }\n32: \n33: if \"$LLVM_ROOT/bin/llvm-config\" --cxxflags | grep -Eq '(^|[[:space:]])-stdlib=libc\\+\\+($|[[:space:]])'; then\n34:   LLVM_RUNTIME_LIB_DIR=\"\"\n35:   for CANDIDATE in \"$LLVM_ROOT/lib/$(\"$CXX_COMPILER\" -print-target-triple)\" \"$LLVM_ROOT/lib\"; do\n36:     if [[ -e \"$CANDIDATE/libc++.so.1\" || -e \"$CANDIDATE/libc++.dylib\" ]]; then\n37:       LLVM_RUNTIME_LIB_DIR=\"$CANDIDATE\"\n38:       break\n39:     fi\n40:   done\n41: \n42:   append_unique_flag CMAKE_CXX_FLAGS \"-stdlib=libc++\"\n43:   append_unique_flag CMAKE_EXE_LINKER_FLAGS \"-stdlib=libc++\"\n44:   append_unique_flag CMAKE_SHARED_LINKER_FLAGS \"-stdlib=libc++\"\n45:   if [[ -n \"$LLVM_RUNTIME_LIB_DIR\" ]]; then\n46:     append_unique_flag CMAKE_EXE_LINKER_FLAGS \"-Wl,-rpath,$LLVM_RUNTIME_LIB_DIR\"\n47:     append_unique_flag CMAKE_SHARED_LINKER_FLAGS \"-Wl,-rpath,$LLVM_RUNTIME_LIB_DIR\"\n48:   fi\n49: fi\n50: \n51: if [[ -f \"$CACHE_FILE\" ]]; then\n52:   CACHED_SOURCE_DIR=\"$(sed -n 's/^CMAKE_HOME_DIRECTORY:INTERNAL=//p' \"$CACHE_FILE\")\"\n53:   if [[ -n \"$CACHED_SOURCE_DIR\" && \"$CACHED_SOURCE_DIR\" != \"$REPO_ROOT\" ]]; then\n54:     echo \"Removing stale build directory created for: $CACHED_SOURCE_DIR\"\n55:     rm -rf \"$BUILD_DIR\"\n56:   fi\n57: fi\n58: \n59: cmake -S . -GNinja -Bbuild \\\n60:   -DLLVM_DIR=\"$LLVM_DIR\" \\\n61:   -DCMAKE_C_COMPILER=\"$C_COMPILER\" \\\n62:   -DCMAKE_CXX_COMPILER=\"$CXX_COMPILER\" \\\n63:   -DCMAKE_CXX_FLAGS=\"$CMAKE_CXX_FLAGS\" \\\n64:   -DCMAKE_EXE_LINKER_FLAGS=\"$CMAKE_EXE_LINKER_FLAGS\" \\\n65:   -DCMAKE_SHARED_LINKER_FLAGS=\"$CMAKE_SHARED_LINKER_FLAGS\" \\\n66:   -DSWPP_ENABLE_BENCHMARK_TESTS=\"$SWPP_ENABLE_BENCHMARK_TESTS\"\n67: \n68: cmake --build build -j\"$(nproc)\"\n\n(End of file - total 68 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_ApHZuSbBJ43EqehtUA5GZLzx",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/format-all.sh</path>\n<type>file</type>\n<content>\n1: #!/bin/bash\n2: \n3: set -euo pipefail\n4: \n5: SCRIPT_DIR=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)\"\n6: REPO_ROOT=\"$SCRIPT_DIR\"\n7: \n8: LLVM_ROOT=\"${LLVM_ROOT:-/opt/llvm-22.1.0}\"\n9: CLANG_FORMAT=\"${CLANG_FORMAT:-}\"\n10: \n11: if [[ -z \"$CLANG_FORMAT\" ]]; then\n12:   CLANG_FORMAT_CANDIDATES=(\"$LLVM_ROOT/bin/clang-format\")\n13: \n14:   if [[ -n \"${LLVM_DIR:-}\" ]]; then\n15:     CLANG_FORMAT_CANDIDATES+=(\"$LLVM_DIR/bin/clang-format\")\n16:     if LLVM_DIR_ROOT=\"$(cd \"$LLVM_DIR/../../..\" 2>/dev/null && pwd)\"; then\n17:       CLANG_FORMAT_CANDIDATES+=(\"$LLVM_DIR_ROOT/bin/clang-format\")\n18:     fi\n19:   fi\n20: \n21:   for CANDIDATE in \"${CLANG_FORMAT_CANDIDATES[@]}\"; do\n22:     if [[ -x \"$CANDIDATE\" ]]; then\n23:       CLANG_FORMAT=\"$CANDIDATE\"\n24:       break\n25:     fi\n26:   done\n27: fi\n28: \n29: if [[ -z \"$CLANG_FORMAT\" ]]; then\n30:   if ! CLANG_FORMAT=\"$(command -v clang-format 2>/dev/null)\"; then\n31:     echo \"Unable to find clang-format. Set LLVM_ROOT or CLANG_FORMAT.\" >&2\n32:     exit 1\n33:   fi\n34: elif [[ \"$CLANG_FORMAT\" != */* ]]; then\n35:   CLANG_FORMAT_NAME=\"$CLANG_FORMAT\"\n36:   if ! CLANG_FORMAT=\"$(command -v \"$CLANG_FORMAT_NAME\" 2>/dev/null)\"; then\n37:     echo \"Unable to find clang-format executable: $CLANG_FORMAT_NAME\" >&2\n38:     exit 1\n39:   fi\n40: elif [[ ! -x \"$CLANG_FORMAT\" ]]; then\n41:   echo \"clang-format is not executable: $CLANG_FORMAT\" >&2\n42:   exit 1\n43: fi\n44: \n45: if [[ \"${1:-}\" == \"--check\" ]]; then\n46:   find \"$REPO_ROOT/src\" \"$REPO_ROOT/test\" \\\n47:     \\( -iname '*.h' -o -iname '*.cpp' \\) \\\n48:     -exec \"$CLANG_FORMAT\" --dry-run --Werror -style=file:\"$REPO_ROOT/.clang-format\" {} +\n49: else\n50:   find \"$REPO_ROOT/src\" \"$REPO_ROOT/test\" \\\n51:     \\( -iname '*.h' -o -iname '*.cpp' \\) \\\n52:     -exec \"$CLANG_FORMAT\" -i -style=file:\"$REPO_ROOT/.clang-format\" {} +\n53: fi\n\n(End of file - total 53 lines)\n</content>"
+    },
+    {
+      "role": "assistant",
+      "content": "Now let me read the sub-CMakeLists.txt files and check for CI configuration:",
+      "tool_calls": [
+        {
+          "id": "call_BSMCEU51aCKJSLtW355vNGQ7",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/src/CMakeLists.txt\"}"
+          }
+        },
+        {
+          "id": "call_7UuKJAofZStndpYslrFryaL9",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/src/lib/CMakeLists.txt\"}"
+          }
+        },
+        {
+          "id": "call_qvxayaTqfLlRqPxO5YREKJbU",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/test/CMakeLists.txt\"}"
+          }
+        },
+        {
+          "id": "call_saDBieXSVyDfuI9bbbmmATFz",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/src/lib/opt/CMakeLists.txt\"}"
+          }
+        },
+        {
+          "id": "call_dS9dh9fsdD2mrvW9asSIgMKB",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/src/lib/backend/CMakeLists.txt\"}"
+          }
+        },
+        {
+          "id": "call_YKBpEBp5RwuHQyW0shssp5Vv",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/CMakeLists.txt\"}"
+          }
+        },
+        {
+          "id": "call_cWbRuPgydfZLD3NJDF4Cs6eD",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/*.yml\",\"path\":\"/Users/woojin/swpp/swpp202601-team19/.github\"}"
+          }
+        },
+        {
+          "id": "call_DMp1ZzH1Wlurck20XWIl1uEP",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/.clang-format\"}"
+          }
+        },
+        {
+          "id": "call_HcG982aaHfnt1cSrYy5LEVXY",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/install-alive2.sh\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Now let me look at the CMake build configuration more closely for the main project (swpp202601-team19), and also check for any other build-related files like .github/workflows for CI, etc."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_BSMCEU51aCKJSLtW355vNGQ7",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/src/CMakeLists.txt</path>\n<type>file</type>\n<content>\n1: cmake_minimum_required(VERSION 3.28.0)\n2: \n3: set(CMAKE_CXX_STANDARD 23)\n4: set(CMAKE_CXX_STANDARD_REQUIRED ON)\n5: set(CMAKE_CXX_EXTENSIONS OFF)\n6: set(CMAKE_EXPORT_COMPILE_COMMANDS ON)\n7: set(CMAKE_CXX_SCAN_FOR_MODULES OFF)\n8: \n9: find_package(LLVM REQUIRED CONFIG)\n10: message(STATUS \"Found LLVM ${LLVM_PACKAGE_VERSION}\")\n11: message(STATUS \"Using LLVM in: ${LLVM_BINARY_DIR}\")\n12: \n13: add_compile_options(\"-Wno-deprecated\")\n14: if(NOT (APPLE OR LINUX))\n15:     message(FATAL \"Unsupported system! Aborting CMake configuration...\")\n16: endif()\n17: \n18: add_library(SCArgs args.cpp)\n19: \n20: set(PROJECT_LIB \"SComp\")\n21: add_library(${PROJECT_LIB} lib.cpp)\n22: target_include_directories(${PROJECT_LIB} PRIVATE ${LLVM_INCLUDE_DIRS})\n23: llvm_map_components_to_libnames(comp_llvm_libs passes analysis irreader)\n24: target_link_libraries(${PROJECT_LIB} PRIVATE SCBackend SCPrintIR SCOpt ${comp_llvm_libs})\n25: \n26: set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})\n27: add_executable(${PROJECT_NAME} main.cpp)\n28: target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIB} SCArgs)\n29: \n30: set(TABLEGEN_INCLUDE_DIR ${CMAKE_BINARY_DIR}/src)\n31: \n32: add_subdirectory(lib)\n\n(End of file - total 32 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_7UuKJAofZStndpYslrFryaL9",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/src/lib/CMakeLists.txt</path>\n<type>file</type>\n<content>\n1: cmake_minimum_required(VERSION 3.28.0)\n2: \n3: add_library(SCPrintIR print_ir.cpp)\n4: target_include_directories(SCPrintIR PRIVATE ${LLVM_INCLUDE_DIRS})\n5: llvm_map_components_to_libnames(printer_llvm_libs core support transformutils)\n6: target_link_libraries(SCPrintIR ${printer_llvm_libs})\n7: \n8: add_library(SCOpt opt.cpp)\n9: target_include_directories(SCOpt PRIVATE ${LLVM_INCLUDE_DIRS})\n10: llvm_map_components_to_libnames(opt_llvm_libs analysis passes scalaropts transformutils)\n11: target_link_libraries(SCOpt PRIVATE SCPrintIR OptPasses ${opt_llvm_libs})\n12: \n13: add_library(SCBackend backend.cpp)\n14: target_include_directories(SCBackend PRIVATE ${LLVM_INCLUDE_DIRS})\n15: llvm_map_components_to_libnames(backend_llvm_libs Analysis CodeGen CodeGenTypes Core MC Passes Support Target TargetParser GlobalISel SelectionDAG ScalarOpts)\n16: target_link_libraries(SCBackend PRIVATE SCPrintIR SCBackendCallocElimPass SCBackendConstExprElimPass\n17:   SCBackendGEPElimPass SCBackendGVElimPass SCBackendSextEliminatePass SCBackendTruncAdjustPass\n18:   SCBackendMIRTranslatorPass SCBackendMIRPrinterPass SCBackendConstCopyEliminatePass\n19:   SWPPFrameLowering SWPPTargetLowering SWPPRegisterInfo SWPPInstrInfo SWPPTargetInfo SWPPMCTargetDesc SWPPSubtarget SWPPTargetMachine \n20:   ${backend_llvm_libs})\n21: \n22: add_subdirectory(backend)\n23: add_subdirectory(opt)\n\n(End of file - total 23 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_qvxayaTqfLlRqPxO5YREKJbU",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/test/CMakeLists.txt</path>\n<type>file</type>\n<content>\n1: cmake_minimum_required(VERSION 3.28.0)\n2: \n3: find_package(LLVM REQUIRED CONFIG)\n4: \n5: find_program(OPT_EXE\n6:   NAMES opt\n7:   HINTS \"${LLVM_TOOLS_BINARY_DIR}\" \"$ENV{LLVM_ROOT}/bin\"\n8:   REQUIRED)\n9: \n10: find_program(FILECHECK_EXE\n11:   NAMES FileCheck\n12:   HINTS \"${LLVM_TOOLS_BINARY_DIR}\" \"$ENV{LLVM_ROOT}/bin\"\n13:   REQUIRED)\n14: \n15: file(GLOB_RECURSE SWPP_FILECHECK_TESTS CONFIGURE_DEPENDS\n16:   \"${CMAKE_CURRENT_SOURCE_DIR}/*.ll\")\n17: \n18: foreach(test_file IN LISTS SWPP_FILECHECK_TESTS)\n19:   file(RELATIVE_PATH test_name \"${CMAKE_CURRENT_SOURCE_DIR}\" \"${test_file}\")\n20:   string(REGEX REPLACE \"\\\\.ll$\" \"\" test_name \"${test_name}\")\n21:   string(REPLACE \"/\" \".\" test_name \"${test_name}\")\n22: \n23:   add_test(\n24:     NAME \"${test_name}\"\n25:     COMMAND \"${CMAKE_COMMAND}\"\n26:       \"-DOPT_EXE=${OPT_EXE}\"\n27:       \"-DFILECHECK_EXE=${FILECHECK_EXE}\"\n28:       \"-DSWPP_OPT_PLUGIN=$<TARGET_FILE:SWPPOptPlugin>\"\n29:       \"-DINPUT_FILE=${test_file}\"\n30:       \"-DOUTPUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/${test_name}.opt.ll\"\n31:       -P \"${CMAKE_CURRENT_SOURCE_DIR}/run_filecheck.cmake\")\n32: \n33:   set_tests_properties(\"${test_name}\" PROPERTIES\n34:     LABELS \"filecheck\")\n35: endforeach()\n36: \n37: option(SWPP_ENABLE_BENCHMARK_TESTS\n38:   \"Enable SWPP benchmark integration tests. Requires git, cargo, and network access.\"\n39:   OFF)\n40: \n41: if(SWPP_ENABLE_BENCHMARK_TESTS)\n42:   find_package(Python3 REQUIRED COMPONENTS Interpreter)\n43: \n44:   add_test(\n45:     NAME benchmark.integration\n46:     COMMAND \"${Python3_EXECUTABLE}\"\n47:       \"${CMAKE_CURRENT_SOURCE_DIR}/run_benchmarks.py\"\n48:       \"--compiler\" \"$<TARGET_FILE:swpp-compiler>\"\n49:       \"--work-dir\" \"${CMAKE_CURRENT_BINARY_DIR}/benchmarks\")\n50: \n51:   set_tests_properties(benchmark.integration PROPERTIES\n52:     LABELS \"benchmark\"\n53:     TIMEOUT 900)\n54: endif()\n\n(End of file - total 54 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_saDBieXSVyDfuI9bbbmmATFz",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/src/lib/opt/CMakeLists.txt</path>\n<type>file</type>\n<content>\n1: cmake_minimum_required(VERSION 3.28.0)\n2: \n3: include(AddLLVM)\n4: \n5: add_library(OptPasses INTERFACE)\n6: \n7: function(add_opt_pass pass_name file_name)\n8:     add_library(${pass_name} OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/${file_name})\n9:     target_include_directories(${pass_name} PRIVATE ${LLVM_INCLUDE_DIRS})\n10:     set_target_properties(${pass_name} PROPERTIES POSITION_INDEPENDENT_CODE ON)\n11:     target_sources(OptPasses INTERFACE $<TARGET_OBJECTS:${pass_name}>)\n12:     target_link_libraries(OptPasses INTERFACE ${pass_name})\n13: endfunction()\n14: \n15: # /================= ADD OPT PASSES BELOW ================/\n16: \n17: add_opt_pass(SCOddAddLowering odd_add_lowering.cpp)\n18: add_opt_pass(SCLoopBranchReordering loop_branch_reordering.cpp)\n19: add_opt_pass(SCEmptyBlockForwarding empty_block_forwarding.cpp)\n20: add_opt_pass(SCLowerTmIntrinsics lower_tm_intrinsics.cpp)\n21: add_opt_pass(SCLargeBlockCSE large_block_cse.cpp)\n22: add_opt_pass(SCOptPipeline opt_pipeline.cpp)\n23: add_opt_pass(SCSWPPAllocUtils swpp_alloc_utils.cpp)\n24: add_opt_pass(SCReorderLoadInst reorder_load_inst.cpp)\n25: add_opt_pass(SCHeapLoopLicm heap_loop_licm.cpp)\n26: add_opt_pass(SCHeatDecayNopInsertion heat_decay_nop_insertion.cpp)\n27: add_opt_pass(SCRedundantMemoryForwarding redundant_memory_forwarding.cpp)\n28: add_opt_pass(SCMallocToStack malloc_to_stack.cpp)\n29: add_opt_pass(SCHeapScalarization heap_scalarization.cpp)\n30: add_opt_pass(SCHeapLifetimeShrink heap_lifetime_shrink.cpp)\n31: add_opt_pass(SCDelayedUseALoad delayed_use_aload.cpp)\n32: add_opt_pass(SCStripLifetimeIntrinsics strip_lifetime_intrinsics.cpp)\n33: add_opt_pass(DiamondIfConvert diamond_if_convert.cpp)\n34: add_opt_pass(TriangleIfConvert triangle_if_convert.cpp)\n35: add_opt_pass(ShiftAddToMul shiftadd_to_mul.cpp)\n36: \n37: add_llvm_pass_plugin(SWPPOptPlugin opt_plugin.cpp PARTIAL_SOURCES_INTENDED)\n38: target_include_directories(SWPPOptPlugin PRIVATE ${LLVM_INCLUDE_DIRS})\n39: target_link_libraries(SWPPOptPlugin PRIVATE OptPasses)\n40: target_link_options(SWPPOptPlugin PRIVATE\n41:     \"$<$<PLATFORM_ID:Darwin>:-Wl,-undefined,dynamic_lookup>\")\n42: add_dependencies(swpp-compiler SWPPOptPlugin)\n43: \n44: add_opt_pass(remove_const4 remove_const4.cpp)\n45: add_opt_pass(MulAddFusion mul_add_fusion.cpp)\n46: add_opt_pass(ScalarCSE scalar_cse.cpp)\n47: add_opt_pass(PointerInduction pointer_induction.cpp)\n48: add_opt_pass(HeapAccumulatorPromotion heap_accumulator_promotion.cpp)\n49: add_opt_pass(ScalarLICM scalar_licm.cpp)\n\n(End of file - total 49 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_dS9dh9fsdD2mrvW9asSIgMKB",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/src/lib/backend/CMakeLists.txt</path>\n<type>file</type>\n<content>\n1: cmake_minimum_required(VERSION 3.28.0)\n2: \n3: function(add_backend_pass pass_name file_name)\n4:     add_library(${pass_name} OBJECT ${file_name})\n5:     target_include_directories(${pass_name} PRIVATE ${LLVM_INCLUDE_DIRS})\n6: endfunction()\n7: \n8: add_backend_pass(SCBackendCallocElimPass calloc_eliminate.cpp)\n9: add_backend_pass(SCBackendConstExprElimPass const_expr_eliminate.cpp)\n10: add_backend_pass(SCBackendGEPElimPass gep_eliminate.cpp)\n11: add_backend_pass(SCBackendGVElimPass gv_eliminate.cpp)\n12: add_backend_pass(SCBackendSextEliminatePass sext_eliminate.cpp)\n13: add_backend_pass(SCBackendTruncAdjustPass trunc_adjust.cpp)\n14: add_backend_pass(SCBackendMIRTranslatorPass mir_translator.cpp)\n15: add_backend_pass(SCBackendMIRPrinterPass mir_printer.cpp)\n16: add_backend_pass(SCBackendConstCopyEliminatePass const_copy_eliminate.cpp)\n17: \n18: target_link_libraries(SCBackendConstCopyEliminatePass PRIVATE SWPPInstrInfo)\n19: target_link_libraries(SCBackendMIRPrinterPass PRIVATE SWPPInstrInfo)\n20: target_link_libraries(SCBackendMIRTranslatorPass PRIVATE SWPPInstrInfo)\n21: \n22: add_subdirectory(SWPP)\n\n(End of file - total 22 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_YKBpEBp5RwuHQyW0shssp5Vv",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/CMakeLists.txt</path>\n<type>file</type>\n<content>\n1: cmake_minimum_required(VERSION 3.28.0)\n2: \n3: include(TableGen)\n4: include(AddLLVM)\n5: \n6: find_program(LLVM_TABLEGEN_EXE llvm-tblgen HINTS \"${LLVM_TOOLS_BINARY_DIR}\")\n7: message(STATUS \"Found llvm-tblgen : ${LLVM_TABLEGEN_EXE}\")\n8: \n9: set(SWPP_TD \"SWPP.td\")\n10: set(LLVM_TARGET_DEFINITIONS ${SWPP_TD})\n11: tablegen(LLVM SWPPGenRegisterInfo.inc --gen-register-info EXTRA_INCLUDES ${LLVM_INCLUDE_DIRS})\n12: add_public_tablegen_target(SWPPGenRegisterInfo)\n13: message(STATUS \"Generated ${TABLEGEN_OUTPUT} from ${SWPP_TD}\")\n14: \n15: function(add_swpp_machine_target target_name file_name)\n16:     add_library(${target_name} OBJECT ${file_name})\n17:     target_include_directories(${target_name} PUBLIC ${LLVM_INCLUDE_DIRS} ${TABLEGEN_INCLUDE_DIR})\n18:     add_dependencies(${target_name} SWPPGenRegisterInfo)\n19: endfunction()\n20: \n21: add_swpp_machine_target(SWPPFrameLowering SWPPFrameLowering.cpp)\n22: add_swpp_machine_target(SWPPTargetLowering SWPPTargetLowering.cpp)\n23: add_swpp_machine_target(SWPPRegisterInfo SWPPRegisterInfo.cpp)\n24: add_swpp_machine_target(SWPPInstrInfo SWPPInstrInfo.cpp)\n25: add_swpp_machine_target(SWPPSubtarget SWPPSubtarget.cpp)\n26: add_swpp_machine_target(SWPPTargetMachine SWPPTargetMachine.cpp)\n27: add_swpp_machine_target(SWPPTargetInfo SWPPTargetInfo.cpp)\n28: add_swpp_machine_target(SWPPMCTargetDesc SWPPMCTargetDesc.cpp)\n\n(End of file - total 28 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_cWbRuPgydfZLD3NJDF4Cs6eD",
+      "content": "/Users/woojin/swpp/swpp202601-team19/.github/workflows/ci.yml"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_DMp1ZzH1Wlurck20XWIl1uEP",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/.clang-format</path>\n<type>file</type>\n<content>\n1: ---\n2: Language:        Cpp\n3: # BasedOnStyle:  LLVM\n4: AccessModifierOffset: -2\n5: AlignAfterOpenBracket: Align\n6: AlignArrayOfStructures: None\n7: AlignConsecutiveMacros: None\n8: AlignConsecutiveAssignments: None\n9: AlignConsecutiveBitFields: None\n10: AlignConsecutiveDeclarations: None\n11: AlignEscapedNewlines: Right\n12: AlignOperands:   Align\n13: AlignTrailingComments: true\n14: AllowAllArgumentsOnNextLine: true\n15: AllowAllConstructorInitializersOnNextLine: true\n16: AllowAllParametersOfDeclarationOnNextLine: true\n17: AllowShortEnumsOnASingleLine: true\n18: AllowShortBlocksOnASingleLine: Never\n19: AllowShortCaseLabelsOnASingleLine: false\n20: AllowShortFunctionsOnASingleLine: All\n21: AllowShortLambdasOnASingleLine: All\n22: AllowShortIfStatementsOnASingleLine: Never\n23: AllowShortLoopsOnASingleLine: false\n24: AlwaysBreakAfterDefinitionReturnType: None\n25: AlwaysBreakAfterReturnType: None\n26: AlwaysBreakBeforeMultilineStrings: false\n27: AlwaysBreakTemplateDeclarations: MultiLine\n28: AttributeMacros:\n29:   - __capability\n30: BinPackArguments: true\n31: BinPackParameters: true\n32: BraceWrapping:\n33:   AfterCaseLabel:  false\n34:   AfterClass:      false\n35:   AfterControlStatement: Never\n36:   AfterEnum:       false\n37:   AfterFunction:   false\n38:   AfterNamespace:  false\n39:   AfterObjCDeclaration: false\n40:   AfterStruct:     false\n41:   AfterUnion:      false\n42:   AfterExternBlock: false\n43:   BeforeCatch:     false\n44:   BeforeElse:      false\n45:   BeforeLambdaBody: false\n46:   BeforeWhile:     false\n47:   IndentBraces:    false\n48:   SplitEmptyFunction: true\n49:   SplitEmptyRecord: true\n50:   SplitEmptyNamespace: true\n51: BreakBeforeBinaryOperators: None\n52: BreakBeforeConceptDeclarations: true\n53: BreakBeforeBraces: Attach\n54: BreakBeforeInheritanceComma: false\n55: BreakInheritanceList: BeforeColon\n56: BreakBeforeTernaryOperators: true\n57: BreakConstructorInitializersBeforeComma: false\n58: BreakConstructorInitializers: BeforeColon\n59: BreakAfterJavaFieldAnnotations: false\n60: BreakStringLiterals: true\n61: ColumnLimit:     80\n62: CommentPragmas:  '^ IWYU pragma:'\n63: CompactNamespaces: false\n64: ConstructorInitializerAllOnOneLineOrOnePerLine: false\n65: ConstructorInitializerIndentWidth: 4\n66: ContinuationIndentWidth: 4\n67: Cpp11BracedListStyle: true\n68: DeriveLineEnding: true\n69: DerivePointerAlignment: false\n70: DisableFormat:   false\n71: EmptyLineAfterAccessModifier: Never\n72: EmptyLineBeforeAccessModifier: LogicalBlock\n73: ExperimentalAutoDetectBinPacking: false\n74: FixNamespaceComments: true\n75: ForEachMacros:\n76:   - foreach\n77:   - Q_FOREACH\n78:   - BOOST_FOREACH\n79: IfMacros:\n80:   - KJ_IF_MAYBE\n81: IncludeBlocks:   Preserve\n82: IncludeCategories:\n83:   - Regex:           '^\"(llvm|llvm-c|clang|clang-c)/'\n84:     Priority:        2\n85:     SortPriority:    0\n86:     CaseSensitive:   false\n87:   - Regex:           '^(<|\"(gtest|gmock|isl|json)/)'\n88:     Priority:        3\n89:     SortPriority:    0\n90:     CaseSensitive:   false\n91:   - Regex:           '.*'\n92:     Priority:        1\n93:     SortPriority:    0\n94:     CaseSensitive:   false\n95: IncludeIsMainRegex: '(Test)?$'\n96: IncludeIsMainSourceRegex: ''\n97: IndentAccessModifiers: false\n98: IndentCaseLabels: false\n99: IndentCaseBlocks: false\n100: IndentGotoLabels: true\n101: IndentPPDirectives: None\n102: IndentExternBlock: AfterExternBlock\n103: IndentRequires:  false\n104: IndentWidth:     2\n105: IndentWrappedFunctionNames: false\n106: InsertTrailingCommas: None\n107: JavaScriptQuotes: Leave\n108: JavaScriptWrapImports: true\n109: KeepEmptyLinesAtTheStartOfBlocks: true\n110: LambdaBodyIndentation: Signature\n111: MacroBlockBegin: ''\n112: MacroBlockEnd:   ''\n113: MaxEmptyLinesToKeep: 1\n114: NamespaceIndentation: None\n115: ObjCBinPackProtocolList: Auto\n116: ObjCBlockIndentWidth: 2\n117: ObjCBreakBeforeNestedBlockParam: true\n118: ObjCSpaceAfterProperty: false\n119: ObjCSpaceBeforeProtocolList: true\n120: PenaltyBreakAssignment: 2\n121: PenaltyBreakBeforeFirstCallParameter: 19\n122: PenaltyBreakComment: 300\n123: PenaltyBreakFirstLessLess: 120\n124: PenaltyBreakString: 1000\n125: PenaltyBreakTemplateDeclaration: 10\n126: PenaltyExcessCharacter: 1000000\n127: PenaltyReturnTypeOnItsOwnLine: 60\n128: PenaltyIndentedWhitespace: 0\n129: PointerAlignment: Right\n130: PPIndentWidth:   -1\n131: ReferenceAlignment: Pointer\n132: ReflowComments:  true\n133: ShortNamespaceLines: 1\n134: SortIncludes:    CaseSensitive\n135: SortJavaStaticImport: Before\n136: SortUsingDeclarations: true\n137: SpaceAfterCStyleCast: false\n138: SpaceAfterLogicalNot: false\n139: SpaceAfterTemplateKeyword: true\n140: SpaceBeforeAssignmentOperators: true\n141: SpaceBeforeCaseColon: false\n142: SpaceBeforeCpp11BracedList: false\n143: SpaceBeforeCtorInitializerColon: true\n144: SpaceBeforeInheritanceColon: true\n145: SpaceBeforeParens: ControlStatements\n146: SpaceAroundPointerQualifiers: Default\n147: SpaceBeforeRangeBasedForLoopColon: true\n148: SpaceInEmptyBlock: false\n149: SpaceInEmptyParentheses: false\n150: SpacesBeforeTrailingComments: 1\n151: SpacesInAngles:  Never\n152: SpacesInConditionalStatement: false\n153: SpacesInContainerLiterals: true\n154: SpacesInCStyleCastParentheses: false\n155: SpacesInLineCommentPrefix:\n156:   Minimum:         1\n157:   Maximum:         -1\n158: SpacesInParentheses: false\n159: SpacesInSquareBrackets: false\n160: SpaceBeforeSquareBrackets: false\n161: BitFieldColonSpacing: Both\n162: Standard:        Latest\n163: StatementAttributeLikeMacros:\n164:   - Q_EMIT\n165: StatementMacros:\n166:   - Q_UNUSED\n167:   - QT_REQUIRE_VERSION\n168: TabWidth:        8\n169: UseCRLF:         false\n170: UseTab:          Never\n171: WhitespaceSensitiveMacros:\n172:   - STRINGIZE\n173:   - PP_STRINGIZE\n174:   - BOOST_PP_STRINGIZE\n175:   - NS_SWIFT_NAME\n176:   - CF_SWIFT_NAME\n177: ...\n178: \n\n(End of file - total 178 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_HcG982aaHfnt1cSrYy5LEVXY",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/install-alive2.sh</path>\n<type>file</type>\n<content>\n1: #!/bin/bash\n2: \n3: # Specify LLVM installation directory\n4: LLVM_DIR=~/opt/llvm-22.1.0\n5: # Specify Z3 installation directory (Z3 will be installed here!)\n6: Z3_DIR=~/opt/z3-4.16.0\n7: \n8: CLANGXX=$LLVM_DIR/bin/clang++\n9: LLD=$LLVM_DIR/bin/ld.lld\n10: \n11: # install re2c\n12: brew install re2c\n13: \n14: # Install Z3\n15: git clone -b z3-4.16.0 https://github.com/Z3Prover/z3.git --depth=1\n16: cd z3\n17: cmake -GNinja -Bbuild \\\n18:     -DCMAKE_INSTALL_PREFIX=$Z3_DIR\n19: cmake --build build\n20: cmake --install build\n21: \n22: # Download Alive2 source\n23: cd ../\n24: git clone https://github.com/AliveToolkit/alive2.git\n25: cd alive2\n26: \n27: # Build Alive2\n28: git checkout 0dc2be5f04ccb61caebb909a610968cb2348f196\n29: cmake -GNinja -Bbuild \\\n30:     -DBUILD_TV=ON \\\n31:     -DCMAKE_C_COMPILER=$CLANG \\\n32:     -DCMAKE_CXX_COMPILER=$CLANGXX \\\n33:     -DCMAKE_PREFIX_PATH=\"$LLVM_DIR;$Z3_DIR\" \\\n34:     -DCMAKE_BUILD_TYPE=Release\n35: cmake --build build\n\n(End of file - total 35 lines)\n</content>"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_EDFRT9utZH8oCreWntkxw0iC",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/.github/workflows/ci.yml\"}"
+          }
+        },
+        {
+          "id": "call_o9Hy4HzE9nFvBMfOxWJwkHc6",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/test/run_filecheck.cmake\"}"
+          }
+        },
+        {
+          "id": "call_FwlIZT3LTA7BmZdUyv8RzCZa",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/bench_sprint1.sh\"}"
+          }
+        },
+        {
+          "id": "call_wMugGMCeuW1GymBv1LrXIZjs",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/tsconfig*.json\",\"path\":\"/Users/woojin/swpp/llvm-project\"}"
+          }
+        }
+      ],
+      "reasoning_content": ""
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_EDFRT9utZH8oCreWntkxw0iC",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/.github/workflows/ci.yml</path>\n<type>file</type>\n<content>\n1: # [AI-Disclosure] This CI code has been generated with Claude\n2: \n3: name: CI\n4: \n5: on:\n6:   push:\n7:     branches: [main]\n8:   pull_request:\n9:     branches: [main]\n10: \n11: jobs:\n12:   build-and-test:\n13:     runs-on: ubuntu-latest\n14:     container:\n15:       image: strikef/swpp202601-ci:latest\n16: \n17:     steps:\n18:       - name: Checkout code\n19:         uses: actions/checkout@v4\n20: \n21:       - name: Check formatting\n22:         working-directory: ${{ github.workspace }}\n23:         run: ./format-all.sh --check\n24: \n25:       - name: Build compiler\n26:         working-directory: ${{ github.workspace }}\n27:         run: ./compile.sh\n28: \n29:       - name: Run tests\n30:         working-directory: ${{ github.workspace }}\n31:         run: ctest --test-dir build\n\n(End of file - total 31 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_o9Hy4HzE9nFvBMfOxWJwkHc6",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/test/run_filecheck.cmake</path>\n<type>file</type>\n<content>\n1: foreach(required_var IN ITEMS OPT_EXE FILECHECK_EXE SWPP_OPT_PLUGIN INPUT_FILE OUTPUT_FILE)\n2:   if(NOT DEFINED ${required_var})\n3:     message(FATAL_ERROR \"${required_var} is required\")\n4:   endif()\n5: endforeach()\n6: \n7: get_filename_component(output_dir \"${OUTPUT_FILE}\" DIRECTORY)\n8: file(MAKE_DIRECTORY \"${output_dir}\")\n9: \n10: execute_process(\n11:   COMMAND \"${OPT_EXE}\"\n12:     \"-load-pass-plugin=${SWPP_OPT_PLUGIN}\"\n13:     \"-passes=swpp-opt\"\n14:     -S\n15:     \"${INPUT_FILE}\"\n16:     -o\n17:     \"${OUTPUT_FILE}\"\n18:   RESULT_VARIABLE opt_result\n19:   OUTPUT_VARIABLE opt_stdout\n20:   ERROR_VARIABLE opt_stderr)\n21: \n22: if(NOT opt_result EQUAL 0)\n23:   message(FATAL_ERROR\n24:     \"opt failed for ${INPUT_FILE}\\n\"\n25:     \"stdout:\\n${opt_stdout}\\n\"\n26:     \"stderr:\\n${opt_stderr}\")\n27: endif()\n28: \n29: execute_process(\n30:   COMMAND \"${FILECHECK_EXE}\" \"${INPUT_FILE}\" \"--input-file=${OUTPUT_FILE}\"\n31:   RESULT_VARIABLE filecheck_result\n32:   OUTPUT_VARIABLE filecheck_stdout\n33:   ERROR_VARIABLE filecheck_stderr)\n34: \n35: if(NOT filecheck_result EQUAL 0)\n36:   message(FATAL_ERROR\n37:     \"FileCheck failed for ${INPUT_FILE}\\n\"\n38:     \"output file: ${OUTPUT_FILE}\\n\"\n39:     \"stdout:\\n${filecheck_stdout}\\n\"\n40:     \"stderr:\\n${filecheck_stderr}\")\n41: endif()\n\n(End of file - total 41 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_FwlIZT3LTA7BmZdUyv8RzCZa",
+      "content": "<path>/Users/woojin/swpp/bench_sprint1.sh</path>\n<type>file</type>\n<content>\n1: #!/usr/bin/env bash\n2: # bench_sprint1.sh\n3: # Benchmarks each Sprint 1 PR commit cumulatively.\n4: # Resumable: completed steps are skipped on re-run.\n5: # Observable: prints [SKIP/BUILD/RUN/DONE/FAIL] per step with timestamps.\n6: #\n7: # Usage:\n8: #   bash test/bench_sprint1.sh\n9: #\n10: # Output:\n11: #   /tmp/swpp-sprint1-bench/\n12: #     step-N-<hash>/benchmark_costs.md   per-step results\n13: #     step-N-<hash>.done                 completion marker\n14: #     build-<hash>.log                   build log per step\n15: #     summary.md                         aggregated comparison table\n16: \n17: set -euo pipefail\n18: \n19: # ── Configuration ────────────────────────────────────────────────────────────\n20: \n21: WORKSPACE=\"$HOME/workspace\"\n22: WORK_DIR=\"/tmp/swpp-sprint1-bench\"\n23: INTERPRETER_DIR=\"/tmp/swpp-bench/swpp202601-interpreter\"\n24: BENCHMARKS_DIR=\"/tmp/swpp-bench/swpp202601-benchmarks\"\n25: COST_MODEL=\"$WORKSPACE/test/tm_cost_static.json\"\n26: RUN_BENCHMARKS=\"$WORKSPACE/test/run_benchmarks.py\"\n27: INTERPRETER_BIN=\"$INTERPRETER_DIR/target/release/main\"\n28: TIMEOUT=10\n29: \n30: # ── Steps ────────────────────────────────────────────────────────────────────\n31: # Format: \"step_label|commit_hash|description\"\n32: \n33: STEPS=(\n34:   \"step-0-7a0cb69|7a0cb69|Baseline (pre-Sprint 1)\"\n35:   \"step-1-8f038c1|8f038c1|#5 Diamond If-Conversion\"\n36:   \"step-2-37d3772|37d3772|#7 Odd-add lowering\"\n37:   \"step-3-3b6703c|3b6703c|#16 mem2reg\"\n38:   \"step-4-d2bfaff|d2bfaff|#11 Loop phi parity\"\n39:   \"step-5-09e10a0|09e10a0|#12 Branch reordering\"\n40:   \"step-6-d9d52d0|d9d52d0|#13 remove_const4 (later reverted)\"\n41:   \"step-7-f4d89f1|f4d89f1|#20 Revert remove_const4\"\n42:   \"step-8-faf007e|faf007e|#15 mul-by-4\"\n43:   \"step-9-7092cb1|7092cb1|#10 Load reordering\"\n44: )\n45: \n46: TOTAL=${#STEPS[@]}\n47: \n48: # ── Helpers ───────────────────────────────────────────────────────────────────\n49: \n50: log() { echo \"[$(date '+%H:%M:%S')] $*\"; }\n51: \n52: check_prereqs() {\n53:   if [ ! -f \"$INTERPRETER_BIN\" ]; then\n54:     log \"ERROR: interpreter binary not found at $INTERPRETER_BIN\"\n55:     log \"Run the normal benchmark script once first to build it.\"\n56:     exit 1\n57:   fi\n58:   if [ ! -d \"$BENCHMARKS_DIR\" ]; then\n59:     log \"ERROR: benchmarks repo not found at $BENCHMARKS_DIR\"\n60:     log \"Run the normal benchmark script once first to clone them.\"\n61:     exit 1\n62:   fi\n63:   if [ ! -f \"$RUN_BENCHMARKS\" ]; then\n64:     log \"ERROR: run_benchmarks.py not found at $RUN_BENCHMARKS\"\n65:     exit 1\n66:   fi\n67: }\n68: \n69: build_compiler() {\n70:   local commit=\"$1\"\n71:   local worktree_dir=\"$WORK_DIR/src-$commit\"\n72:   local build_log=\"$WORK_DIR/build-${commit}.log\"\n73:   local binary=\"$worktree_dir/build/swpp-compiler\"\n74: \n75:   log \"  Checking out $commit...\"\n76:   if [ ! -d \"$worktree_dir\" ]; then\n77:     git -C \"$WORKSPACE\" worktree add \"$worktree_dir\" \"$commit\" \\\n78:       > \"$build_log\" 2>&1 \\\n79:       || { log \"  FAIL: worktree add failed. See $build_log\"; return 1; }\n80:   fi\n81: \n82:   log \"  Building...\"\n83:   # compile.sh auto-detects all LLVM flags and builds to $worktree_dir/build/\n84:   bash \"$worktree_dir/compile.sh\" \\\n85:     >> \"$build_log\" 2>&1 \\\n86:     || { log \"  FAIL: compile.sh failed. See $build_log\"; return 1; }\n87: \n88:   if [ ! -f \"$binary\" ]; then\n89:     log \"  FAIL: binary not found at $binary after build\"\n90:     return 1\n91:   fi\n92: \n93:   log \"  Binary: $binary\"\n94: }\n95: \n96: run_benchmarks() {\n97:   local compiler=\"$1\"\n98:   local out_dir=\"$2\"\n99:   local run_log=\"$out_dir/run.log\"\n100: \n101:   mkdir -p \"$out_dir\"\n102:   python3 \"$RUN_BENCHMARKS\" \\\n103:     --compiler \"$compiler\" \\\n104:     --work-dir \"$out_dir\" \\\n105:     --cost-model \"$COST_MODEL\" \\\n106:     --skip-interpreter-build \\\n107:     --interpreter-dir \"$INTERPRETER_DIR\" \\\n108:     --benchmarks-dir \"$BENCHMARKS_DIR\" \\\n109:     --timeout \"$TIMEOUT\" \\\n110:     > \"$run_log\" 2>&1\n111:   tail -1 \"$run_log\"\n112: }\n113: \n114: # ── Summary generator ─────────────────────────────────────────────────────────\n115: \n116: generate_summary() {\n117:   log \"Generating summary...\"\n118: \n119:   local first_csv=\"\"\n120:   for entry in \"${STEPS[@]}\"; do\n121:     local label\n122:     label=$(echo \"$entry\" | cut -d'|' -f1)\n123:     local csv=\"$WORK_DIR/$label/benchmark_costs.csv\"\n124:     if [ -f \"$csv\" ]; then\n125:       first_csv=\"$csv\"\n126:       break\n127:     fi\n128:   done\n129: \n130:   if [ -z \"$first_csv\" ]; then\n131:     log \"No completed steps found; skipping summary.\"\n132:     return\n133:   fi\n134: \n135:   python3 - \"$WORK_DIR\" \"${STEPS[@]}\" <<'PYEOF'\n136: import sys, csv, os\n137: \n138: work_dir = sys.argv[1]\n139: steps = [s.split(\"|\") for s in sys.argv[2:]]\n140: \n141: # Benchmark names from first available CSV\n142: first_csv = None\n143: for label, commit, desc in steps:\n144:     p = os.path.join(work_dir, label, \"benchmark_costs.csv\")\n145:     if os.path.exists(p):\n146:         first_csv = p\n147:         break\n148: \n149: benchmarks = []\n150: with open(first_csv) as f:\n151:     for row in csv.DictReader(f):\n152:         benchmarks.append(row[\"benchmark\"])\n153: \n154: # interpreter_cost per step per benchmark\n155: data = {}\n156: for label, commit, desc in steps:\n157:     p = os.path.join(work_dir, label, \"benchmark_costs.csv\")\n158:     if not os.path.exists(p):\n159:         data[label] = None\n160:         continue\n161:     d = {}\n162:     with open(p) as f:\n163:         for row in csv.DictReader(f):\n164:             d[row[\"benchmark\"]] = row.get(\"interpreter_cost\", \"\")\n165:     data[label] = d\n166: \n167: out = os.path.join(work_dir, \"summary.md\")\n168: with open(out, \"w\") as f:\n169:     f.write(\"# Sprint 1 Per-PR Benchmark Summary\\n\\n\")\n170:     f.write(\"Interpreter cost = sum of Final Cost across all passing inputs. \")\n171:     f.write(\"Delta % is relative to the previous step. — = step not completed.\\n\\n\")\n172: \n173:     header = \"| Benchmark |\"\n174:     sep    = \"| --- |\"\n175:     for label, commit, desc in steps:\n176:         header += f\" {desc} `{commit[:7]}` |\"\n177:         sep    += \" --- |\"\n178:     f.write(header + \"\\n\")\n179:     f.write(sep + \"\\n\")\n180: \n181:     for bm in benchmarks:\n182:         row = f\"| {bm} |\"\n183:         prev_cost = None\n184:         for label, commit, desc in steps:\n185:             if data[label] is None:\n186:                 row += \" — |\"\n187:                 continue\n188:             cost_str = data[label].get(bm, \"\")\n189:             if cost_str == \"TIMEOUT\":\n190:                 cell = \"TIMEOUT\"\n191:                 prev_cost = None\n192:             elif cost_str == \"\":\n193:                 cell = \"—\"\n194:             else:\n195:                 cost = int(cost_str)\n196:                 if prev_cost is not None and prev_cost > 0:\n197:                     delta = cost - prev_cost\n198:                     pct = delta / prev_cost * 100\n199:                     sign = \"+\" if delta >= 0 else \"\"\n200:                     cell = f\"{cost:,} ({sign}{pct:.1f}%)\"\n201:                 else:\n202:                     cell = f\"{cost:,}\"\n203:                 prev_cost = cost\n204:             row += f\" {cell} |\"\n205:         f.write(row + \"\\n\")\n206: \n207: print(f\"Summary written to {out}\")\n208: PYEOF\n209: }\n210: \n211: # ── Main ──────────────────────────────────────────────────────────────────────\n212: \n213: mkdir -p \"$WORK_DIR\"\n214: check_prereqs\n215: \n216: log \"Sprint 1 per-PR benchmark — $TOTAL steps\"\n217: log \"Work dir: $WORK_DIR\"\n218: log \"\"\n219: \n220: idx=0\n221: for entry in \"${STEPS[@]}\"; do\n222:   idx=$((idx + 1))\n223:   label=$(echo \"$entry\" | cut -d'|' -f1)\n224:   commit=$(echo \"$entry\" | cut -d'|' -f2)\n225:   desc=$(echo \"$entry\" | cut -d'|' -f3)\n226: \n227:   worktree_dir=\"$WORK_DIR/src-$commit\"\n228:   binary=\"$worktree_dir/build/swpp-compiler\"\n229:   out_dir=\"$WORK_DIR/$label\"\n230:   done_marker=\"$WORK_DIR/$label.done\"\n231: \n232:   log \"[$idx/$TOTAL] $desc ($commit)\"\n233: \n234:   if [ -f \"$done_marker\" ]; then\n235:     log \"  [SKIP] already done\"\n236:     continue\n237:   fi\n238: \n239:   log \"  [BUILD]\"\n240:   if ! build_compiler \"$commit\"; then\n241:     log \"  [FAIL] build — skipping run\"\n242:     continue\n243:   fi\n244:   log \"  [BUILD] done\"\n245: \n246:   log \"  [RUN]\"\n247:   if ! run_benchmarks \"$binary\" \"$out_dir\"; then\n248:     log \"  [FAIL] run — check $out_dir/run.log\"\n249:     continue\n250:   fi\n251:   log \"  [RUN] done\"\n252: \n253:   touch \"$done_marker\"\n254:   log \"  [DONE]\"\n255:   log \"\"\n256: done\n257: \n258: generate_summary\n259: log \"\"\n260: log \"Finished.\"\n261: log \"  Per-step : $WORK_DIR/step-N-<hash>/benchmark_costs.md\"\n262: log \"  Summary  : $WORK_DIR/summary.md\"\n\n(End of file - total 262 lines)\n</content>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_wMugGMCeuW1GymBv1LrXIZjs",
+      "content": "/Users/woojin/swpp/llvm-project/mlir/utils/vscode/tsconfig.json\n/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/tsconfig.json\n/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/src/webview/tsconfig.json\n/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/tsconfig.json"
+    },
+    {
+      "role": "assistant",
+      "content": "Let me check for any remaining root-level build config and the llvm-project CMake setup:",
+      "tool_calls": [
+        {
+          "id": "call_Tzh4Lb8yJBWL8PFSoj6FzTj5",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/llvm-project\"}"
+          }
+        },
+        {
+          "id": "call_pDJQQLFu44mVHBgjYROy8CVR",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"CMakeLists.txt\",\"path\":\"/Users/woojin/swpp/llvm-project\"}"
+          }
+        },
+        {
+          "id": "call_cGnYUoHgZa65WXXGSO3UYbAW",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"package.json\",\"path\":\"/Users/woojin/swpp/llvm-project\"}"
+          }
+        },
+        {
+          "id": "call_EH1mGuy8qz5AsSXZvowNH937",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp/swpp202601-team19/build\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Now I have a comprehensive picture of the build configuration. Let me also quickly check the `build/` directory in swpp202601-team19 and the llvm-project for any root-level build config."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_Tzh4Lb8yJBWL8PFSoj6FzTj5",
+      "content": "<path>/Users/woojin/swpp/llvm-project</path>\n<type>directory</type>\n<entries>\n.ci/\n.clang-format\n.clang-format-ignore\n.clang-tidy\n.git-blame-ignore-revs\n.git/\n.gitattributes\n.github/\n.gitignore\n.mailmap\nbolt/\nbuild-22.1.0-tmp/\nbuild-22.1.0/\nclang-tools-extra/\nclang/\ncmake/\nCODE_OF_CONDUCT.md\ncompiler-rt/\nCONTRIBUTING.md\ncross-project-tests/\nflang-rt/\nflang/\nlibc/\nlibclc/\nlibcxx/\nlibcxxabi/\nlibsycl/\nlibunwind/\nLICENSE.TXT\nlld/\nlldb/\nllvm-libgcc/\nllvm/\nmlir/\noffload/\nopenmp/\norc-rt/\npolly/\npyproject.toml\nREADME.md\nruntimes/\nSECURITY.md\nthird-party/\nutils/\n\n(44 entries)\n</entries>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_pDJQQLFu44mVHBgjYROy8CVR",
+      "content": "/Users/woojin/swpp/llvm-project/offload/libomptarget/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libcxxabi/src/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libcxxabi/fuzz/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libcxxabi/include/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libcxxabi/test/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libcxxabi/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/docs/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/poll/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/poll/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/liboffload/API/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/setjmp/x86_64/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/setjmp/aarch64/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/setjmp/riscv/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/setjmp/arm/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/setjmp/darwin/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/orc-rt/lib/executor/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/orc-rt/lib/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/clang-tools-extra/tool-template/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/setjmp/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/setjmp/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/orc-rt/docs/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/spawn/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/spawn/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/signal/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/signal/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/compiler/generic/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/compiler/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/orc-rt/unittests/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/unittests/Conformance/device_code/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/fcntl/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/fcntl/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/string/memory_utils/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/string/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdlib/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdlib/baremetal/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdlib/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/liboffload/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdlib/gpu/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdfix/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/wchar/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/threads/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/threads/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/link/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/plugins-nextgen/amdgpu/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdio/printf_core/generic/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdio/printf_core/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdio/printf_core/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdio/generic/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdio/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdio/baremetal/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdio/scanf_core/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdio/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/plugins-nextgen/common/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/stdio/gpu/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/socket/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/socket/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/ioctl/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/ioctl/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/plugins-nextgen/level_zero/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/resource/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/resource/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/plugins-nextgen/cuda/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/statvfs/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/statvfs/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/random/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/random/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/plugins-nextgen/host/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/plugins-nextgen/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/uio/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/uio/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/select/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/select/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/mman/linux/x86_64/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/mman/linux/generic/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/mman/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/mman/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/stat/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/stat/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/utsname/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/utsname/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/sendfile/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/sendfile/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/time/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/time/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/auxv/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/auxv/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/offload/unittests/Conformance/lib/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/epoll/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/epoll/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/prctl/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/prctl/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/orc-rt/include/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/wait/linux/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/libc/src/sys/wait/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/mlir/lib/Debug/Observers/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/compiler-rt/lib/nsan/tests/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/compiler-rt/lib/nsan/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/mlir/lib/Debug/CMakeLists.txt\n/Users/woojin/swpp/llvm-project/mlir/lib/Interfaces/Utils/CMakeLists.txt\n\n(Results are truncated: showing first 100 results. Consider using a more specific path or pattern.)"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_cGnYUoHgZa65WXXGSO3UYbAW",
+      "content": "/Users/woojin/swpp/llvm-project/lldb/tools/lldb-dap/extension/package.json\n/Users/woojin/swpp/llvm-project/llvm/utils/vscode/llvm/package.json\n/Users/woojin/swpp/llvm-project/mlir/utils/tree-sitter-mlir/package.json\n/Users/woojin/swpp/llvm-project/mlir/utils/vscode/package.json"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_EH1mGuy8qz5AsSXZvowNH937",
+      "content": "<path>/Users/woojin/swpp/swpp202601-team19/build</path>\n<type>directory</type>\n<entries>\n.cache/\n.ninja_deps\n.ninja_lock\n.ninja_log\nbenchmarks/\nbuild.ninja\ncmake_install.cmake\nCMakeCache.txt\nCMakeFiles/\ncompile_commands.json\nCTestTestfile.cmake\nsrc/\nswpp-compiler\ntablegen_compile_commands.yml\ntest/\nTesting/\n\n(16 entries)\n</entries>"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "Executes a given bash command in a persistent shell session with optional timeout, ensuring proper handling and security measures.\n\nBe aware: OS: darwin, Shell: zsh\n\nAll commands run in the current working directory by default. Use the `workdir` parameter if you need to run a command in a different directory. AVOID using `cd <directory> && <command>` patterns - use `workdir` instead.\n\nUse `/var/folders/55/h73l3pns0t7blyz9c6skr8xm0000gn/T/opencode` for temporary work outside the workspace. This directory has already been created, already exists, and is pre-approved for external directory access.\n\nIMPORTANT: This tool is for terminal operations like git, npm, docker, etc. DO NOT use it for file operations (reading, writing, editing, searching, finding files) - use the specialized tools for this instead.\n\nBefore executing the command, please follow these steps:\n\n1. Directory Verification:\n   - If the command will create new directories or files, first use `ls` to verify the parent directory exists and is the correct location\n   - For example, before running \"mkdir foo/bar\", first use `ls foo` to check that \"foo\" exists and is the intended parent directory\n\n2. Command Execution:\n   - Always quote file paths that contain spaces with double quotes (e.g., rm \"path with spaces/file.txt\")\n   - Examples of proper quoting:\n     - mkdir \"/Users/name/My Documents\" (correct)\n     - mkdir /Users/name/My Documents (incorrect - will fail)\n     - python \"/path/with spaces/script.py\" (correct)\n     - python /path/with spaces/script.py (incorrect - will fail)\n   - After ensuring proper quoting, execute the command.\n   - Capture the output of the command.\n\nUsage notes:\n  - The command argument is required.\n  - You can specify an optional timeout in milliseconds. If not specified, commands will time out after 120000ms.\n  - It is very helpful if you write a clear, concise description of what this command does in 5-10 words.\n  - If the output exceeds 2000 lines or 51200 bytes, it will be truncated and the full output will be written to a file. You can use Read with offset/limit to read specific sections or Grep to search the full content. Do NOT use `head`, `tail`, or other truncation commands to limit output; the full output will already be captured to a file for more precise searching.\n\n  - Avoid using Bash with the `find`, `grep`, `cat`, `head`, `tail`, `sed`, `awk`, or `echo` commands, unless explicitly instructed or when these commands are truly necessary for the task. Instead, always prefer using the dedicated tools for these commands:\n    - File search: Use Glob (NOT find or ls)\n    - Content search: Use Grep (NOT grep or rg)\n    - Read files: Use Read (NOT cat/head/tail)\n    - Edit files: Use Edit (NOT sed/awk)\n    - Write files: Use Write (NOT echo >/cat <<EOF)\n    - Communication: Output text directly (NOT echo/printf)\n  - When issuing multiple commands:\n    - If the commands are independent and can run in parallel, make multiple bash tool calls in a single message. For example, if you need to run \"git status\" and \"git diff\", send a single message with two bash tool calls in parallel.\n    - If the commands depend on each other and must run sequentially, use a single Bash call with '&&' to chain them together (e.g., `git add . && git commit -m \"message\" && git push`). For instance, if one operation must complete before another starts (like mkdir before cp, Write before Bash for git operations, or git add before git commit), run these operations sequentially instead.\n    - Use ';' only when you need to run commands sequentially but don't care if earlier commands fail\n    - DO NOT use newlines to separate commands (newlines are ok in quoted strings)\n  - AVOID using `cd <directory> && <command>`. Use the `workdir` parameter to change directories instead.\n    <good-example>\n    Use workdir=\"/foo/bar\" with command: pytest tests\n    </good-example>\n    <bad-example>\n    cd /foo/bar && pytest tests\n    </bad-example>\n\n# Git and GitHub\n- Only commit, amend, push, or create PRs when explicitly requested.\n- Before committing, inspect `git status`, `git diff`, and `git log --oneline -10`; stage only intended files and never commit secrets.\n- Write a concise commit message that matches the repo style.\n- Do not update git config, skip hooks, use interactive `-i`, force-push, or create empty commits unless explicitly requested.\n- If a commit fails or hooks reject it, fix the issue and create a new commit; do not amend the failed commit.\n- Before creating a PR, inspect status, diff, remote tracking, recent commits, and the diff from the base branch.\n- Review all commits included in the PR, not just the latest commit.\n- Use `gh` for GitHub tasks, including PRs, issues, checks, and releases; return the PR URL when done.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "The command to execute"
+            },
+            "timeout": {
+              "minimum": -9007199254740991,
+              "exclusiveMinimum": 0,
+              "type": "integer",
+              "maximum": 9007199254740991,
+              "description": "Optional timeout in milliseconds"
+            },
+            "workdir": {
+              "type": "string",
+              "description": "The working directory to run the command in. Defaults to the current directory. Use this instead of 'cd' commands."
+            },
+            "description": {
+              "type": "string",
+              "description": "Clear, concise description of what this command does in 5-10 words. Examples:\nInput: ls\nOutput: Lists files in current directory\n\nInput: git status\nOutput: Shows working tree status\n\nInput: npm install\nOutput: Installs package dependencies\n\nInput: mkdir foo\nOutput: Creates directory 'foo'"
+            }
+          },
+          "required": [
+            "command",
+            "description"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "glob",
+        "description": "- Fast file pattern matching tool that works with any codebase size\n- Supports glob patterns like \"**/*.js\" or \"src/**/*.ts\"\n- Returns matching file paths\n- Use this tool when you need to find files by name patterns\n- When you are doing an open-ended search that may require multiple rounds of globbing and grepping, use the Task tool instead\n- You have the capability to call multiple tools in a single response. It is always better to speculatively perform multiple searches as a batch that are potentially useful.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "The glob pattern to match files against"
+            },
+            "path": {
+              "type": "string",
+              "description": "The directory to search in. If not specified, the current working directory will be used. IMPORTANT: Omit this field to use the default directory. DO NOT enter \"undefined\" or \"null\" - simply omit it for the default behavior. Must be a valid directory path if provided."
+            }
+          },
+          "required": [
+            "pattern"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "grep",
+        "description": "- Fast content search tool that works with any codebase size\n- Searches file contents using regular expressions\n- Supports full regex syntax (eg. \"log.*Error\", \"function\\s+\\w+\", etc.)\n- Filter files by pattern with the include parameter (eg. \"*.js\", \"*.{ts,tsx}\")\n- Returns file paths and line numbers with matching lines\n- Use this tool when you need to find files containing specific patterns\n- If you need to identify/count the number of matches within files, use the Bash tool with `rg` (ripgrep) directly. Do NOT use `grep`.\n- When you are doing an open-ended search that may require multiple rounds of globbing and grepping, use the Task tool instead\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "The regex pattern to search for in file contents"
+            },
+            "path": {
+              "type": "string",
+              "description": "The directory to search in. Defaults to the current working directory."
+            },
+            "include": {
+              "type": "string",
+              "description": "File pattern to include in the search (e.g. \"*.js\", \"*.{ts,tsx}\")"
+            }
+          },
+          "required": [
+            "pattern"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "description": "Read a file or directory from the local filesystem. If the path does not exist, an error is returned.\n\nUsage:\n- The filePath parameter should be an absolute path.\n- By default, this tool returns up to 2000 lines from the start of the file.\n- The offset parameter is the line number to start from (1-indexed).\n- To read later sections, call this tool again with a larger offset.\n- Use the grep tool to find specific content in large files or files with long lines.\n- If you are unsure of the correct file path, use the glob tool to look up filenames by glob pattern.\n- Contents are returned with each line prefixed by its line number as `<line>: <content>`. For example, if a file has contents \"foo\\n\", you will receive \"1: foo\\n\". For directories, entries are returned one per line (without line numbers) with a trailing `/` for subdirectories.\n- Any line longer than 2000 characters is truncated.\n- Call this tool in parallel when you know there are multiple files you want to read.\n- Avoid tiny repeated slices (30 line chunks). If you need more context, read a larger window.\n- This tool can read image files and PDFs and return them as file attachments.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "filePath": {
+              "type": "string",
+              "description": "The absolute path to the file or directory to read"
+            },
+            "offset": {
+              "minimum": 0,
+              "type": "integer",
+              "maximum": 9007199254740991,
+              "description": "The line number to start reading from (1-indexed)"
+            },
+            "limit": {
+              "minimum": 0,
+              "type": "integer",
+              "maximum": 9007199254740991,
+              "description": "The maximum number of lines to read (defaults to 2000)"
+            }
+          },
+          "required": [
+            "filePath"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "webfetch",
+        "description": "- Fetches content from a specified URL\n- Takes a URL and optional format as input\n- Fetches the URL content, converts to requested format (markdown by default)\n- Returns the content in the specified format\n- Use this tool when you need to retrieve and analyze web content\n\nUsage notes:\n  - IMPORTANT: if another tool is present that offers better web fetching capabilities, is more targeted to the task, or has fewer restrictions, prefer using that tool instead of this one.\n  - The URL must be a fully-formed valid URL\n  - HTTP URLs will be automatically upgraded to HTTPS\n  - Format options: \"markdown\" (default), \"text\", or \"html\"\n  - This tool is read-only and does not modify any files\n  - Results may be summarized if the content is very large\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The URL to fetch content from"
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "text",
+                "markdown",
+                "html"
+              ],
+              "description": "The format to return the content in (text, markdown, or html). Defaults to markdown.",
+              "default": "markdown"
+            },
+            "timeout": {
+              "type": "number",
+              "description": "Optional timeout in seconds (max 120)"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  }
+}

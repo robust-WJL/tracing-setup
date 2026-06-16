@@ -1,0 +1,99 @@
+{
+  "id": "chatcmpl-634f3045061e4423b8b7de81788c15e5",
+  "object": "chat.completion.chunk",
+  "created": 1781587297,
+  "model": "zai-org/GLM-5.1",
+  "usage": {
+    "completion_tokens": 320,
+    "prompt_tokens": 23613,
+    "prompt_tokens_details": {
+      "cached_tokens": 7232
+    },
+    "total_tokens": 23933
+  },
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Now let me read the sub-CMakeLists.txt files and check for CI configuration:",
+        "reasoning_content": "NowNow let let me me look look at at the the C CMakeMake build build configuration configuration more more closely closely for for the the main main project project ( (swswpppp202202606011-team-team1919),), and and also also check check for for any any other other build build-related-related files files like like . .githubgithub/work/workflowsflows for for CI CI,, etc etc..",
+        "tool_calls": [
+          {
+            "id": "call_BSMCEU51aCKJSLtW355vNGQ7",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/src/CMakeLists.txt\"}"
+            }
+          },
+          {
+            "id": "call_7UuKJAofZStndpYslrFryaL9",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/src/lib/CMakeLists.txt\"}"
+            }
+          },
+          {
+            "id": "call_qvxayaTqfLlRqPxO5YREKJbU",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/test/CMakeLists.txt\"}"
+            }
+          },
+          {
+            "id": "call_saDBieXSVyDfuI9bbbmmATFz",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/src/lib/opt/CMakeLists.txt\"}"
+            }
+          },
+          {
+            "id": "call_dS9dh9fsdD2mrvW9asSIgMKB",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/src/lib/backend/CMakeLists.txt\"}"
+            }
+          },
+          {
+            "id": "call_YKBpEBp5RwuHQyW0shssp5Vv",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/CMakeLists.txt\"}"
+            }
+          },
+          {
+            "id": "call_cWbRuPgydfZLD3NJDF4Cs6eD",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/*.yml\", \"path\": \"/Users/woojin/swpp/swpp202601-team19/.github\"}"
+            }
+          },
+          {
+            "id": "call_DMp1ZzH1Wlurck20XWIl1uEP",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/.clang-format\"}"
+            }
+          },
+          {
+            "id": "call_HcG982aaHfnt1cSrYy5LEVXY",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19/install-alive2.sh\"}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "id": "chatcmpl-d89176710552426883f857492dc417a8",
+  "object": "chat.completion.chunk",
+  "created": 1781587267,
+  "model": "zai-org/GLM-5.1",
+  "usage": {
+    "completion_tokens": 334,
+    "prompt_tokens": 6812,
+    "prompt_tokens_details": {
+      "cached_tokens": 3776
+    },
+    "total_tokens": 7146
+  },
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "This is clearly an LLVM-based project. Let me search for CMake configs (which LLVM uses heavily), and also check the top-level directory structure and any additional config files.",
+        "reasoning_content": "ThisThis appears appears to to be be an an LLVM LLVM project project repository repository ( (llvmllvm-project-project).). The The config config files files found found are are mostly mostly within within the the llvm llvm-project-project sub subdirectorydirectory.. Let Let me me also also look look for for C CMakeMake configs configs since since LLVM LLVM is is a a C CMakeMake-based-based project project,, and and check check for for any any additional additional build build configs configs at at the the root root level level..",
+        "tool_calls": [
+          {
+            "id": "call_OgrgbeitFJ4GDNmuavCPolhf",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/CMakeLists.txt\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_B47q36uTonJx2EuYrmj0ccTs",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/*.cmake\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_1pebj8JzWigVsJxJsxFYD9A0",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_8Xktzd1aWOEU54zjGL3AMun2",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/.clang-format\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_D9S00rj3x4gGqDLTQYPXa8o3",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/.clang-tidy\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_ikEdjkX6cKhB98OU0JpZv07x",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/.editorconfig\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_qmKPeSRLnU7gIGupVC62GM36",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/.gitignore\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_KgnbLxmEzxDsaNFguSbJfpt5",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/CMakePresets.json\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_5HVuJB2XQmz4bQvwNKcP0rXq",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/CMakeCache.txt\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_0pHeZ5KLTHaJYBJ7bTbkeu4L",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/CMakeUserPresets.json\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}

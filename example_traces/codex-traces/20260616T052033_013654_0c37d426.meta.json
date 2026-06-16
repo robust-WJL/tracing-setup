@@ -1,0 +1,33 @@
+{
+  "status": 200,
+  "method": "POST",
+  "path": "/responses",
+  "model": "gpt-5.5",
+  "started_at": "2026-06-16T05:20:33.016507+00:00",
+  "ttft_ms": 922.0,
+  "duration_ms": 5026.7,
+  "response_headers": {
+    "date": "Tue, 16 Jun 2026 05:20:33 GMT",
+    "content-type": "text/event-stream; charset=utf-8",
+    "transfer-encoding": "chunked",
+    "connection": "keep-alive",
+    "cf-ray": "a0c75daf2e59ea8b-ICN",
+    "cf-cache-status": "DYNAMIC",
+    "server": "cloudflare",
+    "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+    "x-content-type-options": "nosniff",
+    "access-control-expose-headers": "X-Request-ID, CF-Ray, CF-Ray",
+    "openai-organization": "friendliai",
+    "openai-processing-ms": "520",
+    "openai-project": "proj_z0n5Iytz6oG5S5sv0WcomdxT",
+    "openai-version": "2020-10-01",
+    "x-ratelimit-limit-requests": "15000",
+    "x-ratelimit-limit-tokens": "40000000",
+    "x-ratelimit-remaining-requests": "14999",
+    "x-ratelimit-remaining-tokens": "39983444",
+    "x-ratelimit-reset-requests": "4ms",
+    "x-ratelimit-reset-tokens": "24ms",
+    "x-request-id": "req_ee0f25dcec564afdb27f6ee7d100a7e9",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  }
+}

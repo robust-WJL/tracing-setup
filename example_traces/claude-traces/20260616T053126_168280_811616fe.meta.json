@@ -1,0 +1,27 @@
+{
+  "status": 429,
+  "method": "POST",
+  "path": "/v1/messages",
+  "model": "claude-opus-4-8",
+  "started_at": "2026-06-16T05:31:26.170569+00:00",
+  "ttft_ms": 406.7,
+  "duration_ms": 407.7,
+  "response_headers": {
+    "date": "Tue, 16 Jun 2026 05:31:26 GMT",
+    "content-type": "application/json",
+    "transfer-encoding": "chunked",
+    "connection": "keep-alive",
+    "x-should-retry": "true",
+    "request-id": "req_011Cc6Pc42aoMxVZz3KiHiHT",
+    "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+    "anthropic-organization-id": "ca113f7e-9d02-4d29-9d35-5045ebbe3274",
+    "traceresponse": "00-b05b65f9310386b4157ba3b88a029300-fb200223efb93205-01",
+    "server": "cloudflare",
+    "content-encoding": "gzip",
+    "vary": "Accept-Encoding",
+    "cf-cache-status": "DYNAMIC",
+    "x-robots-tag": "none",
+    "content-security-policy": "default-src 'none'; frame-ancestors 'none'",
+    "cf-ray": "a0c76da09fd4018f-ICN"
+  }
+}

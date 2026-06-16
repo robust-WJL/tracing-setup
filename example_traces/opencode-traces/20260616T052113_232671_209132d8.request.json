@@ -1,0 +1,273 @@
+{
+  "model": "zai-org/GLM-5.1",
+  "max_tokens": 32000,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a file search specialist. You excel at thoroughly navigating and exploring codebases.\n\nYour strengths:\n- Rapidly finding files using glob patterns\n- Searching code and text with powerful regex patterns\n- Reading and analyzing file contents\n\nGuidelines:\n- Use Glob for broad file pattern matching\n- Use Grep for searching file contents with regex\n- Use Read when you know the specific file path you need to read\n- Use Bash for file operations like copying, moving, or listing directory contents\n- Adapt your search approach based on the thoroughness level specified by the caller\n- Return file paths as absolute paths in your final response\n- For clear communication, avoid using emojis\n- Do not create any files, or run bash commands that modify the user's system state in any way\n\nComplete the user's search request efficiently and report your findings clearly.\n\nYou are powered by the model named zai-org/GLM-5.1. The exact model ID is friendli/zai-org/GLM-5.1\nHere is some useful information about the environment you are running in:\n<env>\n  Working directory: /Users/woojin/swpp\n  Workspace root folder: /Users/woojin\n  Is directory a git repo: yes\n  Platform: darwin\n  Today's date: Tue Jun 16 2026\n</env>"
+    },
+    {
+      "role": "user",
+      "content": "Explore the overall project structure and build-related architecture in this repository. Focus on:\n1. List the top-level directory structure\n2. Identify the project type (frontend, backend, fullstack, library, monorepo, etc.)\n3. Look for monorepo tools: lerna.json, nx.json, turbo.json, pnpm-workspace.yaml, etc.\n4. Check for framework-specific directories: src/, lib/, dist/, build/, out/, public/, static/, assets/, etc.\n5. Look for any custom build scripts in scripts/ or tools/ directories\n6. Check the README for build instructions\n7. Report back a detailed summary of the project structure and how builds are organized\n\nBe very thorough in your exploration."
+    },
+    {
+      "role": "assistant",
+      "content": "I'll systematically explore this repository's structure and build architecture. Let me start with multiple parallel searches to gather information efficiently.",
+      "tool_calls": [
+        {
+          "id": "call_MzBzhjPHErSO0FFHrIAu4tA6",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"filePath\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_gUFX7npDEBjHs6dyC4oFaZmT",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"*\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_g3prb6rkyCJ1nGMolLMBwca2",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/lerna.json\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_uO9EAgKxloIpdwdKM1RnUbAv",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/nx.json\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_scwYNPD4AeHsN09UbwmcQOg2",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/turbo.json\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_7Y6TYMDkGBhHaJPL7tbBUKSG",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"**/pnpm-workspace.yaml\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        },
+        {
+          "id": "call_R8xz09HJKbc3twray9Sgnihn",
+          "type": "function",
+          "function": {
+            "name": "glob",
+            "arguments": "{\"pattern\":\"README*\",\"path\":\"/Users/woojin/swpp\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user wants me to thoroughly explore the project structure and build-related architecture of the repository at /Users/woojin/swpp. Let me start by examining the top-level directory structure and then dig deeper into the various aspects they've asked about."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_MzBzhjPHErSO0FFHrIAu4tA6",
+      "content": "<path>/Users/woojin/swpp</path>\n<type>directory</type>\n<entries>\n.DS_Store\nbench_sprint1.sh\ninstall-llvm.sh\nllvm-project/\nswpp202601-team19/\nswpp202601/\n\n(6 entries)\n</entries>"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_gUFX7npDEBjHs6dyC4oFaZmT",
+      "content": "/Users/woojin/swpp/swpp202601-team19/src/main.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/diamond_if_convert.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heap_lifetime_shrink.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt.h\n/Users/woojin/swpp/swpp202601-team19/.DS_Store\n/Users/woojin/swpp/swpp202601-team19/format-all.sh\n/Users/woojin/swpp/swpp202601-team19/CMakeLists.txt\n/Users/woojin/swpp/swpp202601-team19/LICENSE.md\n/Users/woojin/swpp/swpp202601-team19/install-alive2.sh\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/mul_add_fusion.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/diamond_if_convert.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/pointer_induction.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/scalar_licm.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/shiftadd_to_mul.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/delayed_use_aload.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/opt_plugin.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/swpp_alloc_utils.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/lower_tm_intrinsics.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/pointer_induction.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heap_scalarization.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heat_decay_nop_insertion.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heap_accumulator_promotion.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/scalar_cse.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heap_accumulator_promotion.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/redundant_memory_forwarding.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/swpp_alloc_utils.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/triangle_if_convert.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/strip_lifetime_intrinsics.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heap_scalarization.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heat_decay_nop_insertion.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/opt_pipeline.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/opt_pipeline.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/redundant_memory_forwarding.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heap_loop_licm.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heap_lifetime_shrink.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/shiftadd_to_mul.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/empty_block_forwarding.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/large_block_cse.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/large_block_cse.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/reorder_load_inst.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/README.md\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/lower_tm_intrinsics.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/triangle_if_convert.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/malloc_to_stack.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/heap_loop_licm.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/remove_const4.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/opt_passes_summary.txt\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/delayed_use_aload.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/mul_add_fusion.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/odd_add_lowering.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/odd_add_lowering.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/malloc_to_stack.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/scalar_cse.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/loop_branch_reordering.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/scalar_licm.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/CMakeLists.txt\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/loop_branch_reordering.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/remove_const4.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/reorder_load_inst.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/strip_lifetime_intrinsics.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/opt/empty_block_forwarding.cpp\n/Users/woojin/swpp/.DS_Store\n/Users/woojin/swpp/swpp202601-team19/src/lib.cpp\n/Users/woojin/swpp/swpp202601-team19/src/static_error.h\n/Users/woojin/swpp/swpp202601-team19/src/args.cpp\n/Users/woojin/swpp/swpp202601-team19/src/.DS_Store\n/Users/woojin/swpp/swpp202601-team19/src/CMakeLists.txt\n/Users/woojin/swpp/swpp202601-team19/CLAUDE.md\n/Users/woojin/swpp/swpp202601-team19/pr_body.txt\n/Users/woojin/swpp/swpp202601-team19/test/run_benchmarks.py\n/Users/woojin/swpp/swpp202601-team19/test/ADDING_A_PASS.md\n/Users/woojin/swpp/swpp202601-team19/test/tm_cost_static.json\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/const_expr_eliminate.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/gep_eliminate.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/sext_eliminate.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/gep_eliminate.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/trunc_adjust.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/mir_translator.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/sext_eliminate.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/mir_printer.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/gv_eliminate.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/const_expr_eliminate.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/calloc_eliminate.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/trunc_adjust.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/const_copy_eliminate.h\n/Users/woojin/swpp/swpp202601-team19/test/filecheck/scalar_licm/hoist_nested_zext.ll\n/Users/woojin/swpp/swpp202601-team19/test/filecheck/scalar_licm/no_hoist_dependent.ll\n/Users/woojin/swpp/swpp202601-team19/test/filecheck/scalar_licm/no_hoist_mul.ll\n/Users/woojin/swpp/swpp202601-team19/test/filecheck/scalar_licm/hoist_zext.ll\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPTargetInfo.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPTargetLowering.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPTargetMachine.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPRegisterInfo.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPTargetLowering.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPSubtarget.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPFrameLowering.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPSubtarget.h\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPInstrInfo.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPTargetMachine.cpp\n/Users/woojin/swpp/swpp202601-team19/src/lib/backend/SWPP/SWPPRegisterInfo.cpp\n\n(Results are truncated: showing first 100 results. Consider using a more specific path or pattern.)"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_g3prb6rkyCJ1nGMolLMBwca2",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_uO9EAgKxloIpdwdKM1RnUbAv",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_scwYNPD4AeHsN09UbwmcQOg2",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_7Y6TYMDkGBhHaJPL7tbBUKSG",
+      "content": "No files found"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_R8xz09HJKbc3twray9Sgnihn",
+      "content": "/Users/woojin/swpp/swpp202601-team19/src/lib/opt/README.md\n/Users/woojin/swpp/swpp202601-team19/README.md\n/Users/woojin/swpp/swpp202601/README.md\n/Users/woojin/swpp/llvm-project/offload/README.txt\n/Users/woojin/swpp/llvm-project/offload/liboffload/API/README.md\n/Users/woojin/swpp/llvm-project/offload/liboffload/README.md\n/Users/woojin/swpp/llvm-project/cross-project-tests/dtlto/README.md\n/Users/woojin/swpp/llvm-project/cross-project-tests/intrinsic-header-tests/README.txt\n/Users/woojin/swpp/llvm-project/openmp/README.rst\n/Users/woojin/swpp/llvm-project/cross-project-tests/debuginfo-tests/README.txt\n/Users/woojin/swpp/llvm-project/cross-project-tests/debuginfo-tests/win_cdb-tests/README.txt\n/Users/woojin/swpp/llvm-project/openmp/docs/README.txt\n/Users/woojin/swpp/llvm-project/cross-project-tests/debuginfo-tests/dexter/dex/debugger/dbgeng/README.md\n/Users/woojin/swpp/llvm-project/offload/unittests/Conformance/README.md\n/Users/woojin/swpp/llvm-project/offload/README.md\n/Users/woojin/swpp/llvm-project/openmp/runtime/README.txt\n/Users/woojin/swpp/llvm-project/openmp/runtime/unittests/README.md\n/Users/woojin/swpp/llvm-project/cross-project-tests/debuginfo-tests/dexter/README.md\n/Users/woojin/swpp/llvm-project/flang/README.md\n/Users/woojin/swpp/llvm-project/openmp/libompd/gdb-plugin/README.txt\n/Users/woojin/swpp/llvm-project/openmp/tools/Modules/README.rst\n/Users/woojin/swpp/llvm-project/openmp/tools/multiplex/README.md\n/Users/woojin/swpp/llvm-project/openmp/tools/omptest/README.md\n/Users/woojin/swpp/llvm-project/openmp/tools/archer/README.md\n/Users/woojin/swpp/llvm-project/polly/lib/External/README.txt\n/Users/woojin/swpp/llvm-project/polly/lib/External/isl/test_inputs/codegen/cloog/README\n/Users/woojin/swpp/llvm-project/polly/lib/External/isl/test_inputs/codegen/omega/README\n/Users/woojin/swpp/llvm-project/polly/lib/External/isl/test_inputs/codegen/pldi2012/README\n/Users/woojin/swpp/llvm-project/polly/lib/External/isl/README\n/Users/woojin/swpp/llvm-project/polly/lib/External/isl/imath/README.md\n/Users/woojin/swpp/llvm-project/polly/lib/External/isl/imath/contrib/README\n/Users/woojin/swpp/llvm-project/polly/lib/External/isl/imath/tests/gmp-compat-test/README\n/Users/woojin/swpp/llvm-project/polly/README\n/Users/woojin/swpp/llvm-project/libclc/README.md\n/Users/woojin/swpp/llvm-project/libunwind/docs/README.txt\n/Users/woojin/swpp/llvm-project/libcxxabi/src/demangle/README.txt\n/Users/woojin/swpp/llvm-project/polly/test/README\n/Users/woojin/swpp/llvm-project/README.md\n/Users/woojin/swpp/llvm-project/mlir/examples/transform/README.md\n/Users/woojin/swpp/llvm-project/third-party/README.md\n/Users/woojin/swpp/llvm-project/mlir/examples/minimal-opt/README.md\n/Users/woojin/swpp/llvm-project/mlir/examples/transform-opt/README.md\n/Users/woojin/swpp/llvm-project/third-party/boost-math/README.md\n/Users/woojin/swpp/llvm-project/flang/test/Integration/README.md\n/Users/woojin/swpp/llvm-project/third-party/unittest/googlemock/README.LLVM\n/Users/woojin/swpp/llvm-project/mlir/examples/standalone/README.md\n/Users/woojin/swpp/llvm-project/third-party/unittest/googlemock/include/gmock/internal/custom/README.md\n/Users/woojin/swpp/llvm-project/orc-rt/docs/README.txt\n/Users/woojin/swpp/llvm-project/lld/ELF/README.md\n/Users/woojin/swpp/llvm-project/lld/README.md\n/Users/woojin/swpp/llvm-project/lld/docs/README.txt\n/Users/woojin/swpp/llvm-project/third-party/unittest/googletest/README.LLVM\n/Users/woojin/swpp/llvm-project/third-party/unittest/googletest/include/gtest/internal/custom/README.md\n/Users/woojin/swpp/llvm-project/clang/bindings/python/README.txt\n/Users/woojin/swpp/llvm-project/third-party/benchmark/README.md\n/Users/woojin/swpp/llvm-project/mlir/README.md\n/Users/woojin/swpp/llvm-project/mlir/docs/README.txt\n/Users/woojin/swpp/llvm-project/mlir/utils/tree-sitter-mlir/README.md\n/Users/woojin/swpp/llvm-project/mlir/utils/jupyter/README.md\n/Users/woojin/swpp/llvm-project/clang/lib/CodeGen/README.txt\n/Users/woojin/swpp/llvm-project/mlir/utils/clang-tidy/README.md\n/Users/woojin/swpp/llvm-project/mlir/utils/pygments/README.md\n/Users/woojin/swpp/llvm-project/mlir/utils/mbr/README.md\n/Users/woojin/swpp/llvm-project/mlir/utils/vim/README\n/Users/woojin/swpp/llvm-project/clang/lib/StaticAnalyzer/README.txt\n/Users/woojin/swpp/llvm-project/mlir/examples/toy/README.md\n/Users/woojin/swpp/llvm-project/clang/cmake/caches/README.txt\n/Users/woojin/swpp/llvm-project/clang/examples/PrintFunctionNames/README.txt\n/Users/woojin/swpp/llvm-project/clang/README.md\n/Users/woojin/swpp/llvm-project/clang/docs/README.txt\n/Users/woojin/swpp/llvm-project/clang/tools/scan-build-py/README.md\n/Users/woojin/swpp/llvm-project/clang/tools/clang-fuzzer/README.txt\n/Users/woojin/swpp/llvm-project/clang-tools-extra/include-cleaner/README.md\n/Users/woojin/swpp/llvm-project/clang-tools-extra/README.txt\n/Users/woojin/swpp/llvm-project/lld/COFF/README.md\n/Users/woojin/swpp/llvm-project/libsycl/README.md\n/Users/woojin/swpp/llvm-project/clang-tools-extra/docs/README.txt\n/Users/woojin/swpp/llvm-project/lldb/packages/Python/lldbsuite/test/README-TestSuite\n/Users/woojin/swpp/llvm-project/lldb/packages/Python/lldbsuite/test/test_runner/README.txt\n/Users/woojin/swpp/llvm-project/clang-tools-extra/docs/clangd/README.txt\n/Users/woojin/swpp/llvm-project/flang-rt/README.md\n/Users/woojin/swpp/llvm-project/clang/utils/perf-training/README.txt\n/Users/woojin/swpp/llvm-project/lldb/examples/customization/import-python/README\n/Users/woojin/swpp/llvm-project/lldb/examples/customization/pwd-cd-and-system/README\n/Users/woojin/swpp/llvm-project/lldb/examples/customization/bin-utils/README\n/Users/woojin/swpp/llvm-project/libc/src/string/memory_utils/README.md\n/Users/woojin/swpp/llvm-project/utils/bazel/README.md\n/Users/woojin/swpp/llvm-project/llvm/bindings/README.txt\n/Users/woojin/swpp/llvm-project/llvm/bindings/ocaml/README.txt\n/Users/woojin/swpp/llvm-project/llvm/README.txt\n/Users/woojin/swpp/llvm-project/libc/src/__support/CPP/README.md\n/Users/woojin/swpp/llvm-project/llvm/lib/Support/rpmalloc/README.md\n/Users/woojin/swpp/llvm-project/llvm/lib/Support/Unix/README.txt\n/Users/woojin/swpp/llvm-project/llvm/lib/Support/BLAKE3/README.md\n/Users/woojin/swpp/llvm-project/libc/src/__support/macros/properties/README.md\n/Users/woojin/swpp/llvm-project/libc/src/__support/macros/README.md\n/Users/woojin/swpp/llvm-project/libc/src/__support/FPUtil/generic/README.md\n/Users/woojin/swpp/llvm-project/libc/README.txt\n/Users/woojin/swpp/llvm-project/libc/benchmarks/distributions/README.md\n/Users/woojin/swpp/llvm-project/libc/benchmarks/README.md\n\n(Results are truncated: showing first 100 results. Consider using a more specific path or pattern.)"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "Executes a given bash command in a persistent shell session with optional timeout, ensuring proper handling and security measures.\n\nBe aware: OS: darwin, Shell: zsh\n\nAll commands run in the current working directory by default. Use the `workdir` parameter if you need to run a command in a different directory. AVOID using `cd <directory> && <command>` patterns - use `workdir` instead.\n\nUse `/var/folders/55/h73l3pns0t7blyz9c6skr8xm0000gn/T/opencode` for temporary work outside the workspace. This directory has already been created, already exists, and is pre-approved for external directory access.\n\nIMPORTANT: This tool is for terminal operations like git, npm, docker, etc. DO NOT use it for file operations (reading, writing, editing, searching, finding files) - use the specialized tools for this instead.\n\nBefore executing the command, please follow these steps:\n\n1. Directory Verification:\n   - If the command will create new directories or files, first use `ls` to verify the parent directory exists and is the correct location\n   - For example, before running \"mkdir foo/bar\", first use `ls foo` to check that \"foo\" exists and is the intended parent directory\n\n2. Command Execution:\n   - Always quote file paths that contain spaces with double quotes (e.g., rm \"path with spaces/file.txt\")\n   - Examples of proper quoting:\n     - mkdir \"/Users/name/My Documents\" (correct)\n     - mkdir /Users/name/My Documents (incorrect - will fail)\n     - python \"/path/with spaces/script.py\" (correct)\n     - python /path/with spaces/script.py (incorrect - will fail)\n   - After ensuring proper quoting, execute the command.\n   - Capture the output of the command.\n\nUsage notes:\n  - The command argument is required.\n  - You can specify an optional timeout in milliseconds. If not specified, commands will time out after 120000ms.\n  - It is very helpful if you write a clear, concise description of what this command does in 5-10 words.\n  - If the output exceeds 2000 lines or 51200 bytes, it will be truncated and the full output will be written to a file. You can use Read with offset/limit to read specific sections or Grep to search the full content. Do NOT use `head`, `tail`, or other truncation commands to limit output; the full output will already be captured to a file for more precise searching.\n\n  - Avoid using Bash with the `find`, `grep`, `cat`, `head`, `tail`, `sed`, `awk`, or `echo` commands, unless explicitly instructed or when these commands are truly necessary for the task. Instead, always prefer using the dedicated tools for these commands:\n    - File search: Use Glob (NOT find or ls)\n    - Content search: Use Grep (NOT grep or rg)\n    - Read files: Use Read (NOT cat/head/tail)\n    - Edit files: Use Edit (NOT sed/awk)\n    - Write files: Use Write (NOT echo >/cat <<EOF)\n    - Communication: Output text directly (NOT echo/printf)\n  - When issuing multiple commands:\n    - If the commands are independent and can run in parallel, make multiple bash tool calls in a single message. For example, if you need to run \"git status\" and \"git diff\", send a single message with two bash tool calls in parallel.\n    - If the commands depend on each other and must run sequentially, use a single Bash call with '&&' to chain them together (e.g., `git add . && git commit -m \"message\" && git push`). For instance, if one operation must complete before another starts (like mkdir before cp, Write before Bash for git operations, or git add before git commit), run these operations sequentially instead.\n    - Use ';' only when you need to run commands sequentially but don't care if earlier commands fail\n    - DO NOT use newlines to separate commands (newlines are ok in quoted strings)\n  - AVOID using `cd <directory> && <command>`. Use the `workdir` parameter to change directories instead.\n    <good-example>\n    Use workdir=\"/foo/bar\" with command: pytest tests\n    </good-example>\n    <bad-example>\n    cd /foo/bar && pytest tests\n    </bad-example>\n\n# Git and GitHub\n- Only commit, amend, push, or create PRs when explicitly requested.\n- Before committing, inspect `git status`, `git diff`, and `git log --oneline -10`; stage only intended files and never commit secrets.\n- Write a concise commit message that matches the repo style.\n- Do not update git config, skip hooks, use interactive `-i`, force-push, or create empty commits unless explicitly requested.\n- If a commit fails or hooks reject it, fix the issue and create a new commit; do not amend the failed commit.\n- Before creating a PR, inspect status, diff, remote tracking, recent commits, and the diff from the base branch.\n- Review all commits included in the PR, not just the latest commit.\n- Use `gh` for GitHub tasks, including PRs, issues, checks, and releases; return the PR URL when done.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "The command to execute"
+            },
+            "timeout": {
+              "minimum": -9007199254740991,
+              "exclusiveMinimum": 0,
+              "type": "integer",
+              "maximum": 9007199254740991,
+              "description": "Optional timeout in milliseconds"
+            },
+            "workdir": {
+              "type": "string",
+              "description": "The working directory to run the command in. Defaults to the current directory. Use this instead of 'cd' commands."
+            },
+            "description": {
+              "type": "string",
+              "description": "Clear, concise description of what this command does in 5-10 words. Examples:\nInput: ls\nOutput: Lists files in current directory\n\nInput: git status\nOutput: Shows working tree status\n\nInput: npm install\nOutput: Installs package dependencies\n\nInput: mkdir foo\nOutput: Creates directory 'foo'"
+            }
+          },
+          "required": [
+            "command",
+            "description"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "glob",
+        "description": "- Fast file pattern matching tool that works with any codebase size\n- Supports glob patterns like \"**/*.js\" or \"src/**/*.ts\"\n- Returns matching file paths\n- Use this tool when you need to find files by name patterns\n- When you are doing an open-ended search that may require multiple rounds of globbing and grepping, use the Task tool instead\n- You have the capability to call multiple tools in a single response. It is always better to speculatively perform multiple searches as a batch that are potentially useful.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "The glob pattern to match files against"
+            },
+            "path": {
+              "type": "string",
+              "description": "The directory to search in. If not specified, the current working directory will be used. IMPORTANT: Omit this field to use the default directory. DO NOT enter \"undefined\" or \"null\" - simply omit it for the default behavior. Must be a valid directory path if provided."
+            }
+          },
+          "required": [
+            "pattern"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "grep",
+        "description": "- Fast content search tool that works with any codebase size\n- Searches file contents using regular expressions\n- Supports full regex syntax (eg. \"log.*Error\", \"function\\s+\\w+\", etc.)\n- Filter files by pattern with the include parameter (eg. \"*.js\", \"*.{ts,tsx}\")\n- Returns file paths and line numbers with matching lines\n- Use this tool when you need to find files containing specific patterns\n- If you need to identify/count the number of matches within files, use the Bash tool with `rg` (ripgrep) directly. Do NOT use `grep`.\n- When you are doing an open-ended search that may require multiple rounds of globbing and grepping, use the Task tool instead\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "The regex pattern to search for in file contents"
+            },
+            "path": {
+              "type": "string",
+              "description": "The directory to search in. Defaults to the current working directory."
+            },
+            "include": {
+              "type": "string",
+              "description": "File pattern to include in the search (e.g. \"*.js\", \"*.{ts,tsx}\")"
+            }
+          },
+          "required": [
+            "pattern"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "description": "Read a file or directory from the local filesystem. If the path does not exist, an error is returned.\n\nUsage:\n- The filePath parameter should be an absolute path.\n- By default, this tool returns up to 2000 lines from the start of the file.\n- The offset parameter is the line number to start from (1-indexed).\n- To read later sections, call this tool again with a larger offset.\n- Use the grep tool to find specific content in large files or files with long lines.\n- If you are unsure of the correct file path, use the glob tool to look up filenames by glob pattern.\n- Contents are returned with each line prefixed by its line number as `<line>: <content>`. For example, if a file has contents \"foo\\n\", you will receive \"1: foo\\n\". For directories, entries are returned one per line (without line numbers) with a trailing `/` for subdirectories.\n- Any line longer than 2000 characters is truncated.\n- Call this tool in parallel when you know there are multiple files you want to read.\n- Avoid tiny repeated slices (30 line chunks). If you need more context, read a larger window.\n- This tool can read image files and PDFs and return them as file attachments.\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "filePath": {
+              "type": "string",
+              "description": "The absolute path to the file or directory to read"
+            },
+            "offset": {
+              "minimum": 0,
+              "type": "integer",
+              "maximum": 9007199254740991,
+              "description": "The line number to start reading from (1-indexed)"
+            },
+            "limit": {
+              "minimum": 0,
+              "type": "integer",
+              "maximum": 9007199254740991,
+              "description": "The maximum number of lines to read (defaults to 2000)"
+            }
+          },
+          "required": [
+            "filePath"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "webfetch",
+        "description": "- Fetches content from a specified URL\n- Takes a URL and optional format as input\n- Fetches the URL content, converts to requested format (markdown by default)\n- Returns the content in the specified format\n- Use this tool when you need to retrieve and analyze web content\n\nUsage notes:\n  - IMPORTANT: if another tool is present that offers better web fetching capabilities, is more targeted to the task, or has fewer restrictions, prefer using that tool instead of this one.\n  - The URL must be a fully-formed valid URL\n  - HTTP URLs will be automatically upgraded to HTTPS\n  - Format options: \"markdown\" (default), \"text\", or \"html\"\n  - This tool is read-only and does not modify any files\n  - Results may be summarized if the content is very large\n",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The URL to fetch content from"
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "text",
+                "markdown",
+                "html"
+              ],
+              "description": "The format to return the content in (text, markdown, or html). Defaults to markdown.",
+              "default": "markdown"
+            },
+            "timeout": {
+              "type": "number",
+              "description": "Optional timeout in seconds (max 120)"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  }
+}

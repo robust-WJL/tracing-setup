@@ -1,0 +1,83 @@
+{
+  "id": "chatcmpl-cae164310dc94e6ea93d08441d10695b",
+  "object": "chat.completion.chunk",
+  "created": 1781587263,
+  "model": "zai-org/GLM-5.1",
+  "usage": {
+    "completion_tokens": 235,
+    "prompt_tokens": 3251,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 3486
+  },
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "I'll systematically explore this repository's structure and build architecture. Let me start with multiple parallel searches to gather information efficiently.",
+        "reasoning_content": "TheThe user user wants wants me me to to thoroughly thoroughly explore explore the the project project structure structure and and build build-related-related architecture architecture of of the the repository repository at at / /UsersUsers//wowoojojinin/sw/swpppp.. Let Let me me start start by by examining examining the the top top-level-level directory directory structure structure and and then then dig dig deeper deeper into into the the various various aspects aspects they they've've asked asked about about..",
+        "tool_calls": [
+          {
+            "id": "call_MzBzhjPHErSO0FFHrIAu4tA6",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_gUFX7npDEBjHs6dyC4oFaZmT",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"*\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_g3prb6rkyCJ1nGMolLMBwca2",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/lerna.json\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_uO9EAgKxloIpdwdKM1RnUbAv",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/nx.json\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_scwYNPD4AeHsN09UbwmcQOg2",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/turbo.json\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_7Y6TYMDkGBhHaJPL7tbBUKSG",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/pnpm-workspace.yaml\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          },
+          {
+            "id": "call_R8xz09HJKbc3twray9Sgnihn",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"README*\", \"path\": \"/Users/woojin/swpp\"}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}

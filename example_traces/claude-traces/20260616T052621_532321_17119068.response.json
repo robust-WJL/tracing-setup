@@ -1,0 +1,43 @@
+{
+  "model": "claude-opus-4-8",
+  "id": "msg_01R8S7c9n1zAs5WatXRmy3gk",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "Added the **IDE extensions & MCP plugins (Figma)** section to the README (now 105 lines, still tight).\n\n## What it covers\n\n- **Claude Code (VS Code / JetBrains):** Already traced — the extension shares `~/.claude/settings.json` with the CLI, so the `ANTHROPIC_BASE_URL` setup wrote applies to both. No extra steps (just keep the proxy up; it auto-starts).\n- **Codex (VS Code extension):** Reads the same `~/.codex/config.toml`, so it traces too — with one real caveat I flagged: a **GUI-launched IDE may not inherit your shell's `OPENAI_API_KEY`**. Fix: launch the IDE from a terminal that has it exported, or `launchctl setenv OPENAI_API_KEY sk-...` (macOS) + restart the IDE.\n- **Figma (and any MCP plugin):** Works normally with tracing on — **`ANTHROPIC_BASE_URL` only redirects model-API calls, not MCP connections**, so the Figma MCP server connects directly as usual. Configure it in Claude Code as normal; the model calls that use Figma context are traced, the plugin is unaffected. (`ENABLE_TOOL_SEARCH=true` keeps MCP tool search working behind the proxy.)\n\nI also added a short note explaining *why* this now works: the old `claude-trace` wrapper was terminal-only (couldn't combine with the IDE/Figma) — config-based routing is exactly what fixes that.\n\n## For your Figma test\nYou shouldn't need to do anything special: with `./setup.sh claude` done and `fai-trace status` showing claude UP, just use the Figma MCP in the Claude Code IDE extension as usual. Model calls (including Figma-context ones) land in `~/fai-traces/claude-traces`; the Figma plugin connects independently of the proxy.\n\nOne honest caveat: I can't drive the GUI extensions here, so the Claude-extension + Figma path is based on verified behavior (`settings.json` is shared; MCP is independent of the base URL), while the **Codex extension** reading `config.toml` is the reasonable expectation you'll want to confirm when you test — if its traces don't show up, it's almost certainly the `OPENAI_API_KEY`-not-visible-to-GUI issue above."
+    }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 828,
+    "cache_read_input_tokens": 701194,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 828,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "output_tokens": 790,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 790,
+        "cache_read_input_tokens": 701194,
+        "cache_creation_input_tokens": 828,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 828,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message"
+      }
+    ]
+  }
+}

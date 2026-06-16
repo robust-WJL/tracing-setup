@@ -1,0 +1,43 @@
+{
+  "model": "claude-opus-4-8",
+  "id": "msg_01H8a3GEV4g535T5Ydz4U2jE",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"title\": \"Analyze build config with subagents\"}"
+    }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+    "input_tokens": 617,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "output_tokens": 18,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 617,
+        "output_tokens": 18,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message"
+      }
+    ]
+  }
+}

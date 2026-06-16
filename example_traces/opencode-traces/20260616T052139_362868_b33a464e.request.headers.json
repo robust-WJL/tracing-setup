@@ -1,0 +1,13 @@
+{
+  "authorization": "[REDACTED]",
+  "content-type": "application/json",
+  "user-agent": "opencode/1.17.7 ai-sdk/provider-utils/4.0.23 runtime/bun/1.3.14",
+  "x-parent-session-id": "ses_13120fba7ffe1w4PBpcCsqEziK",
+  "x-session-affinity": "ses_1311fe0a6ffeJ0ckZmpbIcGE80",
+  "x-session-id": "ses_1311fe0a6ffeJ0ckZmpbIcGE80",
+  "connection": "keep-alive",
+  "accept": "*/*",
+  "host": "127.0.0.1:8790",
+  "accept-encoding": "gzip, deflate, br, zstd",
+  "content-length": "105183"
+}

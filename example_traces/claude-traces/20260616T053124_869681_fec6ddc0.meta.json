@@ -1,0 +1,28 @@
+{
+  "status": 429,
+  "method": "POST",
+  "path": "/v1/messages",
+  "model": "claude-opus-4-8",
+  "started_at": "2026-06-16T05:31:24.871697+00:00",
+  "ttft_ms": 319.3,
+  "duration_ms": 320.1,
+  "response_headers": {
+    "date": "Tue, 16 Jun 2026 05:31:25 GMT",
+    "content-type": "application/json",
+    "transfer-encoding": "chunked",
+    "connection": "keep-alive",
+    "x-should-retry": "true",
+    "request-id": "req_011Cc6PbxSyTRgnkS8Avq9fu",
+    "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+    "anthropic-organization-id": "ca113f7e-9d02-4d29-9d35-5045ebbe3274",
+    "traceresponse": "00-202d699565f832a9d8670c30356a5471-8e28907ec415699a-01",
+    "server": "cloudflare",
+    "content-encoding": "gzip",
+    "vary": "Accept-Encoding",
+    "cf-cache-status": "DYNAMIC",
+    "set-cookie": "_cfuvid=5ZJCPe4uFXIkeyWAU2e44BIVpUvHKkfc233uQ8Y4.i0-1781587884.8723938-1.0.1.1-ZcN692fDA0Rr44EiUamEVkVwL1sBDON90Ek_154NNts; HttpOnly; SameSite=None; Secure; Path=/; Domain=api.anthropic.com",
+    "content-security-policy": "default-src 'none'; frame-ancestors 'none'",
+    "x-robots-tag": "none",
+    "cf-ray": "a0c76d987855018f-ICN"
+  }
+}

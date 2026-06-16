@@ -1,0 +1,75 @@
+{
+  "id": "chatcmpl-06f615c40a18455999f56613dd9fff25",
+  "object": "chat.completion.chunk",
+  "created": 1781587263,
+  "model": "zai-org/GLM-5.1",
+  "usage": {
+    "completion_tokens": 203,
+    "prompt_tokens": 3675,
+    "prompt_tokens_details": {
+      "cached_tokens": 3392
+    },
+    "total_tokens": 3878
+  },
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "reasoning_content": "LetLet me me now now check check the the other other directories directories ( (swswpppp202202606011-team-team1919 and and sw swpppp202202606011)) for for package package.json.json files files,, and and also also read read the the package package.json.json files files I I found found..",
+        "tool_calls": [
+          {
+            "id": "call_oEmiGDVmzyLARfCxkwFFLZGF",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/package.json\", \"path\": \"/Users/woojin/swpp/swpp202601-team19\"}"
+            }
+          },
+          {
+            "id": "call_9iPtgeKbf3I1MEmKvcic9iIp",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/package.json\", \"path\": \"/Users/woojin/swpp/swpp202601\"}"
+            }
+          },
+          {
+            "id": "call_pnwQqQiaybM0R1vDjxCbDCEY",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/package-lock.json\", \"path\": \"/Users/woojin/swpp/swpp202601-team19\"}"
+            }
+          },
+          {
+            "id": "call_dvQuYUDCpgsdyWtkp7ypyU4Y",
+            "type": "function",
+            "function": {
+              "name": "glob",
+              "arguments": "{\"pattern\": \"**/package-lock.json\", \"path\": \"/Users/woojin/swpp/swpp202601\"}"
+            }
+          },
+          {
+            "id": "call_mvMFwrwOX4aAFWGsXfw28KL2",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601\"}"
+            }
+          },
+          {
+            "id": "call_bteHhWAB9iEWUpCEttsPs1ay",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"filePath\": \"/Users/woojin/swpp/swpp202601-team19\"}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}
